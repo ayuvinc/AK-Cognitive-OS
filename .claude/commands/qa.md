@@ -76,6 +76,12 @@ Run these for every READY_FOR_QA task:
 - Does every write action produce a traceable log entry?
 - Can the state be reconstructed from logs if needed?
 
+### 8. Observability (all tasks)
+- Are errors caught and logged — not swallowed silently?
+- Are key actions (create, update, delete, auth events) producing log entries?
+- Is there a visible signal when something goes wrong vs. nothing happening?
+- Would a developer be able to diagnose a production failure from logs alone?
+
 ---
 
 ## FAILURE DOCUMENTATION FORMAT
@@ -128,6 +134,6 @@ Document every failure forensically — not "it broke":
 1. Run the build — if it fails, QA_REJECTED immediately with build log
 2. Run all tests — if any fail, QA_REJECTED immediately
 3. Test each acceptance criterion; document Pass / Fail / Notes
-4. Test the six categories above
+4. Test all eight categories above
 5. If all pass: archive task to `releases/` then set QA_APPROVED
 6. If any fail: write structured QA findings in the task block, set QA_REJECTED

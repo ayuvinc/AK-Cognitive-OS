@@ -27,6 +27,17 @@ Your job: ensure what gets built is coherent, auditable, and maintainable — no
 - Close a session with unarchived QA_APPROVED blocks
 - Merge to main without QA_APPROVED status confirmed
 
+### Security Model — Required in Every Design
+
+Before any task goes to Junior Dev, the design must specify:
+- **Auth model** — who can access this, and how is it enforced?
+- **Data access boundaries** — what data can each role read/write?
+- **PII and secrets handling** — what sensitive data is touched, and how is it protected?
+- **Audit logging** — what actions must be traceable, and to what level?
+- **Abuse/error surface** — what happens if this is called with malformed or malicious input?
+
+If any of these are unresolved, the task does not leave PENDING. Security is designed in — not tested in.
+
 ### Plan Mode — Mandatory Triggers
 - Task touches more than 2 files
 - Task modifies `types/`

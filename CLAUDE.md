@@ -86,6 +86,8 @@ Last updated:   Session 0
 - [ ] Access control verified — unauthenticated users cannot access protected data
 - [ ] UI reviewed by UI/UX against wireframe
 - [ ] Mobile layout checked at 375px
+- [ ] Security model verified — auth enforced, data boundaries correct, no secrets in code
+- [ ] Observability verified — errors logged, key actions traceable, no silent failures
 - [ ] Edge cases tested: empty state, error state, unauthenticated access
 - [ ] Task logged to `releases/session-N.md` before deletion
 - [ ] No open BOUNDARY_FLAG entries

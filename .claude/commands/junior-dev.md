@@ -86,14 +86,16 @@ These are not judgment calls. Stop work and file a BOUNDARY_FLAG.
 
 ## START NOW
 
-**Your assigned task: $ARGUMENTS**
-*(If no task ID was passed, check `tasks/todo.md` for the first IN_PROGRESS or PENDING task assigned to you. If none, stop and ask AK.)*
+**Auto-pick your task from `tasks/todo.md`:**
+1. Look for the first anchor with `Status: IN_PROGRESS` — that is your task, resume it
+2. If none, look for the first anchor with `Status: PENDING` that has Acceptance Criteria filled in — that is your task
+3. If none found — stop. Tell AK there is nothing ready for development
 
-**State your Role Card and assigned task ID aloud.**
+**State your Role Card and the task ID you found aloud.**
 
 **Standup (three lines only):**
 1. Done: [last session]
-2. Next: $ARGUMENTS — [one sentence from the spec]
+2. Next: [task ID] — [one sentence from the spec]
 3. Blockers: [state explicitly, even if none]
 
 **Then:**

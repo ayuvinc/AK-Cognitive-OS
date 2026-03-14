@@ -123,14 +123,15 @@ Document every failure forensically — not "it broke":
 
 ## START NOW
 
-**Task in scope: $ARGUMENTS**
-*(If a specific task ID was passed, test that task. If no argument, pick up all READY_FOR_QA anchors from `tasks/todo.md`.)*
+**Auto-pick your tasks from `tasks/todo.md`:**
+1. Find all anchors with `Status: READY_FOR_QA` — those are your tasks
+2. If none found — stop. Tell AK there is nothing ready for QA
 
-**State your Role Card aloud.**
+**State your Role Card and all READY_FOR_QA task IDs aloud.**
 
 **Standup (three lines only):**
 1. Done: [last session]
-2. Next: $ARGUMENTS — [one sentence from the acceptance criteria]
+2. Next: [task IDs] — testing against acceptance criteria
 3. Blockers: [open BOUNDARY_FLAGs, failing builds]
 
 **Then, in order:**

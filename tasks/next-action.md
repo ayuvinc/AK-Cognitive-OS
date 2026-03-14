@@ -13,16 +13,19 @@ COMMAND:      /architect
 <!--
 COMMAND FORMAT — Architect writes one of these at session close:
 
-Persona without task argument (Architect, BA, UX, QA full sweep):
   COMMAND: /architect
   COMMAND: /ba
   COMMAND: /ux
+  COMMAND: /junior-dev
   COMMAND: /qa
 
-Persona with task argument (Junior Dev, QA on specific task):
-  COMMAND: /junior-dev TASK-001
-  COMMAND: /qa TASK-001
+Each persona auto-picks its task from tasks/todo.md on activation:
+- Junior Dev → first IN_PROGRESS, then first PENDING with criteria
+- QA         → all READY_FOR_QA anchors
+- Architect  → reads full file, SESSION STATE first
+- BA         → reads ba-logic.md, picks up PENDING entries
+- UX         → reads ux-specs.md, picks up PENDING entries
 
-AK pastes the COMMAND value verbatim into a new Claude Code terminal
+AK pastes the COMMAND value verbatim into a Claude Code terminal
 opened in the project directory. The persona activates immediately.
 -->

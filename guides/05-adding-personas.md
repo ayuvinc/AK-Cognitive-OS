@@ -22,7 +22,7 @@ Example: adding a `/db-migration-check` skill to validate database migration saf
 
 ## Persona File Structure
 
-Every persona needs two files (see `personas/_template/` for starters):
+Every persona needs three files (see `personas/_template/` for starters):
 
 ```
 personas/[persona-name]/

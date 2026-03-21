@@ -43,3 +43,13 @@ extra_fields:
 - {rule 2}
 - If required inputs are missing → BLOCKED with exact missing list.
 - Never produce partial success when required fields are absent.
+
+---
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

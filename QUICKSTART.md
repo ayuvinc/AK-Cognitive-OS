@@ -210,6 +210,7 @@ Something not working? See `guides/07-common-failures.md` — covers the 15 most
 | `guides/07-common-failures.md` | Top 15 failure cases with fixes |
 | `guides/08-mode-selection-cheatsheet.md` | Mode decision table + anti-patterns |
 | `guides/09-rag-playbook.md` | RAG ingestion, chunking, retrieval, eval |
+| `guides/10-plugins.md` | Adding domain-specific personas and skills |
 | `examples/saas-minimal/` | Worked example: B2B SaaS |
 | `examples/rag-minimal/` | Worked example: document Q&A with RAG |
 | `project-template/CLAUDE_START.md` | First-run sequence for Claude |

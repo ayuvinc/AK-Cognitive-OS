@@ -98,7 +98,8 @@ AK-Cognitive-OS/
 │   ├── 06-tooling-baseline.md         ← Recommended tools for every stack layer
 │   ├── 07-common-failures.md          ← Top 15 failure cases with fixes
 │   ├── 08-mode-selection-cheatsheet.md ← Mode decision table + anti-patterns
-│   └── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
+│   ├── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
+│   └── 10-plugins.md                  ← Adding domain-specific personas and skills
 │
 ├── examples/
 │   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)

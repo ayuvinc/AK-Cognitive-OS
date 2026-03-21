@@ -187,10 +187,9 @@ engineering team, and focus personal energy on product vision, business logic, a
 user experience.
 
 Current projects:
-- **akcoach** — AI fitness coaching web app (production)
 - **machinepersonhood.com** — AI agent staffing agency (in design)
 
-AK built the workflow that became this framework while shipping akcoach solo
+AK built the workflow that became this framework while shipping a production web app solo
 using Claude Code + Codex as a dual-stack AI engineering team.
 
 ---

@@ -3,8 +3,7 @@
 A portable, file-based multi-persona development framework for building software with AI agents.
 Clone it, fill in your project context, and your AI team is ready to work.
 
-Status: **DRAFT** — Session 1 complete. Session 2 required before publishable.
-See Session 1 done criteria in `guides/01-elements-reference.md`.
+Status: **v1.0** — Fully published. All personas, skills, schemas, guides, and project template complete.
 
 ---
 
@@ -38,37 +37,16 @@ Personas and skills are defined in `personas/` and `skills/` — see directory l
 
 ## How to Use
 
-### 1. Clone this repo
+See `QUICKSTART.md` for the full 15-minute setup guide.
 
-```bash
-git clone https://github.com/ayuvinc/AK-Cognitive-OS.git my-project
-cd my-project
-```
+### Quick steps
 
-### 2. Fill in your project context
-
-Edit `project-template/CLAUDE.md` — replace every `[PLACEHOLDER]` with your project details:
-- Project name and description
-- Tech stack
-- Architecture rules
-- Domain types
-- Environment variables
-
-### 3. Start a session
-
-Open a Claude Code terminal in your project directory and type:
-
-```
-/architect
-```
-
-Claude will read your CLAUDE.md, activate the Architect persona, and run a standup.
-Follow the workflow from there.
-
-### 4. Handoff between personas
-
-Each session ends with `tasks/next-action.md` updated by the Architect.
-The next session owner and objective are written there.
+1. Clone this repo
+2. Copy `project-template/` contents to your project
+3. Copy persona and skill `claude-command.md` files to `~/.claude/commands/`
+4. Fill in `CLAUDE.md` placeholders with your project context
+5. Open Claude from your project root: `cd [your-project] && claude`
+6. Run `/session-open` and start building
 
 ---
 
@@ -77,11 +55,14 @@ The next session owner and objective are written there.
 ```
 AK-Cognitive-OS/
 ├── README.md
-├── QUICKSTART.md                      (Session 2)
+├── QUICKSTART.md                      ← Start here
 │
 ├── guides/
 │   ├── 01-elements-reference.md       ← What every element is and how they connect
-│   └── [02–05 coming in Session 2]
+│   ├── 02-session-flow.md             ← Opening, running, and closing sessions
+│   ├── 03-review-modes.md             ← SOLO_CLAUDE vs COMBINED vs SOLO_CODEX
+│   ├── 04-first-sprint.md             ← Full first sprint walkthrough
+│   └── 05-adding-personas.md         ← Extending the framework with new roles
 │
 ├── personas/
 │   ├── _template/                     ← Copy to create a new persona
@@ -93,7 +74,23 @@ AK-Cognitive-OS/
 │   ├── researcher/                    ← + 5 sub-personas (legal, business, policy, news, technical)
 │   └── compliance/                    ← + 4 sub-personas + 4 jurisdiction docs
 │
-├── skills/                            (Session 2)
+├── skills/                            ← 15 workflow skills (session lifecycle, sprint, QA, audit)
+│   ├── _template/
+│   ├── session-open/
+│   ├── session-close/
+│   ├── sprint-packager/
+│   ├── review-packet/
+│   ├── codex-intake-check/
+│   ├── audit-log/
+│   ├── lessons-extractor/
+│   ├── framework-delta-log/
+│   ├── regression-guard/
+│   ├── security-sweep/
+│   ├── handoff-validator/
+│   ├── qa-run/
+│   ├── check-channel/
+│   ├── codex-creator/
+│   └── codex-delta-verify/
 │
 ├── schemas/
 │   ├── output-envelope.md             ← Universal 8-field contract
@@ -109,16 +106,18 @@ AK-Cognitive-OS/
 │   ├── session-close-harness.md
 │   └── audit-chain-harness.md
 │
-├── framework/                         (Session 2)
-│   ├── dual-stack-architecture.md
-│   ├── interop/
-│   ├── codex-core/
-│   ├── governance/
-│   └── templates/
+├── framework/
+│   ├── dual-stack-architecture.md     ← Full Claude + Codex architecture spec
+│   ├── interop/                       ← interop contract, combined-mode runbook, failover policy
+│   ├── codex-core/                    ← reviewer/creator contracts, intake spec, runbooks, validator
+│   ├── governance/                    ← metrics tracker, weekly delta review
+│   └── templates/                    ← sprint summary, sprint review, audit entry, task, next-action
 │
-└── project-template/                  (Session 2)
+└── project-template/                  ← Copy this to start a new project
     ├── CLAUDE.md
-    ├── tasks/
+    ├── channel.md
+    ├── framework-improvements.md
+    ├── tasks/                         ← todo, ba-logic, ux-specs, lessons, next-action, risk-register
     └── releases/
 ```
 
@@ -177,6 +176,22 @@ The compliance persona uses three severity tiers:
 
 Built and battle-tested on a production fitness coaching platform.
 Distilled into this framework for reuse across any software project.
+
+---
+
+## About the Author
+
+**AK** is a product manager and entrepreneur building AI-powered software products
+without a traditional engineering background. His approach: use AI agents as the
+engineering team, and focus personal energy on product vision, business logic, and
+user experience.
+
+Current projects:
+- **akcoach** — AI fitness coaching web app (production)
+- **machinepersonhood.com** — AI agent staffing agency (in design)
+
+AK built the workflow that became this framework while shipping akcoach solo
+using Claude Code + Codex as a dual-stack AI engineering team.
 
 ---
 

@@ -59,3 +59,11 @@ RECOMMENDED NEXT ACTION:
 - Never modify channel.md — read only.
 - If channel is empty: output "CHANNEL CLEAR — no pending items."
 - Open conditions and open findings must always be listed (never omit).
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

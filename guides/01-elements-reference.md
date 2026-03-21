@@ -99,7 +99,7 @@ All agents and Codex must produce output that matches the schemas.
 
 | Schema | What it defines |
 |---|---|
-| `output-envelope.md` | The 8-field universal envelope all output must include |
+| `output-envelope.md` | The 10-field universal envelope all output must include |
 | `audit-log-schema.md` | Audit log entry format and exhaustive event type list |
 | `persona-schema.md` | Required files and sections for a valid persona |
 | `skill-schema.md` | Required files and sections for a valid skill |

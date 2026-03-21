@@ -45,3 +45,11 @@ extra_fields:
 - Accessibility notes must cover keyboard navigation and ARIA labelling where relevant.
 - If `ui_scope` is ambiguous or BA requirements are missing, return BLOCKED.
 - Do not invent UI patterns not grounded in project CLAUDE.md or provided wireframes.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

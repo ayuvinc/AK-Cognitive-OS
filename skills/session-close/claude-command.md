@@ -46,12 +46,13 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
-10. Update SESSION STATE in tasks/todo.md: Status=OPEN, Active task=none, Active persona=none, Last updated=Session N close.
+10. Update SESSION STATE in tasks/todo.md: Status=CLOSED, Active task=none, Active persona=none, Last updated=Session N close.
+11. Validate SESSION STATE is now CLOSED before emitting PASS. If Status≠CLOSED after write → BLOCKED with SESSION_STATE_VIOLATION.
 
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`
 - Required envelope fields:
-  - `run_id`, `agent`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
 - Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
 - Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
 - Missing input => `BLOCKED` with `MISSING_INPUT`
@@ -64,6 +65,7 @@ Return this JSON/YAML-compatible object:
 ```yaml
 run_id: "session-close-{session_id}-{sprint_id}-{timestamp}"
 agent: "session-close"
+origin: claude-core
 status: PASS|FAIL|BLOCKED
 timestamp_utc: "<ISO-8601>"
 summary: "<single-line outcome>"

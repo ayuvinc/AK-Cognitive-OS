@@ -49,3 +49,11 @@ extra_fields:
 - `event_type` must be from the exhaustive list in `schemas/audit-log-schema.md`. No invented types.
 - `origin` field mandatory: claude-core | codex-core | combined.
 - If audit file missing: create with a header comment and append.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

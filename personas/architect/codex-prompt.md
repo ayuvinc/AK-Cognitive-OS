@@ -45,3 +45,11 @@ extra_fields:
 - If objective is unclear or artifacts are missing, return BLOCKED with exact violations.
 - Never invent requirements not present in the session context or CLAUDE.md.
 - Use S0/S1/S2 for any architectural findings (see `schemas/finding-schema.md`).
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

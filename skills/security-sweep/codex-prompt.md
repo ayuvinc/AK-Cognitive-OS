@@ -48,3 +48,11 @@ extra_fields:
 - `signoff: true` only when all 8 pass for all task_ids.
 - Any auth/data boundary failure → S0 (use finding schema from `schemas/finding-schema.md`).
 - Append SECURITY_SWEEP_PASSED or SECURITY_SWEEP_BLOCKED to audit log.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

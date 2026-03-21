@@ -60,3 +60,11 @@ Plus the full structured research brief (see `claude-command.md` for format).
 - List gaps honestly — what you could not verify is as important as what you found.
 - The `Recommended Next Step` must be actionable and directed at the right persona.
 - If research_question is ambiguous, return BLOCKED with exact ambiguity.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

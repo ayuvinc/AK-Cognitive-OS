@@ -27,12 +27,8 @@ Every persona needs two files (see `personas/_template/` for starters):
 ```
 personas/[persona-name]/
 ├── claude-command.md    ← Claude reads this when the persona is invoked
-└── codex-prompt.md      ← Codex reads this to understand the persona's contract
-```
-
-Optional third file for output-contract personas:
-```
-└── schema.md            ← Machine-readable (or markdown-contract) output spec
+├── codex-prompt.md      ← Codex reads this to understand the persona's contract
+└── schema.md            ← Extra fields and persona-specific output contract (required)
 ```
 
 ### claude-command.md must include:

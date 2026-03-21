@@ -39,3 +39,11 @@ extra_fields:
 - Three standup lines exactly: Done / Next / Blockers.
 - If tasks/next-action.md is missing → BLOCKED with `MISSING_INPUT: next-action.md`.
 - Risk register OPEN entries appear in Blockers line — never silently omit them.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

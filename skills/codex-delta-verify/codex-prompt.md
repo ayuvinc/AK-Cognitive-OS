@@ -75,3 +75,11 @@ Updated verdict: READY_TO_RUN | READY_WITH_CONDITIONS | STILL_BLOCKED
 - Never rewrite previous channel.md entries — append only.
 - Never trust claims without file evidence.
 - Do not expand scope unless a critical blocker (S0) is discovered.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

@@ -70,3 +70,11 @@ extra_fields:
 - All 6 sections required — no optional omissions.
 - In parallel-lane sessions: wait for ALL lanes to reach GREEN before packaging.
 - If any lane is BLOCKED: package only green lanes, mark blocked lane in failures[].
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

@@ -45,6 +45,7 @@ Output format in channel:
 ```yaml
 run_id: "codex-delta-verify-{timestamp}"
 agent: "codex-delta-verify"
+origin: claude-core
 status: PASS|FAIL|BLOCKED
 timestamp_utc: "<ISO-8601>"
 summary: "<single-line outcome>"

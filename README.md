@@ -93,7 +93,7 @@ AK-Cognitive-OS/
 │   └── codex-delta-verify/
 │
 ├── schemas/
-│   ├── output-envelope.md             ← Universal 8-field contract
+│   ├── output-envelope.md             ← Universal 10-field contract
 │   ├── audit-log-schema.md            ← Audit entry format + exhaustive event type list
 │   ├── persona-schema.md              ← Required structure for any persona
 │   ├── skill-schema.md                ← Required structure for any skill

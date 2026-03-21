@@ -64,3 +64,11 @@ extra_fields:
 - No scope creep — touch only files explicitly referenced in finding.
 - > 2 attempts on same finding → BLOCKED with `ESCALATION_FLAG`.
 - Append CODEX_CREATOR_FIX entry per finding to audit log.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

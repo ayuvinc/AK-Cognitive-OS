@@ -44,3 +44,11 @@ extra_fields:
 - Flag criteria gaps — tasks with missing or ambiguous criteria → `criteria_gaps`.
 - Pre-build: add criteria to tasks. Post-build: verify against evidence.
 - A task is QA_APPROVED only when all its criteria have verifiable evidence.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

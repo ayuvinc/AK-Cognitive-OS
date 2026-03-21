@@ -53,3 +53,11 @@ extra_fields:
 - Stop on first failure — do not continue to later checks when one fails.
 - `legacy_label: GREEN` only when all 5 checks pass.
 - Append REGRESSION_GUARD_PASSED, REGRESSION_GUARD_BLOCKED, or REGRESSION_GUARD_SKIPPED to audit log.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

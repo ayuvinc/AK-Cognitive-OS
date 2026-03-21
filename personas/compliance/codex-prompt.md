@@ -81,3 +81,11 @@ Advisory:        This is a compliance flag, not legal advice.
 - Never invent regulations. Only cite what is grounded in the jurisdiction docs.
 - Always include the advisory disclaimer on every finding.
 - If review_scope is unclear → BLOCKED with `MISSING_INPUT: review_scope`.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

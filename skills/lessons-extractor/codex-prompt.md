@@ -49,3 +49,11 @@ Each proposed lesson:
 - NEVER write to lessons.md directly. Propose to AK via channel.md or output.
 - AK approves, then lessons are added to lessons.md.
 - RETROSPECTIVE_MODE: extract from sprint summary + Codex findings (git_diff not required).
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

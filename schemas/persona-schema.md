@@ -69,6 +69,14 @@ Checks/Actions: [what it does]
 
 ## Rules
 [Constraints — same spirit as claude-command.md but Codex-native]
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.
 ```
 
 ---
@@ -99,4 +107,5 @@ Checks/Actions: [what it does]
 - Missing `codex-prompt.md` → Codex cannot run in this persona
 - Missing `schema.md` → extra fields undefined, BLOCKED on first run
 - Missing `## WHO YOU ARE` section → `SCHEMA_VIOLATION: persona identity undefined`
-- Missing `BOUNDARY_FLAG` rule → persona has no stop condition, not safe to deploy
+- Missing `BOUNDARY_FLAG` in claude-command.md → persona has no stop condition, not safe to deploy
+- Missing `## Boundary` section in codex-prompt.md → Codex has no stop condition, not safe to deploy

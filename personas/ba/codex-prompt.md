@@ -45,3 +45,11 @@ extra_fields:
 - Explicitly list what is out of scope — prevents scope creep.
 - If feature_scope is ambiguous, return BLOCKED with exact ambiguities listed.
 - Never invent business rules not present in the session context.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

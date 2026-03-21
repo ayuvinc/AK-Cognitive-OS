@@ -42,28 +42,46 @@ Note: skills do not have a `schema.md` — their output contract is defined in `
 ```
 # /{skill-name}
 
-## PURPOSE
-[One sentence: what this skill does]
+## WHO YOU ARE
+[One sentence: role identity — "You are the {name} agent in AK Cognitive OS. Your only job is: ..."]
 
-## PRECONDITIONS
-[What must exist before this skill can run]
+## YOUR RULES
+CAN:
+- [permitted actions]
 
-## STEPS
-[Numbered execution steps]
+CANNOT:
+- [forbidden actions]
 
-## OUTPUT
-[What this skill writes/returns]
+BOUNDARY_FLAG:
+- [stop conditions — when to emit BLOCKED and halt]
+
+## ON ACTIVATION - AUTO-RUN SEQUENCE
+[Numbered steps: resolve paths → validate inputs → validate artifacts → execute → build output]
+
+## TASK EXECUTION
+Reads: [files this skill reads]
+Writes: [files this skill writes]
+Checks/Actions:
+- [ordered checks and actions]
+
+Validation contracts:
+- Required status enum: PASS|FAIL|BLOCKED
+- Required envelope fields: run_id, agent, origin, status, timestamp_utc, summary, failures[], warnings[], artifacts_written[], next_action
+
+Required extra fields for this agent:
+  [skill-specific extra fields]
 
 ## HANDOFF
-[Required output envelope — YAML format]
+[Required output envelope — YAML format including origin: claude-core]
 ```
 
 ---
 
 ## Validation Rules
 
-- Missing `PURPOSE` → `SCHEMA_VIOLATION: skill purpose undefined`
-- Missing `PRECONDITIONS` → skill can run in invalid state, not safe to deploy
-- Missing `STEPS` → skill has no executable body
-- Missing `OUTPUT` → consuming persona cannot verify skill ran correctly
+- Missing `WHO YOU ARE` → `SCHEMA_VIOLATION: skill identity undefined`
+- Missing `YOUR RULES` with BOUNDARY_FLAG → skill has no stop condition, unsafe to deploy
+- Missing `ON ACTIVATION` → skill has no execution sequence
+- Missing `TASK EXECUTION` → consuming persona cannot verify what skill reads/writes
 - Missing output envelope in HANDOFF → `SCHEMA_VIOLATION: envelope missing`
+- Missing `origin:` in HANDOFF YAML → `SCHEMA_VIOLATION: origin field missing`

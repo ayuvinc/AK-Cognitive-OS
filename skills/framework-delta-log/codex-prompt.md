@@ -55,3 +55,11 @@ priority: HIGH | MEDIUM | LOW
 - An improvement must be actionable (specific file/rule to change).
 - Run at every session close. Even if no improvements: write "no new patterns identified."
 - FRAMEWORK_DELTA_LOGGED audit event must be appended.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

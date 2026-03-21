@@ -42,7 +42,7 @@ Checks/Actions:
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`
 - Required envelope fields:
-  - `run_id`, `agent`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
 - Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
 - Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
 - Missing input => `BLOCKED` with `MISSING_INPUT`
@@ -56,6 +56,7 @@ Return this JSON/YAML-compatible object:
 ```yaml
 run_id: "qa-run-{session_id}-{sprint_id}-{timestamp}"
 agent: "qa-run"
+origin: claude-core
 status: PASS|FAIL|BLOCKED
 timestamp_utc: "<ISO-8601>"
 summary: "<single-line outcome>"

@@ -54,3 +54,11 @@ evidence: string    # what confirms pass, or what is failing
 - Any criterion FAIL → `status: FAIL` with criterion_id in failures[].
 - Mobile check: flag any broken layout at 375px in mobile_issues[].
 - Append QA_APPROVED or QA_REJECTED to audit log.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

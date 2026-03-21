@@ -49,6 +49,7 @@ Return this YAML envelope:
 ```yaml
 run_id: "check-channel-{timestamp}"
 agent: "check-channel"
+origin: claude-core
 status: PASS|FAIL|BLOCKED
 timestamp_utc: "<ISO-8601>"
 summary: "<single-line: X unactioned items, latest verdict: Y>"
@@ -57,3 +58,8 @@ warnings: []
 artifacts_written: []
 next_action: "<what AK should do next>"
 ```
+
+## BOUNDARY_FLAG
+BOUNDARY_FLAG:
+- If channel.md is missing or unreadable → emit `status: BLOCKED` with `MISSING_ARTIFACT: channel.md` and stop.
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.

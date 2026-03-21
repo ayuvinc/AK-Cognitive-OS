@@ -52,3 +52,11 @@ extra_fields:
 - No partial packet pass — all 7 items required.
 - Missing any item → BLOCKED with exact list of missing items.
 - packet_ready: true only when all 7 verified.
+
+## Boundary
+
+BOUNDARY_FLAG:
+- If required inputs are missing → emit `status: BLOCKED` with `MISSING_INPUT` and stop.
+- If any required artifact is absent → emit `status: BLOCKED` with `MISSING_ARTIFACT` and stop.
+- If output envelope is incomplete → emit `status: BLOCKED` with `SCHEMA_VIOLATION` and stop.
+- Never invent missing data or proceed past a failed validation.

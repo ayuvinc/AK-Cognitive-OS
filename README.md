@@ -58,11 +58,13 @@ AK-Cognitive-OS/
 ├── QUICKSTART.md                      ← Start here
 │
 ├── guides/
+│   ├── 00-project-intake.md           ← Opening questionnaire — answer before writing code
 │   ├── 01-elements-reference.md       ← What every element is and how they connect
 │   ├── 02-session-flow.md             ← Opening, running, and closing sessions
 │   ├── 03-review-modes.md             ← SOLO_CLAUDE vs COMBINED vs SOLO_CODEX
 │   ├── 04-first-sprint.md             ← Full first sprint walkthrough
-│   └── 05-adding-personas.md         ← Extending the framework with new roles
+│   ├── 05-adding-personas.md         ← Extending the framework with new roles
+│   └── 06-tooling-baseline.md        ← Recommended tools for every stack layer
 │
 ├── personas/
 │   ├── _template/                     ← Copy to create a new persona

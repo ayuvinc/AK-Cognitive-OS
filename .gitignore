@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.*
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Build/coverage
+coverage/
+dist/
+build/

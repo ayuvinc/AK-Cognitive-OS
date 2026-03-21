@@ -123,7 +123,7 @@ See `harnesses/_template/harness-template.md` for the format.
 
 ## Schema Validation
 
-New personas with structured output should have a `schema.md` with:
+New personas must have a `schema.md` with:
 
 ```yaml
 validation: markdown-contract-only | machine-validated

@@ -3,7 +3,7 @@
 A portable, file-based multi-persona development framework for building software with AI agents.
 Clone it, fill in your project context, and your AI team is ready to work.
 
-Status: **v1.0** — Fully published. All personas, skills, schemas, guides, and project template complete.
+Status: **v1.1** — Ambiguity reduction pack complete. Full docs, examples, scripts, glossary, and FAQ included.
 
 ---
 
@@ -35,20 +35,43 @@ Personas and skills are defined in `personas/` and `skills/` — see directory l
 
 ---
 
+## Start Here in 10 Minutes
+
+New? Start with these four files in order:
+
+| Step | File | What it does |
+|---|---|---|
+| 1 | `guides/00-project-intake.md` | Answer questions about your product before touching code |
+| 2 | `DECISION_MATRIX.md` | Choose your stack based on intake answers |
+| 3 | `QUICKSTART.md` | Full setup walkthrough with scripts |
+| 4 | `project-template/CLAUDE_START.md` | First-run sequence once Claude is open |
+
+Not sure about a term? See `glossary.md`. Stuck? See `guides/07-common-failures.md` or `FAQ.md`.
+
+---
+
 ## How to Use
 
-See `QUICKSTART.md` for the full 15-minute setup guide.
+See `QUICKSTART.md` for the full setup guide.
 
-### Quick steps
+### Quick steps (or use the scripts)
 
-1. Clone this repo
-2. Complete `guides/00-project-intake.md` — answer all 10 sections
-3. Choose your stack using `guides/06-tooling-baseline.md`
-4. Back up existing `~/.claude/commands/` then copy all persona and skill commands
-5. Copy `project-template/` contents to your project (including `touch releases/audit-log.md`)
-6. Fill in `CLAUDE.md` placeholders with your project context and intake summary
-7. Open Claude from your project root: `cd [your-project] && claude`
-8. Run `/session-open` and start building
+```bash
+# 1. Clone the framework
+git clone https://github.com/ayuvinc/AK-Cognitive-OS.git ~/AK-Cognitive-OS
+
+# 2. Install all personas + skills into Claude
+~/AK-Cognitive-OS/scripts/install-claude-commands.sh --backup
+
+# 3. Bootstrap your project
+~/AK-Cognitive-OS/scripts/bootstrap-project.sh ~/[your-project]
+
+# 4. Start a session (from inside your project)
+cd ~/[your-project]
+~/AK-Cognitive-OS/scripts/new-session.sh 1 1 architect
+```
+
+Then fill in `CLAUDE.md` and open Claude.
 
 ---
 
@@ -57,16 +80,27 @@ See `QUICKSTART.md` for the full 15-minute setup guide.
 ```
 AK-Cognitive-OS/
 ├── README.md
-├── QUICKSTART.md                      ← Start here
+├── QUICKSTART.md                      ← Full setup walkthrough
+├── glossary.md                        ← 35 terms in plain language
+├── FAQ.md                             ← 22 common questions answered
+├── DECISION_MATRIX.md                 ← Stack selection tables
+├── RELEASE_NOTES.md                   ← Changelog
 │
 ├── guides/
-│   ├── 00-project-intake.md           ← Opening questionnaire — answer before writing code
+│   ├── 00-project-intake.md           ← Answer before writing code
 │   ├── 01-elements-reference.md       ← What every element is and how they connect
 │   ├── 02-session-flow.md             ← Opening, running, and closing sessions
 │   ├── 03-review-modes.md             ← SOLO_CLAUDE vs COMBINED vs SOLO_CODEX
 │   ├── 04-first-sprint.md             ← Full first sprint walkthrough
-│   ├── 05-adding-personas.md         ← Extending the framework with new roles
-│   └── 06-tooling-baseline.md        ← Recommended tools for every stack layer
+│   ├── 05-adding-personas.md          ← Extending the framework with new roles
+│   ├── 06-tooling-baseline.md         ← Recommended tools for every stack layer
+│   ├── 07-common-failures.md          ← Top 15 failure cases with fixes
+│   ├── 08-mode-selection-cheatsheet.md ← Mode decision table + anti-patterns
+│   └── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
+│
+├── examples/
+│   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)
+│   └── rag-minimal/                   ← Worked example: document Q&A with RAG
 │
 ├── personas/
 │   ├── _template/                     ← Copy to create a new persona
@@ -117,8 +151,16 @@ AK-Cognitive-OS/
 │   ├── governance/                    ← metrics tracker, weekly delta review
 │   └── templates/                    ← sprint summary, sprint review, audit entry, task, next-action
 │
+├── scripts/
+│   ├── bootstrap-project.sh           ← Copy project-template to a new project
+│   ├── install-claude-commands.sh     ← Install all personas + skills to ~/.claude/commands/
+│   ├── new-session.sh                 ← Pre-flight checks + ready-to-paste session open
+│   └── validate-framework.sh          ← CI lint: BOUNDARY_FLAG, envelope fields, schema headers
+│
 └── project-template/                  ← Copy this to start a new project
     ├── CLAUDE.md
+    ├── CLAUDE_START.md                ← First-run sequence for Claude
+    ├── CODEX_START.md                 ← Paste protocol + startup checklist for Codex
     ├── channel.md
     ├── framework-improvements.md
     ├── tasks/                         ← todo, ba-logic, ux-specs, lessons, next-action, risk-register

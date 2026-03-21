@@ -49,24 +49,24 @@ Keep your completed intake summary — you'll paste it into `CLAUDE.md` in Step 
 
 ## Step 3 — Install Personas and Skills
 
-Back up any existing Claude commands first:
+Use the install script (handles backup automatically with `--backup`):
+
+```bash
+~/AK-Cognitive-OS/scripts/install-claude-commands.sh --backup
+```
+
+Or manually:
 
 ```bash
 mkdir -p ~/.claude/commands-backup
 cp ~/.claude/commands/*.md ~/.claude/commands-backup/ 2>/dev/null || true
-```
 
-Then copy all persona and skill commands:
-
-```bash
-# Personas
 for dir in ~/AK-Cognitive-OS/personas/*/; do
   name=$(basename "$dir")
   [[ "$name" == "_template" ]] && continue
   cp "$dir/claude-command.md" ~/.claude/commands/${name}.md
 done
 
-# Skills
 for dir in ~/AK-Cognitive-OS/skills/*/; do
   name=$(basename "$dir")
   [[ "$name" == "_template" ]] && continue
@@ -86,19 +86,22 @@ ls ~/.claude/commands/
 
 ## Step 4 — Bootstrap Your Project
 
-```bash
-# Clone your project
-git clone [your-project-repo] ~/[your-project]
-cd ~/[your-project]
+Use the bootstrap script (safe — skips existing files unless `--force`):
 
-# Copy project template
+```bash
+git clone [your-project-repo] ~/[your-project]
+~/AK-Cognitive-OS/scripts/bootstrap-project.sh ~/[your-project]
+```
+
+Or manually:
+
+```bash
+cd ~/[your-project]
 cp ~/AK-Cognitive-OS/project-template/CLAUDE.md .
 cp ~/AK-Cognitive-OS/project-template/channel.md .
 cp ~/AK-Cognitive-OS/project-template/framework-improvements.md .
 mkdir -p tasks releases
 cp ~/AK-Cognitive-OS/project-template/tasks/* tasks/
-
-# Initialise audit log
 touch releases/audit-log.md
 ```
 
@@ -130,19 +133,23 @@ audit_log: releases/audit-log.md
 
 ## Step 6 — Open Your First Session
 
+Use the new-session script for pre-flight checks:
+
+```bash
+cd ~/[your-project]
+~/AK-Cognitive-OS/scripts/new-session.sh 1 1 architect
+```
+
+The script checks all required files exist and prints a ready-to-paste command block.
+Then open Claude:
+
 ```bash
 cd ~/[your-project] && claude
 ```
 
-In Claude:
-```
-/session-open
-session_id: 1
-sprint_id: 1
-persona: architect
-```
+Paste the command block. Architect will read your CLAUDE.md, confirm no blockers, and set SESSION STATE to OPEN.
 
-Architect will read your CLAUDE.md, confirm no blockers, and set SESSION STATE to OPEN.
+Read `project-template/CLAUDE_START.md` for the full first-run sequence and troubleshooting tips.
 
 ---
 
@@ -178,17 +185,33 @@ You now have:
 
 ---
 
+## Troubleshooting
+
+Something not working? See `guides/07-common-failures.md` — covers the 15 most common issues with exact fixes.
+
+---
+
 ## Going Further
 
-| Guide | Topic |
+| File | Topic |
 |---|---|
-| `guides/00-project-intake.md` | Intake questionnaire — answer before writing code |
+| `glossary.md` | 35 terms in plain language |
+| `FAQ.md` | 22 common questions answered |
+| `DECISION_MATRIX.md` | Stack selection tables |
+| `guides/00-project-intake.md` | Intake questionnaire |
 | `guides/01-elements-reference.md` | All 4 element types and how they connect |
 | `guides/02-session-flow.md` | Opening, running, and closing sessions |
 | `guides/03-review-modes.md` | SOLO_CLAUDE vs COMBINED vs SOLO_CODEX |
 | `guides/04-first-sprint.md` | Full first sprint walkthrough |
 | `guides/05-adding-personas.md` | Extending the framework with new roles |
 | `guides/06-tooling-baseline.md` | Recommended tools for every stack layer |
+| `guides/07-common-failures.md` | Top 15 failure cases with fixes |
+| `guides/08-mode-selection-cheatsheet.md` | Mode decision table + anti-patterns |
+| `guides/09-rag-playbook.md` | RAG ingestion, chunking, retrieval, eval |
+| `examples/saas-minimal/` | Worked example: B2B SaaS |
+| `examples/rag-minimal/` | Worked example: document Q&A with RAG |
+| `project-template/CLAUDE_START.md` | First-run sequence for Claude |
+| `project-template/CODEX_START.md` | Paste protocol for Codex |
 
 ---
 

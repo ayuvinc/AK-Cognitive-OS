@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/bootstrap-project.sh"; exit 1; }
+
 # bootstrap-project.sh
 # Usage: bootstrap-project.sh <target_project_path> [--force]
 #

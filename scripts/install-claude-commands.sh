@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/install-claude-commands.sh"; exit 1; }
+
 # install-claude-commands.sh
 # Usage: install-claude-commands.sh [--backup]
 #
@@ -81,7 +83,9 @@ if [[ -d "$PERSONAS_DIR" ]]; then
   done
   echo ""
 else
-  echo "  [warn] personas/ directory not found at: $PERSONAS_DIR -- skipping personas"
+  echo "ERROR: personas/ directory not found at: $PERSONAS_DIR"
+  echo "Ensure this script is run from within the AK-Cognitive-OS repository."
+  exit 1
 fi
 
 # ---------------------------------------------------------------------------
@@ -113,7 +117,9 @@ if [[ -d "$SKILLS_DIR" ]]; then
   done
   echo ""
 else
-  echo "  [warn] skills/ directory not found at: $SKILLS_DIR -- skipping skills"
+  echo "ERROR: skills/ directory not found at: $SKILLS_DIR"
+  echo "Ensure this script is run from within the AK-Cognitive-OS repository."
+  exit 1
 fi
 
 # ---------------------------------------------------------------------------

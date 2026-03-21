@@ -49,6 +49,8 @@ Keep your completed intake summary — you'll paste it into `CLAUDE.md` in Step 
 
 ## Step 3 — Install Personas and Skills
 
+> **Note:** All scripts require bash. Run them with `bash scripts/<name>.sh`, not `sh` or `zsh`.
+
 Use the install script (handles backup automatically with `--backup`):
 
 ```bash

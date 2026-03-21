@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/validate-framework.sh"; exit 1; }
+
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 fail() {
   echo "[FAIL] $1"
   exit 1
 }
+
+# Hard-fail if required framework dirs are missing (catches wrong ROOT silently)
+[[ -d "$ROOT/personas" ]] || fail "personas/ not found under ROOT=$ROOT — wrong directory?"
+[[ -d "$ROOT/skills" ]]   || fail "skills/ not found under ROOT=$ROOT — wrong directory?"
+[[ -d "$ROOT/schemas" ]]  || fail "schemas/ not found under ROOT=$ROOT — wrong directory?"
 
 echo "[INFO] Running framework validation in $ROOT"
 

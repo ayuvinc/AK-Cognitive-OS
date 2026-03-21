@@ -56,6 +56,8 @@ See `QUICKSTART.md` for the full setup guide.
 
 ### Quick steps (or use the scripts)
 
+> **Note:** All scripts require bash. Run them with `bash scripts/<name>.sh`, not `sh` or `zsh`.
+
 ```bash
 # 1. Clone the framework
 git clone https://github.com/ayuvinc/AK-Cognitive-OS.git ~/AK-Cognitive-OS

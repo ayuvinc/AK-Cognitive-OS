@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/new-session.sh"; exit 1; }
+
 # new-session.sh
 # Usage: new-session.sh <session_id> <sprint_id> <persona>
 #

@@ -18,7 +18,7 @@ Get a new project running with full Claude + Codex role parity in 15 minutes.
 
 - Claude Code CLI installed (`claude` command available)
 - A GitHub repo for your new project
-- Node.js / your project's runtime (framework is language-agnostic)
+- Your project runtime installed (Node.js, Python, etc. — framework is language-agnostic)
 
 ---
 
@@ -30,9 +30,33 @@ git clone https://github.com/ayuvinc/AK-Cognitive-OS.git ~/AK-Cognitive-OS
 
 ---
 
-## Step 2 — Install Personas and Skills
+## Step 2 — Complete Project Intake
 
-Copy all persona and skill commands to your Claude commands folder:
+Before installing anything, answer the intake questionnaire:
+
+```
+open ~/AK-Cognitive-OS/guides/00-project-intake.md
+```
+
+Work through all 10 sections. The answers determine:
+- Whether to activate the Compliance persona before architecture
+- Which tooling stack to use (see `guides/06-tooling-baseline.md`)
+- What to fill into `CLAUDE.md`
+
+Keep your completed intake summary — you'll paste it into `CLAUDE.md` in Step 4.
+
+---
+
+## Step 3 — Install Personas and Skills
+
+Back up any existing Claude commands first:
+
+```bash
+mkdir -p ~/.claude/commands-backup
+cp ~/.claude/commands/*.md ~/.claude/commands-backup/ 2>/dev/null || true
+```
+
+Then copy all persona and skill commands:
 
 ```bash
 # Personas
@@ -60,7 +84,7 @@ ls ~/.claude/commands/
 
 ---
 
-## Step 3 — Bootstrap Your Project
+## Step 4 — Bootstrap Your Project
 
 ```bash
 # Clone your project
@@ -73,11 +97,14 @@ cp ~/AK-Cognitive-OS/project-template/channel.md .
 cp ~/AK-Cognitive-OS/project-template/framework-improvements.md .
 mkdir -p tasks releases
 cp ~/AK-Cognitive-OS/project-template/tasks/* tasks/
+
+# Initialise audit log
+touch releases/audit-log.md
 ```
 
 ---
 
-## Step 4 — Configure CLAUDE.md
+## Step 5 — Configure CLAUDE.md
 
 Open `CLAUDE.md` and replace all placeholders:
 
@@ -101,7 +128,7 @@ audit_log: releases/audit-log.md
 
 ---
 
-## Step 5 — Open Your First Session
+## Step 6 — Open Your First Session
 
 ```bash
 cd ~/[your-project] && claude
@@ -119,7 +146,7 @@ Architect will read your CLAUDE.md, confirm no blockers, and set SESSION STATE t
 
 ---
 
-## Step 6 — Start Building
+## Step 7 — Start Building
 
 Tell the Architect what you're building in plain language. The framework handles
 the rest — BA → UX → Architect → Junior Dev → QA → merge.
@@ -155,11 +182,13 @@ You now have:
 
 | Guide | Topic |
 |---|---|
+| `guides/00-project-intake.md` | Intake questionnaire — answer before writing code |
 | `guides/01-elements-reference.md` | All 4 element types and how they connect |
 | `guides/02-session-flow.md` | Opening, running, and closing sessions |
 | `guides/03-review-modes.md` | SOLO_CLAUDE vs COMBINED vs SOLO_CODEX |
 | `guides/04-first-sprint.md` | Full first sprint walkthrough |
 | `guides/05-adding-personas.md` | Extending the framework with new roles |
+| `guides/06-tooling-baseline.md` | Recommended tools for every stack layer |
 
 ---
 

@@ -42,11 +42,13 @@ See `QUICKSTART.md` for the full 15-minute setup guide.
 ### Quick steps
 
 1. Clone this repo
-2. Copy `project-template/` contents to your project
-3. Copy persona and skill `claude-command.md` files to `~/.claude/commands/`
-4. Fill in `CLAUDE.md` placeholders with your project context
-5. Open Claude from your project root: `cd [your-project] && claude`
-6. Run `/session-open` and start building
+2. Complete `guides/00-project-intake.md` — answer all 10 sections
+3. Choose your stack using `guides/06-tooling-baseline.md`
+4. Back up existing `~/.claude/commands/` then copy all persona and skill commands
+5. Copy `project-template/` contents to your project (including `touch releases/audit-log.md`)
+6. Fill in `CLAUDE.md` placeholders with your project context and intake summary
+7. Open Claude from your project root: `cd [your-project] && claude`
+8. Run `/session-open` and start building
 
 ---
 

@@ -18,10 +18,10 @@ done < <(find "$ROOT/personas" "$ROOT/skills" -type f \( -name 'claude-command.m
 echo "[OK] BOUNDARY_FLAG present in all agent files"
 
 # 2) All claude-command.md and codex-prompt.md YAML must include 10 envelope keys
-python3 - <<'PY'
+ROOT="$ROOT" python3 - <<'PY'
 from pathlib import Path
-import re, sys
-root=Path("$ROOT")
+import os, re, sys
+root=Path(os.environ["ROOT"])
 req=['run_id','agent','origin','status','timestamp_utc','summary','failures','warnings','artifacts_written','next_action']
 files=sorted(list(root.glob('personas/**/claude-command.md'))+list(root.glob('skills/**/claude-command.md'))+list(root.glob('personas/**/codex-prompt.md'))+list(root.glob('skills/**/codex-prompt.md')))
 

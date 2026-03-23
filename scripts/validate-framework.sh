@@ -64,4 +64,32 @@ done < <(find "$ROOT/schemas" -type f -name '*.md' | sort)
 
 echo "[OK] Schema headers verified"
 
+# 4) All SKILL.md files must have valid YAML frontmatter: name, description, tools
+ROOT="$ROOT" python3 - <<'PY'
+from pathlib import Path
+import os, sys
+root = Path(os.environ["ROOT"])
+required = ["name", "description", "tools"]
+files = sorted(list(root.glob("personas/**/SKILL.md")) + list(root.glob("skills/**/SKILL.md")))
+
+for f in files:
+    lines = f.read_text(encoding="utf-8").splitlines()
+    # Must start with ---
+    if not lines or lines[0].strip() != "---":
+        print(f"[FAIL] Missing YAML frontmatter (no opening ---): {f}")
+        sys.exit(1)
+    # Find closing ---
+    end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+    if end is None:
+        print(f"[FAIL] Unclosed YAML frontmatter (no closing ---): {f}")
+        sys.exit(1)
+    frontmatter = "\n".join(lines[1:end])
+    missing = [k for k in required if not any(line.startswith(f"{k}:") for line in lines[1:end])]
+    if missing:
+        print(f"[FAIL] SKILL.md missing frontmatter fields {missing}: {f}")
+        sys.exit(1)
+
+print(f"[OK] SKILL.md frontmatter valid in all {len(files)} files")
+PY
+
 echo "[PASS] Framework validation complete"

@@ -7,8 +7,8 @@ Read this first at the start of any framework improvement session.
 
 ## Current State
 
-**Last session:** Session 2
-**Next action:** Sprint 3 — sub-persona CLI commands + schema validation
+**Last session:** Session 3
+**Next action:** No sprints planned — framework at v1. Start new audit or begin next product.
 **GitHub:** https://github.com/ayuvinc/AK-Cognitive-OS
 
 ---
@@ -42,14 +42,13 @@ Read this first at the start of any framework improvement session.
 
 ---
 
-### Sprint 3 — PENDING
-**Planned:**
-- TASK-006: Promote sub-personas to invocable slash commands
-  - researcher sub-personas: legal, business, policy, news, technical → `/researcher-legal` etc.
-  - compliance sub-personas: data-privacy, data-security, pii-handler, phi-handler → `/compliance-data-privacy` etc.
-- TASK-007: Add YAML frontmatter validation to `scripts/validate-framework.sh`
-  - Each SKILL.md must have `name`, `description`, `tools` fields
-  - Script exits non-zero if any are missing
+### Sprint 3 — Sub-personas + Schema Validation
+**Done:**
+- TASK-006: Created 9 sub-persona folders with `claude-command.md` + `SKILL.md`
+  - Researcher: `/researcher-legal`, `/researcher-business`, `/researcher-policy`, `/researcher-news`, `/researcher-technical`
+  - Compliance: `/compliance-data-privacy`, `/compliance-data-security`, `/compliance-pii-handler`, `/compliance-phi-handler`
+  - 31 total slash commands now installed
+- TASK-007: Added check 4 to `scripts/validate-framework.sh` — validates YAML frontmatter in all 31 SKILL.md files
 
 ---
 

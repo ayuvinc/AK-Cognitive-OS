@@ -23,6 +23,8 @@ BOUNDARY_FLAG:
 - If required inputs are missing, emit `status: BLOCKED` and stop.
 
 ## ON ACTIVATION - AUTO-RUN SEQUENCE
+**Interactive mode:** If required inputs are not all provided upfront, ask for each missing input one at a time. Wait for the user's answer before asking the next. Do not BLOCK on inputs that can be gathered conversationally.
+
 1. Resolve paths from project `CLAUDE.md` overrides; fallback defaults:
    - `tasks/todo.md`, `channel.md`, [AUDIT_LOG_PATH], `framework-improvements.md`
 2. Validate required inputs: session_id, review_scope, jurisdictions

@@ -20,6 +20,8 @@ BOUNDARY_FLAG:
 - If required inputs/artifacts are missing, emit `status: BLOCKED` and stop.
 
 ## ON ACTIVATION - AUTO-RUN SEQUENCE
+**Interactive mode:** If required inputs are not all provided upfront, ask for each missing input one at a time. Wait for the user's answer before asking the next. Do not BLOCK on inputs that can be gathered conversationally.
+
 1. Resolve paths from project `CLAUDE.md` overrides; fallback defaults:
    - `tasks/todo.md`, `tasks/lessons.md`, `tasks/next-action.md`, `tasks/risk-register.md`,
      `tasks/ba-logic.md`, `tasks/ux-specs.md`, `channel.md`, [AUDIT_LOG_PATH], `framework-improvements.md`

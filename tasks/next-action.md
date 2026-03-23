@@ -5,9 +5,9 @@ Architect writes this at every session close.
 AK pastes the COMMAND verbatim to start the next terminal.
 -->
 
-NEXT_PERSONA: none
-TASK:         none
-CONTEXT:      Session 0 — framework initialised, no work started yet
+NEXT_PERSONA: Architect
+TASK:         Sprint 3 — sub-persona CLI commands + schema validation
+CONTEXT:      Sprint 1 (bootstrap fix + examples) and Sprint 2 (session template + 10 harnesses) complete and pushed to github.com/ayuvinc/AK-Cognitive-OS. Sprint 3 has 2 tasks: TASK-006 promote sub-personas to slash commands, TASK-007 add schema.md validation to validate-framework.sh.
 COMMAND:      /architect
 
 <!--

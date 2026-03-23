@@ -3,56 +3,49 @@
 ```mermaid
 flowchart TD
 
-    %% ─── SESSION LIFECYCLE ───────────────────────────────────────────────
-    START([🟢 New Session]) --> SO["/session-open\nGenerates standup\nDone / Next / Blockers"]
-    SO --> AK_REQ["👤 AK\nGives requirements"]
+    START([New Session]) --> SO["/session-open\nGenerates standup\nDone / Next / Blockers"]
+    SO --> AK_REQ["AK gives requirements"]
 
-    %% ─── PRE-BUILD PHASE ─────────────────────────────────────────────────
-    AK_REQ --> BA["/ba\nConfirms business logic\n→ ba-logic.md"]
-    BA --> UX["/ux\nWireframes + interaction rules\n→ ux-specs.md"]
-    UX --> ARCH["/architect\nDecomposes tasks\n→ todo.md PENDING"]
+    AK_REQ --> BA["/ba\nConfirms business logic\nwrites ba-logic.md"]
+    BA --> UX["/ux\nWireframes + interaction rules\nwrites ux-specs.md"]
+    UX --> ARCH["/architect\nDecomposes tasks\nwrites todo.md PENDING"]
     ARCH --> AK_APPROVE{AK approves\ntask plan?}
-    AK_APPROVE -- No → ARCH
-    AK_APPROVE -- Yes --> QA_CRITERIA["/qa\nAdds acceptance criteria\nto each PENDING task"]
+    AK_APPROVE -->|No| ARCH
+    AK_APPROVE -->|Yes| QA_CRITERIA["/qa\nAdds acceptance criteria\nto each PENDING task"]
 
-    %% ─── BUILD PHASE ─────────────────────────────────────────────────────
-    QA_CRITERIA --> JD["/junior-dev\nBuilds task\nIN_PROGRESS → READY_FOR_QA"]
+    QA_CRITERIA --> JD["/junior-dev\nBuilds task\nIN_PROGRESS to READY_FOR_QA"]
     JD --> CI["CI\nlint + build + tests"]
-    CI -- Fail --> JD
-    CI -- Pass --> ARCH_REVIEW["/architect\nCode review"]
-    ARCH_REVIEW -- Return --> JD
-    ARCH_REVIEW -- Approve --> UX_REVIEW["/ux\nUI review vs wireframe"]
-    UX_REVIEW -- Revision needed --> JD
-    UX_REVIEW -- Approved --> QA_RUN["/qa-run\nChecks each AC\npass / fail"]
-    QA_RUN -- QA_REJECTED --> JD
-    QA_RUN -- QA_APPROVED --> POST
+    CI -->|Fail| JD
+    CI -->|Pass| ARCH_REVIEW["/architect\nCode review"]
+    ARCH_REVIEW -->|Return| JD
+    ARCH_REVIEW -->|Approve| UX_REVIEW["/ux\nUI review vs wireframe"]
+    UX_REVIEW -->|Revision needed| JD
+    UX_REVIEW -->|Approved| QA_RUN["/qa-run\nChecks each AC\npass / fail"]
+    QA_RUN -->|QA REJECTED| JD
+    QA_RUN -->|QA APPROVED| POST
 
-    %% ─── POST-BUILD CHECKS ───────────────────────────────────────────────
     subgraph POST ["Post-Build Checks"]
-        SS["/security-sweep\n8 security questions\nsignoff: true/false"]
-        RG["/regression-guard\nTests + build + lint\n+ 2 policy checks\nlegacy_label: GREEN/BLOCKED"]
-        RP["/review-packet\nAssembles Codex packet\npacket_ready: true/false"]
+        SS["/security-sweep\n8 security questions\nsignoff: true or false"]
+        RG["/regression-guard\ntests + build + lint\n2 policy checks\nGREEN or BLOCKED"]
+        RP["/review-packet\nAssembles Codex packet\npacket_ready: true or false"]
         SS --> RG --> RP
     end
 
-    POST -- BLOCKED --> JD
-    POST -- packet_ready true --> CODEX{Codex\nreview\nneeded?}
-    CODEX -- No --> MERGE
-    CODEX -- Yes --> CODEX_REVIEW["Codex\nReviews packet\nApprove / Return"]
-    CODEX_REVIEW -- Return --> JD
-    CODEX_REVIEW -- Approve --> MERGE
+    POST -->|BLOCKED| JD
+    POST -->|packet ready| CODEX{Codex review\nneeded?}
+    CODEX -->|No| MERGE
+    CODEX -->|Yes| CODEX_REVIEW["Codex\nReviews packet"]
+    CODEX_REVIEW -->|Return| JD
+    CODEX_REVIEW -->|Approve| MERGE
 
-    %% ─── MERGE + CLOSE ───────────────────────────────────────────────────
-    MERGE["Architect merges to main\nArchives task from todo.md"] --> SC["/session-close\nExtracts lessons\nWrites next-action.md"]
-    SC --> END([🔴 Session End])
+    MERGE["Architect merges to main\nArchives task"] --> SC["/session-close\nExtracts lessons\nWrites next-action.md"]
+    SC --> END([Session End])
 
-    %% ─── SUPPORT AGENTS (available any time) ─────────────────────────────
-    subgraph SUPPORT ["Support Agents — invoke any time"]
-        direction LR
-        RES["/researcher\n+ 5 sub-personas\nlegal · business · policy\nnews · technical"]
-        COMP["/compliance\n+ 4 sub-personas\ndata-privacy · data-security\npii-handler · phi-handler"]
-        ALOG["/audit-log\nAppended after\nevery agent run"]
-        LES["/lessons-extractor\nPulls lessons\nfrom session"]
+    subgraph SUPPORT ["Support Agents - invoke any time"]
+        RES["/researcher\n5 sub-personas\nlegal, business, policy, news, technical"]
+        COMP["/compliance\n4 sub-personas\ndata-privacy, data-security, pii, phi"]
+        ALOG["/audit-log\nAppended after every agent run"]
+        LES["/lessons-extractor\nPulls lessons from session"]
     end
 
     AK_REQ -.->|research needed| RES
@@ -61,7 +54,6 @@ flowchart TD
     JD -.->|log entry| ALOG
     SC -.-> LES
 
-    %% ─── STYLES ──────────────────────────────────────────────────────────
     classDef persona fill:#4A90D9,color:#fff,stroke:#2C5F8A
     classDef skill fill:#7B68EE,color:#fff,stroke:#4B3BA8
     classDef decision fill:#F5A623,color:#fff,stroke:#C07800

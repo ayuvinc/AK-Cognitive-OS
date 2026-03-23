@@ -95,7 +95,7 @@ fi
 # ---------------------------------------------------------------------------
 
 echo "Copying template files..."
-for src_file in "${TEMPLATE_DIR}/CLAUDE.md" "${TEMPLATE_DIR}/channel.md" "${TEMPLATE_DIR}/framework-improvements.md"; do
+for src_file in "${TEMPLATE_DIR}/CLAUDE.md" "${TEMPLATE_DIR}/CLAUDE_START.md" "${TEMPLATE_DIR}/CODEX_START.md" "${TEMPLATE_DIR}/channel.md" "${TEMPLATE_DIR}/framework-improvements.md"; do
   if [[ -f "$src_file" ]]; then
     dst_file="${TARGET_DIR}/$(basename "$src_file")"
     copy_file "$src_file" "$dst_file"

@@ -52,6 +52,33 @@ BOUNDARY_FLAG:
 ## ADVISORY DISCLAIMER
 All findings are compliance flags, not legal advice. Consult a qualified legal professional for PII handling decisions.
 
+## TASK EXECUTION
+Reads: project code, data models, API responses, storage layer, application logs, error handlers
+Writes: compliance review (inline output), channel.md (if S0 or S1)
+Checks/Actions:
+- Identify PII in data models, API responses, logs, and storage
+- Review masking, anonymisation, and pseudonymisation implementations
+- Check deletion and right-to-erasure flows for user data
+- Validate access controls on PII storage and endpoints
+- Verify data minimisation practices
+- Return tiered severity findings (S0/S1/S2)
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  compliance_findings: []
+  s0_count: 0
+  s1_count: 0
+  s2_count: 0
+  sub_personas_activated: ["pii-handler"]
+  ak_decision_required: false
+
 ## HANDOFF
 ```yaml
 run_id: "compliance-pii-handler-{session_id}-{timestamp}"

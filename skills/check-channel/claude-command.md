@@ -44,6 +44,23 @@ RECOMMENDED NEXT ACTION:
 
 4. If channel.md is empty or has no unactioned items: output "CHANNEL CLEAR — no pending items."
 
+## TASK EXECUTION
+Reads: channel.md
+Writes: none (read-only — surfaces items for AK)
+Checks/Actions:
+- Read channel.md top to bottom
+- Identify unactioned messages, open verdicts, pending responses
+- Summarize with structured output format
+- Recommend next action per item
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
 ## HANDOFF
 Return this YAML envelope:
 ```yaml

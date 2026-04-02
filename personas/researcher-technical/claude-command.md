@@ -53,6 +53,30 @@ confidence_note: [why]
 [one sentence — what the Architect should do with this]
 ```
 
+## TASK EXECUTION
+Reads: project context, research_question input, topic_area input
+Writes: research brief (inline output), optional tasks/research-{date}.md
+Checks/Actions:
+- Validate research_question is specific and answerable
+- Execute technical research using official documentation, benchmarks, and technical sources
+- Flag version-specific differences and deprecation status
+- Include comparison tables when evaluating multiple options
+- Structure findings with sources, versions, and confidence rating
+- Identify gaps and recommended next steps
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  research_brief: {}
+  sub_persona_used: "technical"
+  confidence: "high|medium|low"
+
 ## HANDOFF
 ```yaml
 run_id: "researcher-technical-{session_id}-{timestamp}"

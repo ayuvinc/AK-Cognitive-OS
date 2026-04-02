@@ -48,6 +48,33 @@ BOUNDARY_FLAG:
 ## ADVISORY DISCLAIMER
 All findings are compliance flags, not legal advice. Consult a qualified security professional for security decisions.
 
+## TASK EXECUTION
+Reads: project code, data flows, configuration, encryption settings, authentication logic, API routes, secrets management
+Writes: compliance review (inline output), channel.md (if S0 or S1)
+Checks/Actions:
+- Review encryption posture at rest and in transit
+- Check authentication and authorisation boundaries on all endpoints
+- Validate key management practices and secrets handling
+- Audit logging and traceability for sensitive operations
+- Verify secure transmission protocols and security headers
+- Return tiered severity findings (S0/S1/S2)
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  compliance_findings: []
+  s0_count: 0
+  s1_count: 0
+  s2_count: 0
+  sub_personas_activated: ["data-security"]
+  ak_decision_required: false
+
 ## HANDOFF
 ```yaml
 run_id: "compliance-data-security-{session_id}-{timestamp}"

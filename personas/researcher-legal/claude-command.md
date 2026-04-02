@@ -51,6 +51,31 @@ confidence_note: [why]
 [one sentence — what the Architect, BA, or Compliance agent should do with this]
 ```
 
+## TASK EXECUTION
+Reads: project context, research_question input, jurisdiction input
+Writes: research brief (inline output), optional tasks/research-{date}.md
+Checks/Actions:
+- Validate research_question is specific and answerable
+- Validate jurisdiction is provided (default to "general" if missing)
+- Execute legal research using case law, statutes, regulations, and compliance sources
+- Flag jurisdictional differences where relevant
+- Structure findings with sources and confidence rating
+- Identify gaps and recommended next steps
+- Append advisory disclaimer to all output
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  research_brief: {}
+  sub_persona_used: "legal"
+  confidence: "high|medium|low"
+
 ## ADVISORY DISCLAIMER
 All findings are research references, not legal advice. Consult a qualified legal professional for legal decisions.
 

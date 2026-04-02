@@ -1,25 +1,9 @@
 ## SESSION STATE
 Status:         OPEN
-Active task:    none
-Active persona: none
+Active task:    Session 3 close
+Active persona: Architect
 Blocking issue: none
-Last updated:   Session 2 close — Sprint 1 + Sprint 2 complete, Sprint 3 pending
-
-## Sprint 3 — PENDING
-
-<!-- TASK-006 -->
-## [TASK-006] Promote sub-personas to invocable slash commands
-- Status: PENDING
-- Spec: Create claude-command.md + SKILL.md for researcher sub-personas (legal, business, policy, news, technical) and compliance sub-personas (data-privacy, data-security, pii-handler, phi-handler) so they appear as /researcher-legal, /compliance-data-privacy etc.
-- Acceptance Criteria: Each sub-persona has its own command file and is testable via slash command
-<!-- /TASK-006 -->
-
-<!-- TASK-007 -->
-## [TASK-007] Add schema.md validation to validate-framework.sh
-- Status: PENDING
-- Spec: validate-framework.sh currently checks file presence only. Add a check that each skill/persona SKILL.md has valid YAML frontmatter (name, description, tools fields present).
-- Acceptance Criteria: Script exits non-zero if any SKILL.md is missing required frontmatter fields
-<!-- /TASK-007 -->
+Last updated:   Session 3 — Sprint 3 archived, Sprint 4 QA_APPROVED, pending commit
 
 ---
 

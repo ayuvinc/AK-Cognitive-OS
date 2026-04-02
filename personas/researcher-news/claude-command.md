@@ -49,6 +49,30 @@ confidence_note: [why — note recency of sources]
 [one sentence — what the Architect or BA should do with this]
 ```
 
+## TASK EXECUTION
+Reads: project context, research_question input, topic_area input
+Writes: research brief (inline output), optional tasks/research-{date}.md
+Checks/Actions:
+- Validate research_question is specific and answerable
+- Execute news research using recent publications, official announcements, and industry outlets
+- Flag recency of all sources with publication dates
+- Distinguish breaking news from verified reporting
+- Structure findings with sources, dates, and confidence rating
+- Identify gaps and recommended next steps
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  research_brief: {}
+  sub_persona_used: "news"
+  confidence: "high|medium|low"
+
 ## HANDOFF
 ```yaml
 run_id: "researcher-news-{session_id}-{timestamp}"

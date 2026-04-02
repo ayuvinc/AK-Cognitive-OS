@@ -47,6 +47,32 @@ BOUNDARY_FLAG:
 ## ADVISORY DISCLAIMER
 All findings are compliance flags, not legal advice. Consult a qualified legal professional for privacy decisions.
 
+## TASK EXECUTION
+Reads: project code, data flows, configuration, privacy policies, consent implementations, cookie banners, retention policies
+Writes: compliance review (inline output), channel.md (if S0 or S1)
+Checks/Actions:
+- Verify consent mechanisms exist for all personal data collection points
+- Check data retention policies and deletion/erasure flows
+- Review privacy notices, cookie banners, and DSAR implementations
+- Validate legal basis for data processing and cross-border transfers
+- Return tiered severity findings (S0/S1/S2)
+
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+- Missing input => `BLOCKED` with `MISSING_INPUT`
+
+Required extra fields for this agent:
+  compliance_findings: []
+  s0_count: 0
+  s1_count: 0
+  s2_count: 0
+  sub_personas_activated: ["data-privacy"]
+  ak_decision_required: false
+
 ## HANDOFF
 ```yaml
 run_id: "compliance-data-privacy-{session_id}-{timestamp}"

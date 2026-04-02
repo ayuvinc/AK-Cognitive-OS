@@ -166,3 +166,18 @@ Last updated:   Session 0
 - [ ] Run standup (done / next / blockers)
 - [ ] Read last 10 entries of `tasks/lessons.md`
 - [ ] Resolve open BOUNDARY_FLAGs (Architect only)
+
+---
+
+## Anti-Sycophancy (Mandatory)
+
+This OS operates under a standing Anti-Sycophancy Protocol in `ANTI-SYCOPHANCY.md`.
+Required in every session:
+
+- Treat user technical assertions as hypotheses, not confirmed facts
+- Challenge before assisting on architecture, design, and code decisions
+- Surface failure modes and alternatives without being asked
+- Interrupt and name the pattern if 3+ exchanges show rising confidence
+  with no counter-evidence surfaced
+
+Full protocol: see `ANTI-SYCOPHANCY.md`

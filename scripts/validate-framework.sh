@@ -92,4 +92,32 @@ for f in files:
 print(f"[OK] SKILL.md frontmatter valid in all {len(files)} files")
 PY
 
-echo "[PASS] Framework validation complete"
+# 5) State machine consistency: session-open expects CLOSED, session-close expects OPEN
+SESSION_OPEN="${ROOT}/skills/session-open/claude-command.md"
+SESSION_CLOSE="${ROOT}/skills/session-close/claude-command.md"
+
+if [[ -f "$SESSION_OPEN" ]]; then
+  # session-open must check for CLOSED (precondition to open)
+  if grep -q 'CLOSED' "$SESSION_OPEN"; then
+    echo "[OK] session-open references CLOSED state (correct precondition)"
+  else
+    fail "session-open does not reference CLOSED state — state machine contract violation (see schemas/state-machine.md)"
+  fi
+  # session-open must NOT require Status == OPEN as a precondition before execution (the v1.0-v1.1 bug)
+  # Note: it IS valid to check Status == OPEN *after* writing (post-write validation)
+  # The bug pattern is: "BLOCKED immediately if ... Status ≠ OPEN" appearing before any write step
+  if grep -qE 'BLOCKED immediately.*Status ≠ OPEN|BLOCKED immediately.*Status != OPEN' "$SESSION_OPEN" 2>/dev/null; then
+    fail "session-open still requires Status == OPEN as precondition — this is the locked-door bug"
+  fi
+fi
+
+if [[ -f "$SESSION_CLOSE" ]]; then
+  # session-close must check for OPEN (precondition to close)
+  if grep -q 'OPEN' "$SESSION_CLOSE"; then
+    echo "[OK] session-close references OPEN state (correct precondition)"
+  else
+    fail "session-close does not reference OPEN state — state machine contract violation (see schemas/state-machine.md)"
+  fi
+fi
+
+echo "[PASS] Framework validation complete (5 checks)"

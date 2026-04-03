@@ -5,6 +5,66 @@ For definitions of any term used here, see glossary.md.
 
 ---
 
+## v1.2.0 -- Complete Bootstrap & State Machine Fix
+
+**Date:** 2026-04-03
+**Type:** Enhancement + Bugfix
+
+This release fixes the session state machine bug ("locked door"), makes bootstrap fully self-contained
+(personas, skills, contracts, templates, schemas all installed into each project), adds an interactive
+intake interview, and provides a remediation script for existing projects.
+
+### Fixed
+
+- **Session state machine bug (locked door):** `/session-open` required `Status == OPEN` as a
+  precondition, which is always false after `/session-close` sets it to CLOSED. session-open now
+  correctly expects CLOSED and transitions to OPEN. session-close now explicitly verifies OPEN
+  before closing.
+- **Duplicate SESSION STATE:** The project-template CLAUDE.md contained a SESSION STATE block that
+  conflicted with the canonical copy in `tasks/todo.md`. CLAUDE.md now points to `tasks/todo.md`
+  as the single source of truth.
+- **session-open-harness.md:** Updated preconditions and BLOCKED scenario to match the fixed state
+  machine (expects CLOSED, not OPEN).
+
+### Added
+
+- **schemas/state-machine.md:** Formal specification of the CLOSED↔OPEN session lifecycle, including
+  valid transitions, preconditions, error handling, and validation rules.
+- **harnesses/session-lifecycle-harness.md:** End-to-end test harness covering happy path (CLOSED→OPEN→CLOSED),
+  invalid transitions (double-open, double-close), missing state block, and full round trip.
+- **scripts/remediate-project.sh:** Repair script for existing projects. Adds SESSION STATE block to
+  `tasks/todo.md` if missing, installs all persona and skill commands into `.claude/commands/`, creates
+  `framework/` directory with contracts/templates/schemas, writes `.ak-cogos-version`. Safe to run
+  multiple times. Supports `--dry-run` and `--force` flags.
+- **Complete bootstrap:** `scripts/bootstrap-project.sh` now installs the full team — 17 persona commands,
+  15 skill commands, review contracts (interop, codex-core, governance), reference templates, and schemas
+  — directly into each project's `.claude/commands/` and `framework/` directories.
+- **Interactive intake interview:** Bootstrap now asks project name, owner, product description, tech stack,
+  risk level, compliance requirements, and AI features. Answers are auto-filled into CLAUDE.md. Skip with
+  `--non-interactive`.
+- **Version stamp:** Bootstrap and remediation write `.ak-cogos-version` to track which framework version
+  was used.
+- **validate-framework.sh check 5:** State machine consistency check verifies session-open expects CLOSED
+  and session-close expects OPEN.
+
+### Changed
+
+- `scripts/bootstrap-project.sh` — rewritten with intake interview, full command installation, framework
+  directory creation, and version stamp. Backwards-compatible: `--non-interactive` preserves old behavior.
+- `skills/session-open/claude-command.md` — now expects CLOSED, writes OPEN, validates write.
+- `skills/session-close/claude-command.md` — now explicitly checks for OPEN before closing.
+- `project-template/CLAUDE.md` — SESSION STATE block replaced with pointer to `tasks/todo.md`.
+- `scripts/validate-framework.sh` — added check 5 (state machine consistency).
+
+### Projects Remediated
+
+- Transplant-workflow (Dhara) — 50 files added
+- forensic-ai — 57 files added, SESSION STATE normalized from OPEN to CLOSED
+- mission-control — 58 files added, SESSION STATE block created
+- policybrain — 58 files added, SESSION STATE block created
+
+---
+
 ## v1.1.0 -- Ambiguity Reduction Pack
 
 **Date:** 2026-03-21

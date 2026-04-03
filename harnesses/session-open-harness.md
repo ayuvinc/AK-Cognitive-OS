@@ -3,14 +3,14 @@
 
 **What this tests:** The `/session-open` skill generates a valid 3-line standup from session context.
 **Pass condition:** All envelope fields present, standup_lines has exactly 3 entries, status PASS.
-**Fail condition:** Missing envelope field, standup_lines empty or fewer than 3, or PASS returned when SESSION STATE is not OPEN.
+**Fail condition:** Missing envelope field, standup_lines empty or fewer than 3, or PASS returned when SESSION STATE is not CLOSED.
 
 ---
 
 ## Preconditions
 
 Before running this harness:
-- [ ] `tasks/todo.md` exists with SESSION STATE Status = OPEN
+- [ ] `tasks/todo.md` exists with SESSION STATE Status = CLOSED
 - [ ] `tasks/next-action.md` exists with NEXT_PERSONA, TASK, CONTEXT fields
 - [ ] `tasks/lessons.md` exists (may be empty)
 - [ ] `tasks/risk-register.md` exists (may be empty)
@@ -24,7 +24,7 @@ Before running this harness:
 session_id: S-TEST-01
 
 tasks/todo.md SESSION STATE:
-  Status: OPEN
+  Status: CLOSED
   Active task: none
   Active persona: none
   Last updated: Session 1 close
@@ -55,7 +55,7 @@ tasks/lessons.md (last 3 entries):
 - [ ] `summary` is a single sentence
 - [ ] `failures[]` is empty
 - [ ] `warnings[]` is present
-- [ ] `artifacts_written[]` includes channel.md
+- [ ] `artifacts_written[]` includes channel.md and tasks/todo.md
 - [ ] `next_action` is a single sentence
 
 ### Extra fields checks
@@ -74,19 +74,20 @@ tasks/lessons.md (last 3 entries):
 
 ## BLOCKED Scenario
 
-Provide this input to test BLOCKED on closed session:
+Provide this input to test BLOCKED when session is already open:
 
 ```
 session_id: S-TEST-01
 
 tasks/todo.md SESSION STATE:
-  Status: CLOSED
+  Status: OPEN
 ```
 
 Expected:
 - [ ] `status: BLOCKED`
-- [ ] `failures[]` includes SESSION STATE Status ≠ OPEN
+- [ ] `failures[]` includes `SESSION_STATE_VIOLATION`
 - [ ] No `standup_lines` produced
+- [ ] SESSION STATE remains unchanged
 
 ---
 

@@ -53,16 +53,7 @@ End of session: `tasks/todo.md` and `tasks/ba-logic.md` empty.
 
 ## SESSION STATE
 
-Architect updates at every session open and close. Every persona reads first.
-
-```
-## SESSION STATE
-Status:         OPEN
-Active task:    none
-Active persona: none
-Blocking issue:
-Last updated:   Session 0
-```
+Session state lives in `tasks/todo.md`. All personas read it there. `/session-open` transitions CLOSED→OPEN. `/session-close` transitions OPEN→CLOSED. See `schemas/state-machine.md` for the full contract.
 
 ---
 
@@ -160,7 +151,7 @@ Last updated:   Session 0
 
 ## Session Start Checklist
 
-- [ ] Read SESSION STATE above — must be OPEN
+- [ ] Read SESSION STATE in tasks/todo.md — run /session-open to transition CLOSED→OPEN
 - [ ] Read Role Card (`.claude/commands/<role>.md`), state it aloud
 - [ ] Read `tasks/next-action.md` — confirm expected persona
 - [ ] Run standup (done / next / blockers)

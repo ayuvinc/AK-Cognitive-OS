@@ -31,9 +31,10 @@ BOUNDARY_FLAG:
 
 ## TASK EXECUTION
 Reads: tasks/todo.md, tasks/ba-logic.md, tasks/ux-specs.md, tasks/risk-register.md, channel.md
-Writes: tasks/next-action.md
+Writes: tasks/next-action.md, tasks/todo.md
 Checks/Actions (run in order, BLOCKED on first failure):
-1. tasks/todo.md — read SESSION STATE: note Active task ID and sprint prefix.
+0. tasks/todo.md — read SESSION STATE block. BLOCKED with `MISSING_SESSION_STATE` if block is missing. BLOCKED with `SESSION_STATE_VIOLATION` if Status ≠ OPEN (no active session to close).
+1. tasks/todo.md — note Active task ID and sprint prefix from SESSION STATE.
    Exclude the Active task ID from all PENDING/IN_PROGRESS checks (it is the close task itself — self-referential).
    If RETROSPECTIVE_MODE: true → only check tasks matching the sprint prefix are not PENDING/IN_PROGRESS (excluding Active task).
    Tasks with other sprint prefixes are intentionally deferred — do NOT block on them.

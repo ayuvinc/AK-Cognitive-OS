@@ -31,10 +31,13 @@ BOUNDARY_FLAG:
 
 ## TASK EXECUTION
 Reads: tasks/todo.md, tasks/lessons.md, tasks/next-action.md, tasks/risk-register.md
-Writes: channel.md
+Writes: channel.md, tasks/todo.md
 Checks/Actions:
 - Read SESSION STATE block from tasks/todo.md.
-- BLOCKED immediately if SESSION STATE Status ≠ OPEN. Include current status in failures[].
+- BLOCKED immediately if SESSION STATE block is missing. Include `MISSING_SESSION_STATE` in failures[].
+- BLOCKED immediately if SESSION STATE Status ≠ CLOSED. A non-CLOSED status means a session is already running or state is invalid. Include current status in failures[] with `SESSION_STATE_VIOLATION`.
+- Write SESSION STATE Status = OPEN in tasks/todo.md. Update Active persona, Active task, and Last updated fields.
+- Validate the write succeeded by re-reading SESSION STATE — BLOCKED with `SESSION_STATE_WRITE_FAILED` if Status ≠ OPEN after write.
 - Read tasks/lessons.md — last 10 entries only.
 - Read tasks/next-action.md — NEXT_PERSONA, TASK, CONTEXT fields.
 - Read tasks/risk-register.md — any OPEN entries.

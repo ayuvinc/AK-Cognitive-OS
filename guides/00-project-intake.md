@@ -1,5 +1,13 @@
 # Guide 00 — Project Intake
 
+> **Note:** This guide is part of the conversation-first planning flow. Intake answers feed into planning artifacts — see `guides/11-conversation-first-planning.md` for the full workflow.
+>
+> | Intake Sections | Planning Artifact |
+> |----------------|-------------------|
+> | 1-3 (Product, Risk, Features) | `docs/problem-definition.md` + `docs/scope-brief.md` |
+> | 4-8 (Data, AI, Scale, Security) | `docs/assumptions.md` + `docs/hld.md` constraints |
+> | 9-10 (Team, Timeline) | `docs/scope-brief.md` delivery target + `docs/decision-log.md` |
+
 ## Purpose
 
 Answer these questions before writing a single line of code or opening a Claude session.
@@ -220,7 +228,7 @@ Additional requirements (check all that apply):
 
 ## Intake Summary Template
 
-Fill this in after answering the above. Paste into `CLAUDE.md` under Project Overview.
+Fill this in after answering the above. These answers feed into `docs/problem-definition.md` and `docs/scope-brief.md` — not just `CLAUDE.md`.
 
 ```
 Product type:       [web app / mobile / API / agentic / hybrid]

@@ -30,14 +30,34 @@ npm run test       # Test suite
 
 ---
 
+## Planning Artifacts (docs/)
+
+| Doc | Status | Required Before |
+|-----|--------|-----------------|
+| docs/problem-definition.md | [draft/confirmed] | Any build work |
+| docs/scope-brief.md | [draft/confirmed] | Any build work |
+| docs/hld.md | [draft/confirmed] | Multi-feature sprint |
+| docs/lld/<feature>.md | [draft/confirmed] | Feature implementation |
+| docs/assumptions.md | [maintained] | Ongoing |
+| docs/decision-log.md | [maintained] | Ongoing |
+| docs/release-truth.md | [draft/confirmed] | Demo or release |
+| docs/traceability-matrix.md | [maintained] | Task derivation |
+
+All planning docs are conversation-derived. See guides/11-conversation-first-planning.md.
+
+---
+
 ## Workflow
 
 ```
+Discovery → Problem/Scope docs → HLD → LLD → Tasks → Build → QA → Release
+
 [OWNER] → gives requirements
-BA      → confirms business logic (ba-logic.md)
+BA      → discovery conversation → confirms problem-definition.md + scope-brief.md
 UI/UX   → user flow + wireframe + interaction rules (ux-specs.md)
-Architect → reads BA + UX outputs → designs → [OWNER] approval
-Architect → writes tasks to todo.md (PENDING) + creates feature branches
+Architect → reads BA + UX outputs → drafts hld.md → [OWNER] approval
+Architect → creates lld/<feature>.md for each feature → derives tasks to todo.md (PENDING)
+Architect → creates feature branches
 QA      → adds acceptance criteria to each PENDING task
 Junior Dev → IN_PROGRESS → builds to spec → READY_FOR_QA
 CI      → lint + build + tests (must pass)
@@ -67,6 +87,9 @@ Session state lives in `tasks/todo.md`. All personas read it there. `/session-op
 | Modifies shared services | Mandatory |
 | No BA sign-off on business logic | Mandatory |
 | Hotfix with uncertain scope | Mandatory |
+| No confirmed problem-definition.md or scope-brief.md | Mandatory |
+| Feature work without corresponding LLD | Mandatory |
+| Release packaging without release-truth.md | Mandatory |
 
 ---
 
@@ -81,6 +104,7 @@ Session state lives in `tasks/todo.md`. All personas read it there. `/session-op
 - [ ] Observability verified — errors logged, key actions traceable, no silent failures
 - [ ] Edge cases tested: empty state, error state, unauthenticated access
 - [ ] Task logged to `releases/session-N.md` before deletion
+- [ ] Task traces to scope item + HLD section + LLD file (traceability-matrix.md)
 - [ ] No open BOUNDARY_FLAG entries
 
 ---

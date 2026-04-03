@@ -3,7 +3,7 @@
 A portable, file-based multi-persona development framework for building software with AI agents.
 Clone it, fill in your project context, and your AI team is ready to work.
 
-Status: **v1.1** — Ambiguity reduction pack complete. Full docs, examples, scripts, glossary, and FAQ included.
+Status: **v2.0** — Conversation-first, artifact-driven development. Planning templates, Python validators, greenfield + recovery workflows.
 
 ---
 
@@ -99,7 +99,9 @@ AK-Cognitive-OS/
 │   ├── 07-common-failures.md          ← Top 15 failure cases with fixes
 │   ├── 08-mode-selection-cheatsheet.md ← Mode decision table + anti-patterns
 │   ├── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
-│   └── 10-plugins.md                  ← Adding domain-specific personas and skills
+│   ├── 10-plugins.md                  ← Adding domain-specific personas and skills
+│   ├── 11-conversation-first-planning.md ← Discovery conversation → planning artifacts
+│   └── 12-mid-build-recovery.md       ← Retrofit fundamentals into active projects
 │
 ├── examples/
 │   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)
@@ -160,25 +162,71 @@ AK-Cognitive-OS/
 │   ├── new-session.sh                 ← Pre-flight checks + ready-to-paste session open
 │   └── validate-framework.sh          ← CI lint: BOUNDARY_FLAG, envelope fields, schema headers
 │
+├── validators/                        ← Python ground-truth verification suite
+│   ├── base.py                        ← Shared utilities (metadata parser, task parser)
+│   ├── runner.py                      ← CLI entry point
+│   ├── planning_docs.py               ← Verify planning docs exist + are honest
+│   ├── task_traceability.py           ← Tasks trace to design artifacts
+│   ├── release_truth.py              ← "Real" claims backed by actual code
+│   └── session_state.py              ← Session consistency across files
+│
 └── project-template/                  ← Copy this to start a new project
     ├── CLAUDE.md
     ├── CLAUDE_START.md                ← First-run sequence for Claude
     ├── CODEX_START.md                 ← Paste protocol + startup checklist for Codex
     ├── channel.md
     ├── framework-improvements.md
+    ├── docs/                          ← Planning artifact templates
+    │   ├── problem-definition.md      ← Who, what, why
+    │   ├── scope-brief.md             ← Must-have, out-of-scope, delivery target
+    │   ├── hld.md                     ← Architecture and data flow
+    │   ├── assumptions.md             ← Confirmed vs inferred vs unresolved
+    │   ├── decision-log.md            ← Decisions with provenance
+    │   ├── release-truth.md           ← Honest feature status
+    │   ├── traceability-matrix.md     ← Task → design artifact mapping
+    │   ├── current-state.md           ← Mid-build recovery snapshot
+    │   └── lld/                       ← Low-level designs per feature
+    │       ├── README.md
+    │       └── feature-template.md
     ├── tasks/                         ← todo, ba-logic, ux-specs, lessons, next-action, risk-register
     └── releases/
 ```
 
 ---
 
+## Planning Artifacts
+
+Every non-trivial project starts with structured conversation and planning docs before code.
+
+```
+Discovery Conversation → Problem/Scope docs → HLD → LLD → Tasks → Build → QA → Release
+```
+
+| Doc | Purpose | Required Before |
+|-----|---------|-----------------|
+| `docs/problem-definition.md` | Who, what, why | Any build work |
+| `docs/scope-brief.md` | Must-have, out-of-scope, delivery target | Any build work |
+| `docs/hld.md` | Architecture, data flow, integrations | Multi-feature sprint |
+| `docs/lld/<feature>.md` | Implementation details per feature | Feature implementation |
+| `docs/assumptions.md` | What's confirmed vs inferred vs unresolved | Ongoing |
+| `docs/decision-log.md` | Decisions with provenance | Ongoing |
+| `docs/release-truth.md` | Honest feature status: real/mocked/partial/deferred | Demo or release |
+| `docs/traceability-matrix.md` | Task → scope → HLD → LLD → tests mapping | Task derivation |
+
+Two entry paths: **greenfield** (new projects, Guide 11) and **recovery** (mid-build projects, Guide 12).
+
+---
+
 ## The Workflow
 
 ```
-AK gives requirements
+Discovery conversation (8 questions)
+  → Confirm problem-definition.md + scope-brief.md
+  → HLD conversation → confirm hld.md
+  → LLD for first features
+  → Derive tasks into todo.md
   → BA confirms business logic         (tasks/ba-logic.md)
   → UX designs the experience          (tasks/ux-specs.md)
-  → Architect plans + writes tasks     (tasks/todo.md)
   → QA adds acceptance criteria        (tasks/todo.md)
   → Junior Dev builds                  (code + tests)
   → Sprint packager + intake check     (review packet for Codex)

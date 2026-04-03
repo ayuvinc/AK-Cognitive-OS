@@ -2,7 +2,7 @@
 
 ## Before You Start
 
-1. Copy `project-template/` contents into your project root
+1. Copy `project-template/` contents into your project root (or use `scripts/bootstrap-project.sh`)
 2. Fill in all `[PLACEHOLDER]` fields in `CLAUDE.md`
 3. Install persona and skill commands:
    - Copy persona `claude-command.md` files to `~/.claude/commands/<persona>.md`
@@ -10,6 +10,22 @@
 4. Set your `audit_log` path in `CLAUDE.md`
 5. Open a terminal and launch Claude from your project root:
    `cd [your-project] && claude`
+
+## Planning Before Building
+
+Your first sprint should confirm the core planning artifacts. This doesn't mean "no code" — it means grounding the project before broad implementation.
+
+**Recommended first sprint flow:**
+
+```
+Session 1: Discovery conversation → confirm problem-definition.md + scope-brief.md
+Session 2: HLD conversation → confirm hld.md
+Session 3: First feature LLD → docs/lld/<feature>.md → derive tasks → begin build
+```
+
+For simple projects or spikes, you can combine sessions 1-2 into a single session. The point is to have confirmed problem, scope, and architecture before writing significant code — not to create paperwork for its own sake.
+
+See `guides/11-conversation-first-planning.md` for the 8-question discovery flow.
 
 ---
 
@@ -119,11 +135,13 @@ sets SESSION STATE to CLOSED.
 
 ## Tips for First Sprint
 
+- Confirm problem-definition.md and scope-brief.md before broad implementation
 - Keep Sprint 1 scope small: aim for a single working user journey end-to-end
 - Don't skip the BA step — it prevents rework
 - Don't skip the QA step — acceptance criteria are the contract Junior Dev builds to
 - The Architect is the decision-maker — all questions escalate there
 - Write `tasks/next-action.md` carefully — it's what gets the next session started without re-explaining context
+- Planning docs are conversation-derived — the AI must ask, summarize, confirm, then write
 
 ---
 

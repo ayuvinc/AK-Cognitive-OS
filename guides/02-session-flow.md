@@ -9,6 +9,25 @@ can pick up exactly where the last one left off.
 
 ---
 
+## Session Modes
+
+Sessions operate in two modes, set via `new-session.sh`:
+
+| Mode | When | What it checks |
+|------|------|---------------|
+| `greenfield` (default) | New projects | Planning docs exist and are confirmed |
+| `recovery` | Mid-build projects | current-state.md exists; prints recovery conversation prompt |
+
+```bash
+# Greenfield (default)
+~/AK-Cognitive-OS/scripts/new-session.sh 4 2 architect
+
+# Recovery mode
+~/AK-Cognitive-OS/scripts/new-session.sh 4 2 architect --mode recovery
+```
+
+---
+
 ## Session Open
 
 Run `/session-open` with:
@@ -89,6 +108,23 @@ A **session** is one work block. Sessions belong to sprints.
 
 Sprint close runs `/sprint-packager` + `/review-packet` → assembles the Codex review packet
 if applicable, or produces the sprint summary for audit only.
+
+---
+
+## Validator Runs at Session Boundaries
+
+The `new-session.sh` script runs Python validators in warn-only mode at session open:
+
+```bash
+python3 validators/runner.py . --warn-only --only planning_docs,session_state
+```
+
+This catches:
+- Missing or unconfirmed planning docs before build work starts
+- Session state inconsistency between `tasks/todo.md` and `channel.md`
+- Placeholder markers in docs marked as "confirmed"
+
+Validators are advisory at session open — they warn but don't block. For session close, the full validator suite can be run optionally.
 
 ---
 

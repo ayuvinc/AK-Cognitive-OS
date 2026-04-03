@@ -120,4 +120,47 @@ if [[ -f "$SESSION_CLOSE" ]]; then
   fi
 fi
 
-echo "[PASS] Framework validation complete (5 checks)"
+# 6) Planning doc templates must exist in project-template/docs/
+TEMPLATE_DOCS="${ROOT}/project-template/docs"
+REQUIRED_TEMPLATES=(
+  "problem-definition.md"
+  "scope-brief.md"
+  "hld.md"
+  "assumptions.md"
+  "decision-log.md"
+  "release-truth.md"
+  "traceability-matrix.md"
+  "current-state.md"
+  "lld/README.md"
+  "lld/feature-template.md"
+)
+
+for tmpl in "${REQUIRED_TEMPLATES[@]}"; do
+  [[ -f "${TEMPLATE_DOCS}/${tmpl}" ]] || fail "Missing planning doc template: project-template/docs/${tmpl}"
+done
+
+echo "[OK] All 10 planning doc templates present"
+
+# 7) Planning doc templates must have metadata headers (Status: field)
+for tmpl in "${REQUIRED_TEMPLATES[@]}"; do
+  tmpl_file="${TEMPLATE_DOCS}/${tmpl}"
+  # Skip README.md — it doesn't need a metadata header
+  [[ "$(basename "$tmpl_file")" == "README.md" ]] && continue
+  grep -q '^Status:' "$tmpl_file" || fail "Missing Status: metadata header in project-template/docs/${tmpl}"
+done
+
+echo "[OK] Metadata headers present in planning doc templates"
+
+# 8) Guides 11 and 12 must exist
+[[ -f "${ROOT}/guides/11-conversation-first-planning.md" ]] || fail "Missing guide: guides/11-conversation-first-planning.md"
+[[ -f "${ROOT}/guides/12-mid-build-recovery.md" ]] || fail "Missing guide: guides/12-mid-build-recovery.md"
+
+echo "[OK] Planning guides present (11, 12)"
+
+# 9) Validator suite exists
+[[ -f "${ROOT}/validators/runner.py" ]] || fail "Missing validators/runner.py"
+[[ -f "${ROOT}/validators/base.py" ]] || fail "Missing validators/base.py"
+
+echo "[OK] Validator suite present"
+
+echo "[PASS] Framework validation complete (9 checks)"

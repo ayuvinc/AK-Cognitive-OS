@@ -5,6 +5,112 @@ For definitions of any term used here, see glossary.md.
 
 ---
 
+## v2.0.0 -- Conversation-First, Artifact-Driven Development
+
+**Date:** 2026-04-03
+**Type:** Major Enhancement
+
+This release shifts AK-Cognitive-OS from persona-heavy process orchestration to conversation-first,
+engineering-artifact-driven development. Every project is now grounded in real user intent, explicit
+scope, HLD, LLD, traceable tasks, and honest release framing. A Python validator suite provides
+ground-truth verification to prevent LLM hallucination about document status and traceability.
+
+### Core Principle
+
+Planning artifacts are conversation-derived. The AI must ask structured questions, summarize answers,
+get user confirmation, then create documents. It must not infer the whole project and start writing
+planning docs immediately.
+
+### Added
+
+- **10 planning doc templates** (`project-template/docs/`):
+  - `problem-definition.md` — who, what, why
+  - `scope-brief.md` — must-have, out-of-scope, delivery target
+  - `hld.md` — architecture, data flow, integrations
+  - `lld/README.md` + `lld/feature-template.md` — per-feature implementation design
+  - `assumptions.md` — confirmed vs ai-inferred vs unresolved
+  - `decision-log.md` — decisions with provenance and alternatives
+  - `release-truth.md` — honest feature status (real/mocked/partial/deferred)
+  - `traceability-matrix.md` — task → scope → HLD → LLD → tests mapping
+  - `current-state.md` — mid-build recovery snapshot
+
+- **Metadata headers** on every planning doc:
+  ```
+  Status: draft | confirmed | superseded
+  Source: user-confirmed | ai-inferred | code-observed | mixed
+  Last confirmed with user: YYYY-MM-DD
+  Owner: Product | Architect | Dev | QA
+  Open questions: 0
+  ```
+
+- **Guide 11 — Conversation-First Planning** (`guides/11-conversation-first-planning.md`):
+  8-question discovery conversation, artifact creation order, metadata rules, persona ownership mapping
+
+- **Guide 12 — Mid-Build Recovery** (`guides/12-mid-build-recovery.md`):
+  7-question recovery conversation, 5-stage recovery flow, rules for backfilled documents
+
+- **Python validator suite** (`validators/`) — 4 core validators, Python 3.8+ stdlib only:
+  - `planning_docs.py` — verifies docs exist, metadata is honest, no placeholders in confirmed docs
+  - `task_traceability.py` — every active task traces to design artifacts
+  - `release_truth.py` — "real" claims backed by actual source code
+  - `session_state.py` — session consistency between todo.md and channel.md
+  - `runner.py` — CLI entry point with `--warn-only`, `--strict`, `--format json|text`, `--only` flags
+
+- **Greenfield workflow**: Discovery → Problem/Scope → HLD → LLD → Tasks → Build → QA → Release
+
+- **Recovery workflow**: Recovery conversation + code inspection → current-state.md → backfill artifacts → task realignment
+
+- **validate-framework.sh checks 6-9**: Planning doc templates present, metadata headers valid, guides exist, validator suite exists
+
+### Changed
+
+- `scripts/bootstrap-project.sh` — v2.0.0: creates `docs/lld/` directory, copies all 10 planning doc
+  templates, adds 4 discovery questions to intake interview (primary user, problem, delivery target,
+  success metric), auto-fills problem-definition.md and scope-brief.md stubs (Status: draft, Source: mixed),
+  prints planning workflow guidance in post-bootstrap output
+
+- `scripts/new-session.sh` — adds `--mode greenfield|recovery` flag. Greenfield mode checks for
+  confirmed problem-definition.md and scope-brief.md. Recovery mode checks for current-state.md
+  and prints recovery conversation prompt. Runs Python validators in warn-only mode if available.
+
+- `scripts/remediate-project.sh` — v2.0.0: creates `docs/lld/` directory, copies planning doc
+  templates (skip existing), detects mid-build state and prints recovery guidance
+
+- `project-template/CLAUDE_START.md` — new "Before Building — Planning First" section, greenfield
+  first flow, mid-build recovery flow
+
+- `project-template/CODEX_START.md` — planning doc verification in startup checklist, note that
+  Codex must not create planning docs without prior user conversation
+
+- `project-template/CLAUDE.md` — "Planning Artifacts" section with status table, 3 new Plan Mode
+  mandatory triggers, traceability in Definition of Done, updated workflow description
+
+- `FRAMEWORK_FLOW.md` — planning stages before AK_REQ node, recovery path as alternative entry,
+  pink colour for planning nodes
+
+- `README.md` — v2.0 status, planning artifacts section, updated folder structure with docs/ and
+  validators/, updated workflow description
+
+- `QUICKSTART.md` — added Step 7 (discovery conversation), planning docs in key files table
+
+- `guides/00-project-intake.md` — artifact mapping note showing which intake sections feed into
+  which planning documents
+
+- `guides/02-session-flow.md` — session modes (greenfield/recovery), validator runs at session boundaries
+
+- `guides/04-first-sprint.md` — planning-before-building section (grounding, not blocking),
+  recommended first sprint flow with sessions for discovery → HLD → LLD → build
+
+### Non-Goals
+
+- No LLDs required for trivial one-file changes
+- No "first sprint = no code" mandate — planning grounds but doesn't block
+- Backfilled docs are drafts, not truth — requires explicit user confirmation
+- Validators default to warn-only — never block normal development
+- 4 heuristic validators deferred to v2.1 (scope_drift, decision_authority, test_coverage, persona_boundary)
+
+---
+
 ## v1.2.0 -- Complete Bootstrap & State Machine Fix
 
 **Date:** 2026-04-03

@@ -155,7 +155,24 @@ Read `project-template/CLAUDE_START.md` for the full first-run sequence and trou
 
 ---
 
-## Step 7 — Start Building
+## Step 7 — Run Discovery Conversation
+
+Before building, run the planning conversation to ground your project:
+
+```
+/ba → discovery conversation → confirm docs/problem-definition.md + docs/scope-brief.md
+/architect → HLD conversation → confirm docs/hld.md
+/architect → create LLD for first feature → docs/lld/<feature>.md
+/architect → derive tasks into tasks/todo.md
+```
+
+See `guides/11-conversation-first-planning.md` for the full 8-question discovery flow.
+
+**For existing projects:** Use the mid-build recovery flow instead. See `guides/12-mid-build-recovery.md`.
+
+---
+
+## Step 8 — Start Building
 
 Tell the Architect what you're building in plain language. The framework handles
 the rest — BA → UX → Architect → Junior Dev → QA → merge.
@@ -168,6 +185,8 @@ See `guides/04-first-sprint.md` for the full walkthrough.
 
 You now have:
 - Full multi-persona team (Architect, BA, UX, Dev, QA)
+- Planning artifact templates (problem-definition, scope, HLD, LLD, release-truth)
+- Python validators to catch doc status hallucination
 - Researcher and Compliance gates available when needed
 - Session lifecycle managed with audit trail
 - Optional Codex review when code is ready
@@ -184,6 +203,10 @@ You now have:
 | `tasks/lessons.md` | Accumulated lessons — append only |
 | `channel.md` | Agent communication bus |
 | `releases/audit-log.md` | Append-only audit trail |
+| `docs/problem-definition.md` | Who, what, why — confirmed before build |
+| `docs/scope-brief.md` | Must-have, out-of-scope, delivery target |
+| `docs/hld.md` | Architecture, data flow, integrations |
+| `docs/release-truth.md` | Honest feature status before demo/release |
 
 ---
 

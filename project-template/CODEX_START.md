@@ -35,6 +35,9 @@ Complete every item before pasting anything into Codex. A missing item will caus
 to return status: BLOCKED. It is faster to check now than to debug mid-task.
 
 - [ ] Sprint summary exists and is current (describes what was built this sprint)
+- [ ] Verify docs/problem-definition.md exists and has Status: confirmed
+- [ ] Verify docs/scope-brief.md exists and has Status: confirmed
+- [ ] Verify docs/hld.md exists — warn if missing before multi-feature work
 - [ ] Changed-files manifest is included in the sprint summary (list of files modified)
 - [ ] Acceptance criteria map is written (which task maps to which criterion)
 - [ ] Regression evidence is ready: test results, build output, lint output
@@ -61,9 +64,14 @@ Use this table to find the correct codex-prompt.md for your task.
 | Business logic validation             | personas/ba/codex-prompt.md                        |
 | UX review against wireframe           | personas/ux/codex-prompt.md                        |
 | QA acceptance criteria check         | personas/qa/codex-prompt.md                        |
+| Backfill planning docs               | Use Claude for discovery conversation first         |
+| Review HLD/LLD                        | personas/architect/codex-prompt.md + paste docs/hld.md |
 
 When in doubt between reviewer and creator: if code already exists and you want it
 checked, use reviewer-contract. If you are starting from scratch, use creator-contract.
+
+**Note:** Codex must not create problem-definition, scope-brief, or HLD without prior
+user conversation. These are conversation-derived artifacts. Use Claude for discovery.
 
 ---
 

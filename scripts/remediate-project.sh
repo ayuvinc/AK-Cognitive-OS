@@ -14,12 +14,14 @@ set -euo pipefail
 #   2. Installs persona commands into .claude/commands/ (skips existing)
 #   3. Installs skill commands into .claude/commands/ (skips existing)
 #   4. Creates framework/ directory with contracts, templates, schemas
-#   5. Writes .ak-cogos-version
-#   6. Reports warnings for anything it can't auto-fix
+#   5. Creates docs/ directory with planning doc templates (skips existing)
+#   6. Writes .ak-cogos-version
+#   7. Detects mid-build state and prints recovery guidance
+#   8. Reports warnings for anything it can't auto-fix
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="1.2.0"
+VERSION="2.0.0"
 
 # ---------------------------------------------------------------------------
 # Argument parsing
@@ -309,10 +311,41 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 5. Write .ak-cogos-version
+# 5. Create docs/ with planning doc templates
 # ---------------------------------------------------------------------------
 
-echo "--- Step 5: Version stamp ---"
+echo "--- Step 5: Planning doc templates (docs/) ---"
+
+TEMPLATE_DOCS_DIR="${FRAMEWORK_DIR}/project-template/docs"
+
+if [[ "$DRY_RUN" == false ]]; then
+  mkdir -p "${TARGET_DIR}/docs/lld"
+fi
+
+if [[ -d "$TEMPLATE_DOCS_DIR" ]]; then
+  for src_file in "${TEMPLATE_DOCS_DIR}"/*.md; do
+    [[ -f "$src_file" ]] || continue
+    safe_copy "$src_file" "${TARGET_DIR}/docs/$(basename "$src_file")"
+  done
+  # Copy lld/ subdirectory
+  if [[ -d "${TEMPLATE_DOCS_DIR}/lld" ]]; then
+    for src_file in "${TEMPLATE_DOCS_DIR}/lld"/*.md; do
+      [[ -f "$src_file" ]] || continue
+      safe_copy "$src_file" "${TARGET_DIR}/docs/lld/$(basename "$src_file")"
+    done
+  fi
+else
+  echo "  [warn] project-template/docs/ not found in framework — skipping"
+  WARNINGS+=("Framework missing project-template/docs/")
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 6. Write .ak-cogos-version
+# ---------------------------------------------------------------------------
+
+echo "--- Step 6: Version stamp ---"
 
 VERSION_FILE="${TARGET_DIR}/.ak-cogos-version"
 
@@ -369,4 +402,27 @@ echo ""
 
 if [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
+fi
+
+# ---------------------------------------------------------------------------
+# Mid-build detection
+# ---------------------------------------------------------------------------
+
+TODO_CHECK="${TARGET_DIR}/tasks/todo.md"
+if [[ -f "$TODO_CHECK" ]]; then
+  # Check for non-ARCHIVED tasks (indicates active project)
+  ACTIVE_TASKS="$(grep -cE '^\- \[[ x]\] TASK-[0-9]+' "$TODO_CHECK" 2>/dev/null || true)"
+  if [[ "$ACTIVE_TASKS" -gt 0 ]]; then
+    echo ""
+    echo "=========================================="
+    echo "  Mid-Build Recovery Recommended"
+    echo "=========================================="
+    echo ""
+    echo "This project has ${ACTIVE_TASKS} active task(s) but may be missing planning docs."
+    echo "Recommended: Run mid-build recovery flow."
+    echo "See: guides/12-mid-build-recovery.md"
+    echo ""
+    echo "Quick start:"
+    echo "  ~/AK-Cognitive-OS/scripts/new-session.sh <session_id> <sprint_id> architect --mode recovery"
+  fi
 fi

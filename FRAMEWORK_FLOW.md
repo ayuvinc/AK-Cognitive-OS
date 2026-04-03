@@ -4,7 +4,18 @@
 flowchart TD
 
     START([New Session]) --> SO["/session-open\nGenerates standup\nDone / Next / Blockers"]
-    SO --> AK_REQ["AK gives requirements"]
+    SO --> PLAN_CHECK{"Planning docs\nconfirmed?"}
+
+    PLAN_CHECK -->|No - greenfield| DISCOVERY["Discovery Conversation\n8 questions → summarize → confirm"]
+    PLAN_CHECK -->|No - mid-build| RECOVERY["Recovery Conversation\n7 questions + code inspection\n→ current-state.md"]
+    PLAN_CHECK -->|Yes| AK_REQ
+
+    DISCOVERY --> PROB_SCOPE["Confirm\nproblem-definition.md\nscope-brief.md"]
+    RECOVERY --> CURRENT_STATE["Generate\ncurrent-state.md\nBackfill planning docs"]
+    PROB_SCOPE --> HLD_CONV["HLD Conversation\n→ confirm hld.md"]
+    CURRENT_STATE --> HLD_CONV
+    HLD_CONV --> LLD_CONV["LLD for first features\n→ docs/lld/<feature>.md"]
+    LLD_CONV --> AK_REQ["AK gives requirements"]
 
     AK_REQ --> BA["/ba\nConfirms business logic\nwrites ba-logic.md"]
     BA --> UX["/ux\nWireframes + interaction rules\nwrites ux-specs.md"]
@@ -60,6 +71,9 @@ flowchart TD
     classDef support fill:#50C878,color:#fff,stroke:#2D7A45
     classDef terminal fill:#333,color:#fff,stroke:#000
 
+    classDef planning fill:#E8A0BF,color:#fff,stroke:#B8608F
+    class DISCOVERY,RECOVERY,PROB_SCOPE,CURRENT_STATE,HLD_CONV,LLD_CONV planning
+    class PLAN_CHECK decision
     class BA,UX,ARCH,ARCH_REVIEW,UX_REVIEW,QA_CRITERIA,QA_RUN,JD persona
     class SO,SS,RG,RP,SC skill
     class AK_APPROVE,CI,CODEX decision
@@ -73,6 +87,7 @@ flowchart TD
 
 | Colour | Meaning |
 |--------|---------|
+| Pink | Planning stages (discovery, recovery, HLD, LLD) |
 | Blue | Personas (BA, UX, Architect, Junior Dev, QA) |
 | Purple | Workflow skills (session-open, security-sweep, etc.) |
 | Orange | Decision points |
@@ -83,8 +98,9 @@ flowchart TD
 
 ## Reading the Flow
 
-1. **Session opens** → standup → AK gives requirements
-2. **Pre-build**: BA confirms logic, UX draws wireframes, Architect breaks into tasks, QA adds acceptance criteria
+1. **Session opens** → standup → check planning docs
+2. **Planning** (if needed): Discovery/recovery conversation → confirm problem-definition, scope-brief, HLD → create LLD for first features
+3. **Pre-build**: BA confirms logic, UX draws wireframes, Architect breaks into tasks, QA adds acceptance criteria
 3. **Build loop**: Junior Dev builds → CI → Architect reviews → UX checks UI → QA tests each AC
 4. **Post-build**: Security sweep + regression guard + review packet (all must pass)
 5. **Optional Codex review** for complex sprints

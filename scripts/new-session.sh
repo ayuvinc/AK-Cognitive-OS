@@ -4,11 +4,15 @@ set -euo pipefail
 [[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/new-session.sh"; exit 1; }
 
 # new-session.sh
-# Usage: new-session.sh <session_id> <sprint_id> <persona>
+# Usage: new-session.sh <session_id> <sprint_id> <persona> [--mode greenfield|recovery]
 #
 # Validates the project is bootstrapped, checks current SESSION STATE, and
 # prints the ready-to-paste /session-open command block. Also appends a
 # timestamped entry to channel.md.
+#
+# Modes:
+#   greenfield (default) — checks planning docs exist and are confirmed
+#   recovery             — guides user to create current-state.md first
 #
 # Valid personas: architect ba ux junior-dev qa researcher compliance
 
@@ -18,17 +22,37 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Argument validation
 # ---------------------------------------------------------------------------
 
-if [[ $# -ne 3 ]]; then
-  echo "ERROR: Exactly 3 arguments required."
-  echo "Usage: $(basename "$0") <session_id> <sprint_id> <persona>"
+if [[ $# -lt 3 ]]; then
+  echo "ERROR: At least 3 arguments required."
+  echo "Usage: $(basename "$0") <session_id> <sprint_id> <persona> [--mode greenfield|recovery]"
   echo ""
   echo "Example: $(basename "$0") 4 2 architect"
+  echo "Example: $(basename "$0") 4 2 architect --mode recovery"
   exit 1
 fi
 
 SESSION_ID="$1"
 SPRINT_ID="$2"
 PERSONA="$3"
+shift 3
+
+# Parse optional --mode flag
+SESSION_MODE="greenfield"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --mode)
+      shift
+      if [[ $# -gt 0 && ("$1" == "greenfield" || "$1" == "recovery") ]]; then
+        SESSION_MODE="$1"
+      else
+        echo "ERROR: --mode requires 'greenfield' or 'recovery'"
+        exit 1
+      fi
+      ;;
+    *) echo "WARNING: Unknown argument: $1" ;;
+  esac
+  shift
+done
 
 # ---------------------------------------------------------------------------
 # Validate persona
@@ -92,6 +116,75 @@ if [[ "$CURRENT_STATUS" == "OPEN" ]]; then
   echo "         A session may already be in progress."
   echo "         If this is stale, manually set Status to CLOSED in tasks/todo.md"
   echo "         before opening a new session."
+  echo ""
+fi
+
+# ---------------------------------------------------------------------------
+# Planning doc checks (mode-dependent)
+# ---------------------------------------------------------------------------
+
+if [[ "$SESSION_MODE" == "greenfield" ]]; then
+  echo "Mode: greenfield"
+  echo ""
+
+  # Check problem-definition.md
+  if [[ ! -f "docs/problem-definition.md" ]]; then
+    echo "WARNING: docs/problem-definition.md not found."
+    echo "         Run discovery conversation first. See guides/11-conversation-first-planning.md"
+  else
+    pd_status="$(grep '^Status:' docs/problem-definition.md 2>/dev/null | head -1 | awk '{print $2}' || true)"
+    if [[ "$pd_status" != "confirmed" ]]; then
+      echo "WARNING: docs/problem-definition.md has Status: ${pd_status:-unknown} (not confirmed)"
+    fi
+  fi
+
+  # Check scope-brief.md
+  if [[ ! -f "docs/scope-brief.md" ]]; then
+    echo "WARNING: docs/scope-brief.md not found."
+    echo "         Run discovery conversation first. See guides/11-conversation-first-planning.md"
+  else
+    sb_status="$(grep '^Status:' docs/scope-brief.md 2>/dev/null | head -1 | awk '{print $2}' || true)"
+    if [[ "$sb_status" != "confirmed" ]]; then
+      echo "WARNING: docs/scope-brief.md has Status: ${sb_status:-unknown} (not confirmed)"
+    fi
+  fi
+
+  # Check hld.md (info level, not critical)
+  if [[ ! -f "docs/hld.md" ]]; then
+    echo "INFO:    docs/hld.md not found — recommended before multi-feature work."
+  fi
+
+  echo ""
+
+elif [[ "$SESSION_MODE" == "recovery" ]]; then
+  echo "Mode: mid-build recovery"
+  echo ""
+
+  if [[ ! -f "docs/current-state.md" ]]; then
+    echo "WARNING: docs/current-state.md not found."
+    echo "         Run recovery conversation first. See guides/12-mid-build-recovery.md"
+    echo ""
+    echo "Recovery conversation — 7 questions to ask:"
+    echo "  1. What is this project supposed to achieve?"
+    echo "  2. Who is the real user?"
+    echo "  3. What is already built and working?"
+    echo "  4. What is only planned or partially done?"
+    echo "  5. What feels unclear or drifting?"
+    echo "  6. What matters most right now?"
+    echo "  7. What should be cut?"
+  else
+    cs_status="$(grep '^Status:' docs/current-state.md 2>/dev/null | head -1 | awk '{print $2}' || true)"
+    echo "INFO:    docs/current-state.md exists (Status: ${cs_status:-unknown})"
+  fi
+
+  echo ""
+fi
+
+# Run Python validator in warn-only mode if available
+FRAMEWORK_DIR_CHECK="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -f "${FRAMEWORK_DIR_CHECK}/validators/runner.py" ]]; then
+  echo "Running validators (warn-only)..."
+  python3 "${FRAMEWORK_DIR_CHECK}/validators/runner.py" "$(pwd)" --warn-only --only planning_docs,session_state 2>/dev/null || true
   echo ""
 fi
 

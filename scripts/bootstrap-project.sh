@@ -7,14 +7,15 @@ set -euo pipefail
 # Usage: bootstrap-project.sh <target_project_path> [--force] [--non-interactive]
 #
 # Copies the AK-Cognitive-OS project template into an existing project directory.
-# Creates tasks/, releases/, .claude/commands/, and framework/ directories.
-# Installs personas, skills, review contracts, templates, and schemas.
-# Runs an interactive intake interview to pre-fill CLAUDE.md (skip with --non-interactive).
+# Creates tasks/, releases/, docs/, .claude/commands/, and framework/ directories.
+# Installs personas, skills, review contracts, templates, schemas, and planning doc templates.
+# Runs an interactive intake interview to pre-fill CLAUDE.md and planning doc stubs.
 # Pass --force to overwrite files that already exist.
+# Pass --non-interactive to skip interview and create blank templates.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="1.2.0"
+VERSION="2.0.0"
 
 # ---------------------------------------------------------------------------
 # Argument validation
@@ -95,12 +96,18 @@ COMPLIANCE_REQS=""
 AI_FEATURES=""
 AUDIT_LOG_PATH="releases/audit-log.md"
 
+# Discovery conversation fields (v2.0)
+PRIMARY_USER=""
+USER_PROBLEM=""
+DELIVERY_TARGET=""
+SUCCESS_METRIC=""
+
 if [[ "$INTERACTIVE" == true ]]; then
   echo "=========================================="
   echo "  Project Intake Interview"
   echo "=========================================="
   echo ""
-  echo "Answer a few questions to pre-fill your CLAUDE.md."
+  echo "Answer a few questions to pre-fill your CLAUDE.md and planning docs."
   echo "(Press Enter to skip any question and fill in later.)"
   echo ""
 
@@ -129,6 +136,22 @@ if [[ "$INTERACTIVE" == true ]]; then
   [[ -n "$input" ]] && AUDIT_LOG_PATH="$input"
 
   echo ""
+  echo "--- Discovery Questions (for planning docs) ---"
+  echo ""
+
+  read -rp "  Who is the primary user? " input
+  [[ -n "$input" ]] && PRIMARY_USER="$input"
+
+  read -rp "  What problem does this solve for them? " input
+  [[ -n "$input" ]] && USER_PROBLEM="$input"
+
+  read -rp "  Delivery target (demo/pilot/production): " input
+  [[ -n "$input" ]] && DELIVERY_TARGET="$input"
+
+  read -rp "  What defines success? (one measurable outcome): " input
+  [[ -n "$input" ]] && SUCCESS_METRIC="$input"
+
+  echo ""
 fi
 
 # ---------------------------------------------------------------------------
@@ -150,6 +173,7 @@ fi
 echo "Creating directories..."
 mkdir -p "${TARGET_DIR}/tasks"
 mkdir -p "${TARGET_DIR}/releases"
+mkdir -p "${TARGET_DIR}/docs/lld"
 mkdir -p "${TARGET_DIR}/.claude/commands"
 mkdir -p "${TARGET_DIR}/framework/interop"
 mkdir -p "${TARGET_DIR}/framework/codex-core/runbooks"
@@ -159,6 +183,7 @@ mkdir -p "${TARGET_DIR}/framework/schemas"
 mkdir -p "${TARGET_DIR}/framework/governance"
 echo "  [ok] tasks/"
 echo "  [ok] releases/"
+echo "  [ok] docs/ (planning artifacts + lld/)"
 echo "  [ok] .claude/commands/"
 echo "  [ok] framework/ (interop, codex-core, templates, schemas, governance)"
 echo ""
@@ -228,6 +253,74 @@ if [[ -d "$TEMPLATE_TASKS_DIR" ]]; then
   echo ""
 else
   echo "  [warn] project-template/tasks/ not found -- skipping tasks copy"
+fi
+
+# ---------------------------------------------------------------------------
+# Copy planning doc templates (docs/)
+# ---------------------------------------------------------------------------
+
+TEMPLATE_DOCS_DIR="${TEMPLATE_DIR}/docs"
+
+if [[ -d "$TEMPLATE_DOCS_DIR" ]]; then
+  echo "Copying planning doc templates..."
+  for src_file in "${TEMPLATE_DOCS_DIR}"/*.md; do
+    if [[ -f "$src_file" ]]; then
+      dst_file="${TARGET_DIR}/docs/$(basename "$src_file")"
+      copy_file "$src_file" "$dst_file"
+    fi
+  done
+  # Copy lld/ subdirectory
+  if [[ -d "${TEMPLATE_DOCS_DIR}/lld" ]]; then
+    for src_file in "${TEMPLATE_DOCS_DIR}/lld"/*.md; do
+      if [[ -f "$src_file" ]]; then
+        dst_file="${TARGET_DIR}/docs/lld/$(basename "$src_file")"
+        copy_file "$src_file" "$dst_file"
+      fi
+    done
+  fi
+  echo ""
+else
+  echo "  [warn] project-template/docs/ not found -- skipping planning doc copy"
+fi
+
+# ---------------------------------------------------------------------------
+# Auto-fill planning doc stubs from discovery answers (v2.0)
+# All bootstrap-generated content defaults to Status: draft, Source: mixed
+# ---------------------------------------------------------------------------
+
+if [[ "$INTERACTIVE" == true ]]; then
+  TODAY="$(date +%Y-%m-%d)"
+
+  # Auto-fill problem-definition.md
+  if [[ -n "$PRIMARY_USER" || -n "$USER_PROBLEM" ]] && [[ -f "${TARGET_DIR}/docs/problem-definition.md" ]]; then
+    echo "Auto-filling planning doc stubs (Status: draft)..."
+    sed -i.bak "s|Last confirmed with user: YYYY-MM-DD|Last confirmed with user: ${TODAY}|" "${TARGET_DIR}/docs/problem-definition.md"
+    sed -i.bak "s|Source: (user-confirmed | ai-inferred | code-observed | mixed)|Source: mixed|" "${TARGET_DIR}/docs/problem-definition.md"
+    if [[ -n "$PRIMARY_USER" ]]; then
+      sed -i.bak "s|Who is the main person using this product? What is their role, context, and technical level?|${PRIMARY_USER}|" "${TARGET_DIR}/docs/problem-definition.md"
+    fi
+    if [[ -n "$USER_PROBLEM" ]]; then
+      sed -i.bak "s|What specific problem does the user face today?.*|${USER_PROBLEM}|" "${TARGET_DIR}/docs/problem-definition.md"
+    fi
+    rm -f "${TARGET_DIR}/docs/problem-definition.md.bak"
+    echo "  [ok] docs/problem-definition.md stub filled (Status: draft)"
+  fi
+
+  # Auto-fill scope-brief.md
+  if [[ -n "$DELIVERY_TARGET" || -n "$SUCCESS_METRIC" ]] && [[ -f "${TARGET_DIR}/docs/scope-brief.md" ]]; then
+    sed -i.bak "s|Last confirmed with user: YYYY-MM-DD|Last confirmed with user: ${TODAY}|" "${TARGET_DIR}/docs/scope-brief.md"
+    sed -i.bak "s|Source: (user-confirmed | ai-inferred | code-observed | mixed)|Source: mixed|" "${TARGET_DIR}/docs/scope-brief.md"
+    if [[ -n "$DELIVERY_TARGET" ]]; then
+      sed -i.bak "s|Target | demo / pilot / production|Target | ${DELIVERY_TARGET}|" "${TARGET_DIR}/docs/scope-brief.md"
+    fi
+    if [[ -n "$SUCCESS_METRIC" ]]; then
+      sed -i.bak "s|Success metric | |Success metric | ${SUCCESS_METRIC}|" "${TARGET_DIR}/docs/scope-brief.md"
+    fi
+    rm -f "${TARGET_DIR}/docs/scope-brief.md.bak"
+    echo "  [ok] docs/scope-brief.md stub filled (Status: draft)"
+  fi
+
+  echo ""
 fi
 
 # ---------------------------------------------------------------------------
@@ -401,6 +494,8 @@ echo ""
 echo "  Commands installed: ${TOTAL} (${INSTALLED} personas + ${SKILL_COUNT} skills)"
 echo "  Framework version:  v${VERSION}"
 echo ""
+echo "IMPORTANT: Do not start building until planning docs are confirmed."
+echo ""
 echo "Next steps:"
 if [[ "$INTERACTIVE" == false ]]; then
   echo "  1. Open ${TARGET_DIR}/CLAUDE.md and replace all [PLACEHOLDER] values."
@@ -409,5 +504,18 @@ else
 fi
 echo "  2. Open a Claude Code session from your project root:"
 echo "       cd ${TARGET_DIR} && claude"
-echo "  3. Ask Claude to act as BA and run /ba to confirm business logic."
+echo "  3. Run discovery conversation to confirm problem + scope:"
+echo "       /ba → confirm docs/problem-definition.md + docs/scope-brief.md"
+echo "  4. Run HLD conversation → confirm docs/hld.md:"
+echo "       /architect → draft and confirm HLD"
+echo "  5. Create LLDs for first features → docs/lld/<feature>.md"
+echo "  6. Derive tasks into tasks/todo.md"
+echo "  7. Begin build"
+echo ""
+echo "Planning docs created (Status: draft):"
+echo "  docs/problem-definition.md  docs/scope-brief.md"
+echo "  docs/hld.md                 docs/assumptions.md"
+echo "  docs/decision-log.md        docs/release-truth.md"
+echo "  docs/traceability-matrix.md docs/current-state.md"
+echo "  docs/lld/README.md          docs/lld/feature-template.md"
 echo ""

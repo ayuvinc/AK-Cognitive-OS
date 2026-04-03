@@ -27,6 +27,55 @@ An empty file is fine. A missing file will BLOCK the session at the first comman
 
 ---
 
+## Before Building — Planning First
+
+Core planning documents are conversation-derived artifacts. The AI must:
+1. Begin with a structured conversation
+2. Summarize the user's answers
+3. Ask for confirmation
+4. Then create documents
+
+The AI must NOT:
+- Infer the whole project and start writing planning docs immediately
+- Treat its own inferences as user-confirmed facts
+- Skip the discovery conversation for non-trivial projects
+
+See `guides/11-conversation-first-planning.md` for the full workflow.
+
+---
+
+## Greenfield First Flow
+
+Use this when starting a brand new project from scratch.
+
+```
+Stage 0: Discovery conversation (8 questions)
+Stage 1: /ba → confirm problem-definition.md + scope-brief.md
+Stage 2: /architect → draft + confirm hld.md
+Stage 3: /architect + /junior-dev → create LLD for first feature
+Stage 4: /architect → derive tasks from HLD + LLD
+Stage 5: /qa → add acceptance criteria
+Stage 6: /junior-dev → build
+Stage 7: /session-close
+```
+
+---
+
+## Mid-Build Recovery Flow
+
+Use this when joining a project that already has code but is missing planning artifacts.
+
+```
+Stage 0: Recovery conversation (7 questions) + code inspection
+Stage 1: Generate current-state.md
+Stage 2: Backfill problem-definition, scope-brief, hld
+Stage 3: LLD for active + next features
+Stage 4: Realign tasks
+Stage 5: Resume normal build flow
+```
+
+---
+
 ## First Run Sequence
 
 Follow these steps exactly. Do not skip step 2 -- launching from the wrong directory means

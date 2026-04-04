@@ -1,18 +1,19 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: Architect
-TASK:         Session 6 open — Phase 4 hook/SDK work (deferred from Session 5)
-CONTEXT:      Session 5 complete. Phase 5 (taxonomy + consistency) fully delivered:
-              - 5-class role taxonomy in docs/role-taxonomy.md + 33 SKILL.md role_class fields
-              - Boundary tightening: designer/ux, qa/qa-run, security-sweep/compliance-data-security
-              - Router normalization: researcher.md + compliance.md ROUTING sections
-              - Contract hygiene: FORMAT headers, extra_fields, ROUTER CONTEXT, placeholder fixes
-              - Semantic lint: scripts/validate-contracts.sh (SL-1 through SL-4)
-              Phase 4 work (deferred): notification hooks, stop hook improvements, Agent SDK integration.
-              Framework now has 33 commands, clean taxonomy, and passing 16+semantic validation suite.
+TASK:         Session 7 open — Phase 4 carry-forward + framework health
+CONTEXT:      Session 6 complete. Phase 4 (hook improvements + MCP integration) fully delivered:
+              - TASK-011: guard-git-push.sh QA_APPROVED false-positive fixed
+              - TASK-012: session-integrity-check.sh Stop hook messaging improved
+              - TASK-013: session-open/close migrated to MCP state machine primary path
+              - TASK-014: audit-log skill migrated to MCP audit log primary path
+              - TASK-015: guard-boundary-flags.sh UserPromptSubmit hook added
+              Hook system now has 8 hooks total. MCP integration complete in command contracts.
+              Framework: 33 commands, 16+semantic validation PASS.
+              Carry-forward item: remove unused 'import subprocess' in auto-audit-log.sh.
 COMMAND:      /session-open
 
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Phase 4 — hook improvements, Agent SDK integration
+NEXT_FOCUS:    Session 7 — carry-forward cleanup + any new AK requirements
 BLOCKERS:      none
-TASK_QUEUE:    empty (Session 6 tasks TBD by Architect at session open)
+TASK_QUEUE:    empty (Session 7 tasks TBD at session open)

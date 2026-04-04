@@ -1,6 +1,6 @@
-# CLAUDE.md — [PROJECT_NAME]
-# [One line: what this product does]
-# Stack: [Framework], [Language], [DB], [Auth], [AI SDK if applicable]
+# CLAUDE.md — AK Cognitive OS
+# Multi-persona AI development framework for Claude Code
+# Stack: Markdown, Python (validators), Bash (scripts), Claude Code (runtime)
 
 ---
 
@@ -15,18 +15,17 @@ Read your **Role Card** (`.claude/commands/<role>.md`) and state it aloud before
 ## Commands
 
 ```bash
-# Replace with your project's actual commands
-npm run dev        # Local dev server
-npm run build      # Production build (catches TS/compile errors)
-npm run lint       # Linter
-npm run test       # Test suite
+bash scripts/validate-framework.sh   # Validate framework structure and integrity
+python3 validators/runner.py         # Run all schema/envelope validators
+bash scripts/bootstrap-project.sh    # Bootstrap a new project from the template
+bash scripts/remediate-project.sh    # Fix common project structure issues
 ```
 
 ---
 
 ## The Team
 
-**[OWNER_NAME] — Product Manager (human, the boss).** Owns requirements, priorities, final approvals.
+**AK — Product Manager (human, the boss).** Owns requirements, priorities, final approvals.
 
 ---
 
@@ -118,34 +117,52 @@ Last updated:   2026-04-02T16:20:19Z — Session 3 closeout by Codex
 
 ## Project Overview
 
-> [Replace with: what this product does, who uses it, and what the two or three core user journeys are]
+AK Cognitive OS is a multi-persona AI development framework for Claude Code. It provides 27 personas, 15 skills, enforcement hooks, and structured schemas that enable AI agents to deliver software in a structured, auditable way. Core user journeys:
+
+1. **Bootstrap a project** — Run the bootstrap script to scaffold a new project with all personas, skills, hooks, and planning docs pre-wired.
+2. **Run a development session** — Open a session, activate the correct persona via next-action.md, execute tasks through the full workflow (BA -> UX -> Architect -> Dev -> QA), and close the session with audit trail.
+3. **Contribute to the framework** — Add or modify personas, skills, schemas, and hooks following the required file structure conventions.
 
 ---
 
 ## Tech Stack
 
-> [Replace with: framework, language, database, auth provider, AI SDK, testing tools, CSS approach]
+- **Runtime:** Claude Code (CLI agent)
+- **Configuration:** Markdown (personas, skills, schemas, guides)
+- **Validators:** Python 3 (schema and envelope validation)
+- **Scripts:** Bash (bootstrap, remediation, hooks, framework validation)
+- **Testing:** Framework validation suite (`scripts/validate-framework.sh`, `validators/runner.py`)
+- **No database, no auth, no CSS** — this is a config-file-driven framework
 
 ---
 
 ## Architecture Rules
 
-> [Replace with: server/client component rules, API conventions, DB access patterns, type safety rules, auth patterns]
+- All personas must include: `claude-command.md`, `codex-prompt.md`, `schema.md`, `SKILL.md`
+- All skills must include: `claude-command.md`, `SKILL.md`
+- Output envelope (10-field) is mandatory on all skill/persona output
+- BOUNDARY_FLAG is mandatory — every persona must declare CAN/CANNOT boundaries
+- Hooks enforce mechanical checks (session state, persona boundaries, git push, audit log, envelope validation)
+- Never bypass hooks — they are the enforcement layer, not advisory
 
 ---
 
 ## Environment Variables
 
 ```
-# Replace with your project's actual env vars
-# Never commit .env.local
+# None — AK Cognitive OS is entirely config-file driven.
+# No environment variables required.
 ```
 
 ---
 
 ## Domain Types
 
-> [Replace with: your core data models and where they live]
+- **Personas** — `.claude/commands/<persona>/` — Role definitions with boundaries, prompts, and schemas
+- **Skills** — `.claude/commands/<skill>/` — Reusable capabilities invoked by personas
+- **Schemas** — `schemas/` — Structural contracts (state machine, envelope, output format)
+- **Harnesses** — `project-template/.claude/settings.json` — Hook wiring and permission grants
+- **Planning Docs** — `docs/` — Problem definition, scope, HLD, LLD, assumptions, decision log
 
 ---
 
@@ -153,8 +170,10 @@ Last updated:   2026-04-02T16:20:19Z — Session 3 closeout by Codex
 
 | Session | Focus | Status |
 |---|---|---|
-| 1 | Foundation — auth, types, CI/CD | Pending |
-| 2 | [Next feature] | Pending |
+| 1 | Foundation — personas, skills, schemas | Complete |
+| 2 | Planning docs, conversation-first workflow | Complete |
+| 3 | Hooks, enforcement, validation suite | Complete |
+| 4 | Claude Code native integration — hooks, settings, bootstrap | In Progress |
 
 ---
 

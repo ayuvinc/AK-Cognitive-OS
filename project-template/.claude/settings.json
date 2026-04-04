@@ -49,6 +49,23 @@
         "matcher": "Bash",
         "command": "bash scripts/hooks/auto-audit-log.sh",
         "description": "Auto-appends audit entries after skill execution"
+      },
+      {
+        "matcher": ".*",
+        "command": "bash scripts/hooks/validate-envelope.sh",
+        "description": "Warns if skill output is missing required envelope fields"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "command": "bash scripts/hooks/auto-persona-detect.sh",
+        "description": "Reads next-action.md and hints which persona to activate"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "bash scripts/hooks/session-integrity-check.sh",
+        "description": "Warns if session is still OPEN when exiting"
       }
     ]
   }

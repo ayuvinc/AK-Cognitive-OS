@@ -51,6 +51,25 @@ Required extra fields for this agent:
   architecture_constraints: []
   boundary_flags: []
 
+## Context Budget
+
+**Always load** (critical — read at session start):
+- tasks/todo.md
+- memory/MEMORY.md
+- tasks/lessons.md (last 10 entries)
+- tasks/next-action.md
+
+**Load on demand** (reference — read when task requires):
+- tasks/risk-register.md
+- docs/hld.md
+- relevant docs/lld/*.md
+- releases/knowledge-transfer.md
+
+**Never load** (outside persona scope — skip these):
+- framework/codex-core/*
+- guides/*
+- harnesses/*
+
 ## HANDOFF
 Return this JSON/YAML-compatible object:
 ```yaml

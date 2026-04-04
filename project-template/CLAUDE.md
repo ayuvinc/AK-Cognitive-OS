@@ -77,6 +77,39 @@ Session state lives in `tasks/todo.md`. All personas read it there. `/session-op
 
 ---
 
+## Hooks (Automated Enforcement)
+
+The following hooks are configured in `.claude/settings.json` and run automatically by the Claude Code harness. These are MECHANICAL checks — Claude does not need to manually re-check what hooks already enforce.
+
+**PreToolCall hooks** (run before Write/Edit/Bash):
+
+| Hook | Enforces |
+|---|---|
+| `guard-session-state.sh` | Blocks unauthorized writes to SESSION STATE in tasks/todo.md |
+| `guard-persona-boundaries.sh` | Enforces persona CAN/CANNOT file-path restrictions |
+| `guard-git-push.sh` | Blocks git push to main unless Architect with QA_APPROVED |
+
+**PostToolCall hooks** (run after tool calls):
+
+| Hook | Enforces |
+|---|---|
+| `auto-audit-log.sh` | Auto-appends audit entries after skill execution |
+| `validate-envelope.sh` | Warns if skill output is missing required envelope fields |
+
+**UserPromptSubmit hooks** (run on each user prompt):
+
+| Hook | Enforces |
+|---|---|
+| `auto-persona-detect.sh` | Reads next-action.md and hints which persona to activate |
+
+**Stop hooks** (run when session ends):
+
+| Hook | Enforces |
+|---|---|
+| `session-integrity-check.sh` | Warns if session is still OPEN when exiting |
+
+---
+
 ## Plan Mode — Mandatory Triggers
 
 | Condition | Rule |

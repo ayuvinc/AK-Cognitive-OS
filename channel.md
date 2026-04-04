@@ -1,38 +1,48 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-05T01:10:00Z — Architect (Session 6 — code review + merge complete)
+2026-04-05T08:30:00Z — Architect (Session 7 — v3.0 Alpha task plan written)
 
 ## Current Session
 - Status: SESSION OPEN
 - Active persona: Architect
-- Next persona: session-close
-- Next task: /session-close — all tasks merged, archived, todo.md empty
+- Next persona: QA
+- Next task: QA fills acceptance criteria on TASK-016..022
 
 ## Standup
-- Done: All 5 tasks reviewed, merged to main, branches deleted, archived to releases/session-6.md. Framework validation PASS. todo.md empty.
-- Next: /session-close
+- Done: Framework gap assessment vs v3.0 roadmap complete. 7 Alpha tasks written to todo.md.
+- Next: QA → acceptance criteria on all 7 tasks → Junior Dev builds
 - Blockers: none
 
-## Session 6 Final Status — COMPLETE
+## Session 7 — v3.0 Alpha Task Plan
 
-| ID | Title | Status | Commit |
-|---|---|---|---|
-| TASK-011 | Fix guard-git-push.sh QA_APPROVED false-positive | MERGED+ARCHIVED | 4e93d8c |
-| TASK-012 | Improve session-integrity-check.sh Stop hook messaging | MERGED+ARCHIVED | d4cb210 |
-| TASK-013 | Migrate session-open/close to MCP state machine | MERGED+ARCHIVED | 3776e0e |
-| TASK-014 | Migrate audit-log skill to MCP audit log tool | MERGED+ARCHIVED | f7e6232 |
-| TASK-015 | Add boundary-flag check hook (UserPromptSubmit) | MERGED+ARCHIVED | 670d21c |
+| ID | Title | Status |
+|---|---|---|
+| TASK-016 | delivery-lifecycle.md | PENDING |
+| TASK-017 | stage-gates.md | PENDING |
+| TASK-018 | role-design-rules.md | PENDING |
+| TASK-019 | artifact-map.md + artifact-ownership.md | PENDING |
+| TASK-020 | remediate-project.sh --audit-only flag | PENDING |
+| TASK-021 | guides/15 + guides/16 (v3.0 upgrade guides) | PENDING |
+| TASK-022 | validate-framework.sh v3.0 hardening | PENDING |
 
-## Code Review Findings
-- All 5 branches: APPROVED
-- Minor (carry-forward): `import subprocess` unused in auto-audit-log.sh python3 block
-- Framework validation: 16+semantic PASS pre- and post-merge
+## Task Dependencies
+
+```
+TASK-016 (lifecycle) ──┐
+TASK-017 (stage gates) ─┤── TASK-022 (validate hardening)
+TASK-018 (role rules)   │
+TASK-019 (artifact map) ─┤── TASK-020 (--audit-only)
+                         └── TASK-021 (upgrade guides 15+16)
+```
+
+TASK-022 and TASK-020 can be written speculatively but should merge after 016-019.
+TASK-021 can be drafted in parallel — references 016/017 by path.
 
 ## Last Agent Run
-- 2026-04-05T01:10:00Z — Architect — Code review PASS, all branches merged, tasks archived.
+- 2026-04-05T08:30:00Z — Architect — v3.0 Alpha gap assessment + 7 tasks planned
 
 ## Pipeline / Build Queue
-- Status: CLEAN — ready for session-close
+- Status: READY FOR QA — needs AC before Junior Dev can start
 
 ## Open Risks: 0

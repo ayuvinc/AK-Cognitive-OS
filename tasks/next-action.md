@@ -1,19 +1,19 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Architect
-TASK:         Session 7 open — Phase 4 carry-forward + framework health
-CONTEXT:      Session 6 complete. Phase 4 (hook improvements + MCP integration) fully delivered:
-              - TASK-011: guard-git-push.sh QA_APPROVED false-positive fixed
-              - TASK-012: session-integrity-check.sh Stop hook messaging improved
-              - TASK-013: session-open/close migrated to MCP state machine primary path
-              - TASK-014: audit-log skill migrated to MCP audit log primary path
-              - TASK-015: guard-boundary-flags.sh UserPromptSubmit hook added
-              Hook system now has 8 hooks total. MCP integration complete in command contracts.
-              Framework: 33 commands, 16+semantic validation PASS.
-              Carry-forward item: remove unused 'import subprocess' in auto-audit-log.sh.
-COMMAND:      /session-open
+NEXT_PERSONA: Junior Dev
+TASK:         TASK-023 first (session-close contract fix), then TASK-016, TASK-018, TASK-019 in parallel
+CONTEXT:      Session 7 closed as planning session — 8 tasks deferred (TASK-016..023).
+              TASK-023 is P0: fixes session-close contract to support PLANNING_SESSION mode.
+              After TASK-023 merged, build v3.0 Alpha in dependency order:
+                Parallel (no deps): TASK-016, TASK-018, TASK-019
+                After TASK-016: TASK-017
+                After TASK-016 + 017: TASK-021
+                After TASK-019: TASK-020
+                After all above merged: TASK-022
+              QA AC already written for TASK-016..022. QA must fill AC for TASK-023 before build.
+COMMAND:      /qa (for TASK-023 AC) → /junior-dev
 
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Session 7 — carry-forward cleanup + any new AK requirements
+NEXT_FOCUS:    Session 8 — QA fills TASK-023 AC → Junior Dev builds all 8 tasks
 BLOCKERS:      none
-TASK_QUEUE:    empty (Session 7 tasks TBD at session open)
+TASK_QUEUE:    TASK-023, TASK-016, TASK-017, TASK-018, TASK-019, TASK-020, TASK-021, TASK-022

@@ -32,49 +32,67 @@
     ]
   },
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Write|Edit",
-        "command": "bash scripts/hooks/guard-session-state.sh",
-        "description": "Blocks unauthorized writes to SESSION STATE in tasks/todo.md"
-      },
-      {
-        "matcher": "Write|Edit",
-        "command": "bash scripts/hooks/guard-persona-boundaries.sh",
-        "description": "Enforces persona CAN/CANNOT file-path restrictions"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-session-state.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-persona-boundaries.sh"
+          }
+        ]
       },
       {
         "matcher": "Bash",
-        "command": "bash scripts/hooks/guard-git-push.sh",
-        "description": "Blocks git push to main unless Architect with QA_APPROVED"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-git-push.sh"
+          }
+        ]
       }
     ],
-    "PostToolCall": [
+    "PostToolUse": [
       {
         "matcher": "Bash",
-        "command": "bash scripts/hooks/auto-audit-log.sh",
-        "description": "Auto-appends audit entries after skill execution"
-      },
-      {
-        "matcher": "Bash|Task",
-        "command": "bash scripts/hooks/validate-envelope.sh",
-        "description": "Warns if skill output is missing required envelope fields. Fires only on Bash/Task tool calls (skill invocations) \u2014 Read/Write/Glob/Grep don't produce envelopes. Skips if fewer than 3 envelope keywords detected (matches < 3 heuristic)."
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-audit-log.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/validate-envelope.sh"
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
-        "command": "bash scripts/hooks/auto-persona-detect.sh",
-        "description": "Reads next-action.md and hints which persona to activate"
-      },
-      {
-        "command": "bash scripts/hooks/guard-boundary-flags.sh",
-        "description": "Warns when unresolved BOUNDARY_FLAG entries exist in tasks/todo.md"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-persona-detect.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-boundary-flags.sh"
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "command": "bash scripts/hooks/session-integrity-check.sh",
-        "description": "Warns if session is still OPEN when exiting"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/session-integrity-check.sh"
+          }
+        ]
       }
     ]
   },

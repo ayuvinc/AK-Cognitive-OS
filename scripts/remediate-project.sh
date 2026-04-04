@@ -411,7 +411,29 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 8. Install sub-persona commands (researcher-*, compliance-*)
+# 8. Install MCP servers
+# ---------------------------------------------------------------------------
+
+echo "--- Step 8: MCP servers ---"
+
+MCP_SRC="${FRAMEWORK_DIR}/mcp-servers"
+if [[ -d "$MCP_SRC" ]]; then
+  if [[ "$DRY_RUN" == false ]]; then
+    mkdir -p "${TARGET_DIR}/mcp-servers"
+  fi
+  for mcp_file in "${MCP_SRC}"/*; do
+    [[ -f "$mcp_file" ]] || continue
+    safe_copy "$mcp_file" "${TARGET_DIR}/mcp-servers/$(basename "$mcp_file")"
+  done
+else
+  echo "  [warn] mcp-servers/ not found in framework — skipping"
+  WARNINGS+=("Framework missing mcp-servers/")
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 9. Install sub-persona commands (researcher-*, compliance-*)
 # ---------------------------------------------------------------------------
 
 echo "--- Step 8: Sub-persona commands ---"
@@ -447,10 +469,10 @@ echo "  [ok] ${SUB_COUNT} sub-persona(s) processed"
 echo ""
 
 # ---------------------------------------------------------------------------
-# 9. Update .gitignore
+# 10. Update .gitignore
 # ---------------------------------------------------------------------------
 
-echo "--- Step 9: .gitignore update ---"
+echo "--- Step 10: .gitignore update ---"
 
 GITIGNORE="${TARGET_DIR}/.gitignore"
 if [[ -f "$GITIGNORE" ]]; then
@@ -475,10 +497,10 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 10. Write .ak-cogos-version
+# 11. Write .ak-cogos-version
 # ---------------------------------------------------------------------------
 
-echo "--- Step 10: Version stamp ---"
+echo "--- Step 11: Version stamp ---"
 
 VERSION_FILE="${TARGET_DIR}/.ak-cogos-version"
 
@@ -525,10 +547,13 @@ fi
 CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
 HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l)
 
+MCP_COUNT=$(find "${TARGET_DIR}/mcp-servers" -type f 2>/dev/null | wc -l)
+
 echo "  Changes: ${CHANGES}"
 echo ""
 echo "  Slash commands:   ${CMD_COUNT}"
 echo "  Hook scripts:     ${HOOK_COUNT}"
+echo "  MCP servers:      ${MCP_COUNT} file(s)"
 echo "  Settings:         $([ -f "${TARGET_DIR}/.claude/settings.json" ] && echo 'installed' || echo 'MISSING')"
 echo "  Context filter:   $([ -f "${TARGET_DIR}/.claudeignore" ] && echo 'installed' || echo 'MISSING')"
 echo "  Memory:           $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo 'installed' || echo 'MISSING')"
@@ -554,6 +579,7 @@ echo "  $([ -f "${TARGET_DIR}/.claudeignore" ] && echo '[x]' || echo '[ ]') .cla
 echo "  $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo '[x]' || echo '[ ]') memory/MEMORY.md — persistent project memory"
 echo "  $([ -d "${TARGET_DIR}/scripts/hooks" ] && echo '[x]' || echo '[ ]') scripts/hooks/ — enforcement hook scripts"
 echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]') ANTI-SYCOPHANCY.md — standing instruction"
+echo "  $([ -d "${TARGET_DIR}/mcp-servers" ] && echo '[x]' || echo '[ ]') mcp-servers/ — state machine + audit log MCP servers"
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -562,8 +588,14 @@ echo ""
 
 TODO_CHECK="${TARGET_DIR}/tasks/todo.md"
 if [[ -f "$TODO_CHECK" ]]; then
-  # Check for non-ARCHIVED tasks (indicates active project)
-  ACTIVE_TASKS="$(grep -cE '^\- \[[ x]\] TASK-[0-9]+' "$TODO_CHECK" 2>/dev/null || true)"
+  # Check for non-ARCHIVED tasks (indicates active project).
+  # Covers all known task formats across projects:
+  #   canonical:  ## [TASK-001] or ### TASK-001
+  #   checkbox:   - [ ] TASK-001 or - [x] TASK-001
+  #   AKR-style:  #### AKR-01 —
+  #   phase-based: ### Phase N or ### Sprint-N
+  #   pending section: ## PENDING TASKS
+  ACTIVE_TASKS="$(grep -cE '^##+ \[?TASK-[0-9]+\]?|^\- \[[ x]\] TASK-[0-9]+|^#### [A-Z]+-[0-9]+|^### (Phase|Sprint)[- ][0-9]|^## PENDING TASKS' "$TODO_CHECK" 2>/dev/null || true)"
   if [[ "$ACTIVE_TASKS" -gt 0 ]]; then
     echo ""
     echo "=========================================="

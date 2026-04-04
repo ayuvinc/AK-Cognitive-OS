@@ -31,12 +31,39 @@ BOUNDARY_FLAG:
 
 ## TASK EXECUTION
 Reads: channel.md
-Writes: [AUDIT_LOG_PATH]
+Writes: [AUDIT_LOG_PATH] via MCP tool (primary) or direct file append (fallback)
 Checks/Actions:
 - Ensure audit file exists; create with header if missing.
-- Reject duplicate entry_id values.
+- Reject duplicate entry_id values (DUPLICATE_RUN_ID error from MCP server).
 - Append-only: never edit previous entries.
 - `event_type` must be from the exhaustive list in `schemas/audit-log-schema.md`.
+
+## PRIMARY PATH — MCP Audit Log Tool
+
+Call `mcp__ak-audit-log__append_audit_entry` with these fields:
+
+| Field | Required | Description |
+|---|---|---|
+| `run_id` | YES | Unique ID for this run (e.g. `audit-log-6-main-20260405T001000Z`) |
+| `agent` | YES | Persona/agent name (e.g. `Architect`, `QA`, `Junior Dev`) |
+| `status` | YES | Outcome status (e.g. `COMPLETE`, `QA_APPROVED`, `QA_REJECTED`, `FAILED`) |
+| `summary` | YES | One-line summary of what was done |
+| `timestamp_utc` | NO | ISO 8601 UTC timestamp — MCP server defaults to now if omitted |
+
+**Error: DUPLICATE_RUN_ID** — If the same `run_id` is submitted twice, the MCP server rejects the second call with `{"success": false, "error": "DUPLICATE_RUN_ID: ..."}`. Do not retry with the same run_id. Generate a new unique run_id if needed.
+
+**Error: WRITE_FAILED** — File system error. Check audit log path and permissions.
+
+## FALLBACK PATH — Direct File Append
+
+If the MCP tool is unavailable (MCP server not running, `mcp` package not installed), fall back to appending directly to the audit log file:
+
+```
+| {timestamp_utc} | {agent} | {status} | {run_id} | {summary} |
+```
+
+Append to the path resolved from `[AUDIT_LOG_PATH]` in `CLAUDE.md` (default: `tasks/audit-log.md`).
+Emit a warning on stderr: `WARN: MCP audit log unavailable — falling back to direct file append.`
 
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`

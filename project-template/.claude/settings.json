@@ -1,0 +1,72 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(npm run lint*)",
+      "Bash(npm run test*)",
+      "Bash(npm run build*)",
+      "Bash(npm run dev*)",
+      "Bash(python3 validators/*)",
+      "Bash(bash scripts/validate-framework.sh*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)"
+    ]
+  },
+  "hooks": {
+    "PreToolCall": [
+      {
+        "matcher": "Write|Edit",
+        "command": "bash scripts/hooks/guard-session-state.sh",
+        "description": "Blocks unauthorized writes to SESSION STATE in tasks/todo.md"
+      },
+      {
+        "matcher": "Write|Edit",
+        "command": "bash scripts/hooks/guard-persona-boundaries.sh",
+        "description": "Enforces persona CAN/CANNOT file-path restrictions"
+      },
+      {
+        "matcher": "Bash",
+        "command": "bash scripts/hooks/guard-git-push.sh",
+        "description": "Blocks git push to main unless Architect with QA_APPROVED"
+      }
+    ],
+    "PostToolCall": [
+      {
+        "matcher": "Bash",
+        "command": "bash scripts/hooks/auto-audit-log.sh",
+        "description": "Auto-appends audit entries after skill execution"
+      },
+      {
+        "matcher": ".*",
+        "command": "bash scripts/hooks/validate-envelope.sh",
+        "description": "Warns if skill output is missing required envelope fields"
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "command": "bash scripts/hooks/auto-persona-detect.sh",
+        "description": "Reads next-action.md and hints which persona to activate"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "bash scripts/hooks/session-integrity-check.sh",
+        "description": "Warns if session is still OPEN when exiting"
+      }
+    ]
+  }
+}

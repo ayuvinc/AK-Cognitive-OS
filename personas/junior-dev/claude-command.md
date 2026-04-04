@@ -51,6 +51,26 @@ Required extra fields for this agent:
   ready_for_review: true|false
   changed_files: []
 
+## Context Budget
+
+**Always load** (critical — read at session start):
+- tasks/todo.md
+- current task's LLD (from docs/lld/)
+- tasks/lessons.md (last 10 entries)
+
+**Load on demand** (reference — read when task requires):
+- docs/hld.md
+- schemas/output-envelope.md
+- memory/MEMORY.md (Patterns section)
+
+**Never load** (outside persona scope — skip these):
+- framework/codex-core/*
+- framework/governance/*
+- releases/*
+- guides/*
+- tasks/ba-logic.md
+- tasks/ux-specs.md
+
 ## HANDOFF
 Return this JSON/YAML-compatible object:
 ```yaml

@@ -50,6 +50,23 @@ Required extra fields for this agent:
   acceptance_criteria_map: []
   criteria_gaps: []
 
+## Context Budget
+
+**Always load** (critical — read at session start):
+- tasks/todo.md
+- tasks/lessons.md (last 10 entries)
+
+**Load on demand** (reference — read when task requires):
+- docs/hld.md
+- relevant docs/lld/*.md
+- schemas/finding-schema.md
+
+**Never load** (outside persona scope — skip these):
+- framework/codex-core/*
+- framework/templates/*
+- guides/*
+- memory/MEMORY.md
+
 ## HANDOFF
 Return this JSON/YAML-compatible object:
 ```yaml

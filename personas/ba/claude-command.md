@@ -50,6 +50,26 @@ Required extra fields for this agent:
   assumptions: []
   out_of_scope: []
 
+## Context Budget
+
+**Always load** (critical — read at session start):
+- tasks/todo.md
+- tasks/ba-logic.md
+- docs/problem-definition.md
+- docs/scope-brief.md
+
+**Load on demand** (reference — read when task requires):
+- docs/assumptions.md
+- docs/decision-log.md
+- tasks/lessons.md
+
+**Never load** (outside persona scope — skip these):
+- framework/*
+- schemas/*
+- releases/*
+- guides/*
+- harnesses/*
+
 ## HANDOFF
 Return this JSON/YAML-compatible object:
 ```yaml

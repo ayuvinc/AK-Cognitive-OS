@@ -36,14 +36,23 @@
       {
         "matcher": "Write|Edit",
         "hooks": [
-          {"type": "command", "command": "bash scripts/hooks/guard-session-state.sh"},
-          {"type": "command", "command": "bash scripts/hooks/guard-persona-boundaries.sh"}
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-session-state.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-persona-boundaries.sh"
+          }
         ]
       },
       {
         "matcher": "Bash",
         "hooks": [
-          {"type": "command", "command": "bash scripts/hooks/guard-git-push.sh"}
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-git-push.sh"
+          }
         ]
       }
     ],
@@ -51,22 +60,38 @@
       {
         "matcher": "Bash",
         "hooks": [
-          {"type": "command", "command": "bash scripts/hooks/auto-audit-log.sh"},
-          {"type": "command", "command": "bash scripts/hooks/validate-envelope.sh"}
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-audit-log.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/validate-envelope.sh"
+          }
         ]
       }
     ],
     "UserPromptSubmit": [
       {
         "hooks": [
-          {"type": "command", "command": "bash scripts/hooks/auto-persona-detect.sh"}
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-persona-detect.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-boundary-flags.sh"
+          }
         ]
       }
     ],
     "Stop": [
       {
         "hooks": [
-          {"type": "command", "command": "bash scripts/hooks/session-integrity-check.sh"}
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/session-integrity-check.sh"
+          }
         ]
       }
     ]
@@ -74,14 +99,18 @@
   "mcpServers": {
     "ak-state-machine": {
       "command": "python3",
-      "args": ["mcp-servers/state_machine_server.py"],
+      "args": [
+        "mcp-servers/state_machine_server.py"
+      ],
       "env": {
         "PROJECT_ROOT": "."
       }
     },
     "ak-audit-log": {
       "command": "python3",
-      "args": ["mcp-servers/audit_log_server.py"],
+      "args": [
+        "mcp-servers/audit_log_server.py"
+      ],
       "env": {
         "PROJECT_ROOT": ".",
         "AUDIT_LOG_PATH": "tasks/audit-log.md"

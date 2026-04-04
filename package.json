@@ -1,0 +1,49 @@
+{
+  "name": "ak-cognitive-os",
+  "version": "2.1.0",
+  "description": "Multi-persona AI development framework for Claude Code — structured software delivery with 27 personas, 15 skills, and native Claude Code enforcement hooks.",
+  "bin": {
+    "ak-cognitive-os": "./scripts/cli.sh",
+    "ak-cogos": "./scripts/cli.sh"
+  },
+  "scripts": {
+    "bootstrap": "bash scripts/bootstrap-project.sh",
+    "remediate": "bash scripts/remediate-project.sh",
+    "validate": "bash scripts/validate-framework.sh",
+    "install-commands": "bash scripts/install-claude-commands.sh"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai-development",
+    "multi-persona",
+    "development-framework",
+    "ai-orchestration",
+    "software-delivery"
+  ],
+  "author": "AK",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayuvinc/AK-Cognitive-OS.git"
+  },
+  "files": [
+    "personas/",
+    "skills/",
+    "schemas/",
+    "framework/",
+    "project-template/",
+    "scripts/",
+    "guides/",
+    "harnesses/",
+    "validators/",
+    "CLAUDE.md",
+    "ANTI-SYCOPHANCY.md",
+    "FRAMEWORK_FLOW.md",
+    "glossary.md",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

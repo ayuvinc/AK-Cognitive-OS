@@ -454,3 +454,53 @@ When all 31 gaps are closed:
 **Score: 2 PARTIAL, 1 BROKEN, 15 MISSING out of 18 features = ~11% coverage**
 
 To reach zero gap: all 18 rows must show COMPLETE.
+
+---
+
+## Implementation Status (Phase 1 — this commit)
+
+The following gaps have been **closed** in this commit:
+
+| Gap | What was built | Files |
+|-----|---------------|-------|
+| 1.1 | Session state write guard hook | `scripts/hooks/guard-session-state.sh` |
+| 1.3 | Auto audit log hook | `scripts/hooks/auto-audit-log.sh` |
+| 1.4 | Persona boundary enforcement hook | `scripts/hooks/guard-persona-boundaries.sh` |
+| 1.7 | Git push guard hook | `scripts/hooks/guard-git-push.sh` |
+| 2.1 | `.claude/settings.json` template | `project-template/.claude/settings.json` |
+| 2.2 | Settings local example | `project-template/.claude/settings.local.json.example` |
+| 2.3 | Persona permission profiles | Defined in `guard-persona-boundaries.sh` |
+| 2.4 | `.claudeignore` template | `project-template/.claudeignore` (updated) |
+| 6.1 | `memory/MEMORY.md` template | `project-template/memory/MEMORY.md` (updated) |
+| 7.2 | npm/npx distribution | `package.json` + `scripts/cli.sh` |
+| 7.3 | Active project remediation | `scripts/remediate-project.sh` (updated) |
+
+**Bootstrap updated:** `scripts/bootstrap-project.sh` now installs all of the above + sub-persona commands + hook scripts + post-bootstrap validation.
+
+**Remediation updated:** `scripts/remediate-project.sh` now adds Claude Code native integration to active projects (steps 6-9 added).
+
+**New CLI:** `npx ak-cognitive-os init|remediate|validate|install-commands`
+
+### Updated Feature Audit
+
+| Claude Code Feature | Status |
+|---|---|
+| `.claude/settings.json` | **COMPLETE** (template + bootstrap + remediate) |
+| `.claude/settings.local.json` | **COMPLETE** (example + gitignore) |
+| `.claudeignore` | **COMPLETE** (template + bootstrap + remediate) |
+| Hooks: `PreToolCall` | **COMPLETE** (3 hooks: session-state, persona-boundary, git-push) |
+| Hooks: `PostToolCall` | **COMPLETE** (1 hook: auto-audit-log) |
+| Memory persistence | **COMPLETE** (template created, broken reference fixed) |
+| Tool permission profiles | **COMPLETE** (per-persona in guard-persona-boundaries.sh) |
+| Plugin manifest (full) | PARTIAL (needs command registry) |
+| Hooks: `Notification` | REMAINING |
+| Hooks: `Stop` | REMAINING |
+| Hooks: `user-prompt-submit-hook` | REMAINING |
+| MCP Servers | REMAINING |
+| `$ARGUMENTS` in commands | REMAINING |
+| Agent SDK orchestration | REMAINING |
+| CLAUDE.md inheritance (subdirs) | REMAINING |
+| `.claude/commands/` slash commands | REMAINING (bootstrap installs all, but framework repo needs update) |
+| `CLAUDE.md` project instructions | REMAINING (framework repo still has template) |
+
+**Updated score: 7 COMPLETE, 2 PARTIAL, 9 REMAINING out of 18 = ~44% coverage (up from ~11%)**

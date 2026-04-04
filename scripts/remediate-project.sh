@@ -342,10 +342,143 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 6. Write .ak-cogos-version
+# 6. Claude Code native integration (settings, hooks, ignore, memory)
 # ---------------------------------------------------------------------------
 
-echo "--- Step 6: Version stamp ---"
+echo "--- Step 6: Claude Code native integration ---"
+
+TEMPLATE_DIR="${FRAMEWORK_DIR}/project-template"
+
+# .claude/settings.json
+SETTINGS_SRC="${TEMPLATE_DIR}/.claude/settings.json"
+if [[ -f "$SETTINGS_SRC" ]]; then
+  if [[ "$DRY_RUN" == false ]]; then
+    mkdir -p "${TARGET_DIR}/.claude"
+  fi
+  safe_copy "$SETTINGS_SRC" "${TARGET_DIR}/.claude/settings.json"
+fi
+
+# .claude/settings.local.json.example
+SETTINGS_LOCAL_SRC="${TEMPLATE_DIR}/.claude/settings.local.json.example"
+if [[ -f "$SETTINGS_LOCAL_SRC" ]]; then
+  safe_copy "$SETTINGS_LOCAL_SRC" "${TARGET_DIR}/.claude/settings.local.json.example"
+fi
+
+# .claudeignore
+CLAUDEIGNORE_SRC="${TEMPLATE_DIR}/.claudeignore"
+if [[ -f "$CLAUDEIGNORE_SRC" ]]; then
+  safe_copy "$CLAUDEIGNORE_SRC" "${TARGET_DIR}/.claudeignore"
+fi
+
+# memory/MEMORY.md
+MEMORY_SRC="${TEMPLATE_DIR}/memory/MEMORY.md"
+if [[ -f "$MEMORY_SRC" ]]; then
+  if [[ "$DRY_RUN" == false ]]; then
+    mkdir -p "${TARGET_DIR}/memory"
+  fi
+  safe_copy "$MEMORY_SRC" "${TARGET_DIR}/memory/MEMORY.md"
+fi
+
+# ANTI-SYCOPHANCY.md
+ANTI_SRC="${FRAMEWORK_DIR}/ANTI-SYCOPHANCY.md"
+if [[ -f "$ANTI_SRC" ]]; then
+  safe_copy "$ANTI_SRC" "${TARGET_DIR}/ANTI-SYCOPHANCY.md"
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 7. Install enforcement hook scripts
+# ---------------------------------------------------------------------------
+
+echo "--- Step 7: Enforcement hook scripts ---"
+
+HOOKS_SRC="${FRAMEWORK_DIR}/scripts/hooks"
+if [[ -d "$HOOKS_SRC" ]]; then
+  if [[ "$DRY_RUN" == false ]]; then
+    mkdir -p "${TARGET_DIR}/scripts/hooks"
+  fi
+  for hook_file in "${HOOKS_SRC}"/*.sh; do
+    [[ -f "$hook_file" ]] || continue
+    dst_hook="${TARGET_DIR}/scripts/hooks/$(basename "$hook_file")"
+    safe_copy "$hook_file" "$dst_hook"
+    if [[ "$DRY_RUN" == false ]]; then
+      chmod +x "$dst_hook" 2>/dev/null || true
+    fi
+  done
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 8. Install sub-persona commands (researcher-*, compliance-*)
+# ---------------------------------------------------------------------------
+
+echo "--- Step 8: Sub-persona commands ---"
+
+SUB_COUNT=0
+
+# Researcher sub-personas
+RESEARCHER_SUBS="${FRAMEWORK_DIR}/personas/researcher/sub-personas"
+if [[ -d "$RESEARCHER_SUBS" ]]; then
+  for sub_file in "${RESEARCHER_SUBS}"/*.md; do
+    [[ -f "$sub_file" ]] || continue
+    sub_name="researcher-$(basename "$sub_file" .md)"
+    dst_file="${COMMANDS_DIR}/${sub_name}.md"
+    safe_copy "$sub_file" "$dst_file"
+    SUB_COUNT=$((SUB_COUNT + 1))
+  done
+fi
+
+# Compliance sub-personas
+COMPLIANCE_SUBS="${FRAMEWORK_DIR}/personas/compliance/sub-personas"
+if [[ -d "$COMPLIANCE_SUBS" ]]; then
+  for sub_file in "${COMPLIANCE_SUBS}"/*.md; do
+    [[ -f "$sub_file" ]] || continue
+    [[ -d "$sub_file" ]] && continue
+    sub_name="compliance-$(basename "$sub_file" .md)"
+    dst_file="${COMMANDS_DIR}/${sub_name}.md"
+    safe_copy "$sub_file" "$dst_file"
+    SUB_COUNT=$((SUB_COUNT + 1))
+  done
+fi
+
+echo "  [ok] ${SUB_COUNT} sub-persona(s) processed"
+echo ""
+
+# ---------------------------------------------------------------------------
+# 9. Update .gitignore
+# ---------------------------------------------------------------------------
+
+echo "--- Step 9: .gitignore update ---"
+
+GITIGNORE="${TARGET_DIR}/.gitignore"
+if [[ -f "$GITIGNORE" ]]; then
+  if ! grep -q 'settings.local.json' "$GITIGNORE" 2>/dev/null; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would add] .claude/settings.local.json to .gitignore"
+    else
+      echo "" >> "$GITIGNORE"
+      echo "# Claude Code local settings (personal overrides, not committed)" >> "$GITIGNORE"
+      echo ".claude/settings.local.json" >> "$GITIGNORE"
+      echo "  [update] .gitignore — added settings.local.json exclusion"
+    fi
+    CHANGES=$((CHANGES + 1))
+  else
+    echo "  [ok] .gitignore already excludes settings.local.json"
+  fi
+else
+  echo "  [warn] No .gitignore found — settings.local.json may be committed accidentally"
+  WARNINGS+=("No .gitignore found")
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 10. Write .ak-cogos-version
+# ---------------------------------------------------------------------------
+
+echo "--- Step 10: Version stamp ---"
 
 VERSION_FILE="${TARGET_DIR}/.ak-cogos-version"
 
@@ -388,7 +521,17 @@ if [[ "$DRY_RUN" == true ]]; then
 else
   echo "  Mode:    LIVE"
 fi
+
+CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
+HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l)
+
 echo "  Changes: ${CHANGES}"
+echo ""
+echo "  Slash commands:   ${CMD_COUNT}"
+echo "  Hook scripts:     ${HOOK_COUNT}"
+echo "  Settings:         $([ -f "${TARGET_DIR}/.claude/settings.json" ] && echo 'installed' || echo 'MISSING')"
+echo "  Context filter:   $([ -f "${TARGET_DIR}/.claudeignore" ] && echo 'installed' || echo 'MISSING')"
+echo "  Memory:           $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo 'installed' || echo 'MISSING')"
 
 if [[ ${#WARNINGS[@]} -gt 0 ]]; then
   echo ""
@@ -403,6 +546,15 @@ echo ""
 if [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
 fi
+
+echo ""
+echo "Claude Code native integration checklist:"
+echo "  $([ -f "${TARGET_DIR}/.claude/settings.json" ] && echo '[x]' || echo '[ ]') .claude/settings.json — hooks + permissions"
+echo "  $([ -f "${TARGET_DIR}/.claudeignore" ] && echo '[x]' || echo '[ ]') .claudeignore — context window optimization"
+echo "  $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo '[x]' || echo '[ ]') memory/MEMORY.md — persistent project memory"
+echo "  $([ -d "${TARGET_DIR}/scripts/hooks" ] && echo '[x]' || echo '[ ]') scripts/hooks/ — enforcement hook scripts"
+echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]') ANTI-SYCOPHANCY.md — standing instruction"
+echo ""
 
 # ---------------------------------------------------------------------------
 # Mid-build detection

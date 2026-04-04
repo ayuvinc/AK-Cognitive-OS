@@ -475,6 +475,134 @@ if [[ -f "${FRAMEWORK_DIR}/framework/dual-stack-architecture.md" ]]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Install Claude Code native integration (settings, hooks, ignore, memory)
+# ---------------------------------------------------------------------------
+
+echo "Installing Claude Code native integration..."
+
+# .claude/settings.json
+SETTINGS_SRC="${TEMPLATE_DIR}/.claude/settings.json"
+if [[ -f "$SETTINGS_SRC" ]]; then
+  copy_file "$SETTINGS_SRC" "${TARGET_DIR}/.claude/settings.json"
+fi
+
+# .claude/settings.local.json.example
+SETTINGS_LOCAL_SRC="${TEMPLATE_DIR}/.claude/settings.local.json.example"
+if [[ -f "$SETTINGS_LOCAL_SRC" ]]; then
+  copy_file "$SETTINGS_LOCAL_SRC" "${TARGET_DIR}/.claude/settings.local.json.example"
+fi
+
+# .claudeignore
+CLAUDEIGNORE_SRC="${TEMPLATE_DIR}/.claudeignore"
+if [[ -f "$CLAUDEIGNORE_SRC" ]]; then
+  copy_file "$CLAUDEIGNORE_SRC" "${TARGET_DIR}/.claudeignore"
+fi
+
+# memory/MEMORY.md
+mkdir -p "${TARGET_DIR}/memory"
+MEMORY_SRC="${TEMPLATE_DIR}/memory/MEMORY.md"
+if [[ -f "$MEMORY_SRC" ]]; then
+  copy_file "$MEMORY_SRC" "${TARGET_DIR}/memory/MEMORY.md"
+  # Apply intake answers to MEMORY.md if interactive
+  if [[ "$INTERACTIVE" == true && -f "${TARGET_DIR}/memory/MEMORY.md" ]]; then
+    sed -i.bak "s|\[PROJECT_NAME\]|${PROJECT_NAME}|g" "${TARGET_DIR}/memory/MEMORY.md"
+    sed -i.bak "s|\[STACK\]|${TECH_STACK}|g" "${TARGET_DIR}/memory/MEMORY.md"
+    sed -i.bak "s|\[AK_COGOS_VERSION\]|${VERSION}|g" "${TARGET_DIR}/memory/MEMORY.md"
+    rm -f "${TARGET_DIR}/memory/MEMORY.md.bak"
+  fi
+fi
+
+# ANTI-SYCOPHANCY.md
+ANTI_SRC="${FRAMEWORK_DIR}/ANTI-SYCOPHANCY.md"
+if [[ -f "$ANTI_SRC" ]]; then
+  copy_file "$ANTI_SRC" "${TARGET_DIR}/ANTI-SYCOPHANCY.md"
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# Install hook scripts
+# ---------------------------------------------------------------------------
+
+echo "Installing enforcement hook scripts..."
+HOOKS_SRC="${FRAMEWORK_DIR}/scripts/hooks"
+mkdir -p "${TARGET_DIR}/scripts/hooks"
+
+if [[ -d "$HOOKS_SRC" ]]; then
+  for hook_file in "${HOOKS_SRC}"/*.sh; do
+    [[ -f "$hook_file" ]] || continue
+    dst_hook="${TARGET_DIR}/scripts/hooks/$(basename "$hook_file")"
+    copy_file "$hook_file" "$dst_hook"
+    chmod +x "$dst_hook" 2>/dev/null || true
+  done
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# Install sub-persona commands (researcher-*, compliance-*)
+# ---------------------------------------------------------------------------
+
+SUB_COUNT=0
+
+# Researcher sub-personas
+RESEARCHER_SUBS="${FRAMEWORK_DIR}/personas/researcher/sub-personas"
+if [[ -d "$RESEARCHER_SUBS" ]]; then
+  echo "Installing sub-persona commands..."
+  for sub_file in "${RESEARCHER_SUBS}"/*.md; do
+    [[ -f "$sub_file" ]] || continue
+    sub_name="researcher-$(basename "$sub_file" .md)"
+    dst_file="${TARGET_DIR}/.claude/commands/${sub_name}.md"
+    copy_file "$sub_file" "$dst_file"
+    SUB_COUNT=$((SUB_COUNT + 1))
+  done
+fi
+
+# Compliance sub-personas
+COMPLIANCE_SUBS="${FRAMEWORK_DIR}/personas/compliance/sub-personas"
+if [[ -d "$COMPLIANCE_SUBS" ]]; then
+  for sub_file in "${COMPLIANCE_SUBS}"/*.md; do
+    [[ -f "$sub_file" ]] || continue
+    # Skip jurisdictions directory files
+    [[ -d "$sub_file" ]] && continue
+    sub_name="compliance-$(basename "$sub_file" .md)"
+    dst_file="${TARGET_DIR}/.claude/commands/${sub_name}.md"
+    copy_file "$sub_file" "$dst_file"
+    SUB_COUNT=$((SUB_COUNT + 1))
+  done
+fi
+
+echo "  [ok] ${SUB_COUNT} sub-persona command(s)"
+echo ""
+
+# ---------------------------------------------------------------------------
+# Add .claude/settings.local.json to .gitignore
+# ---------------------------------------------------------------------------
+
+GITIGNORE="${TARGET_DIR}/.gitignore"
+if [[ -f "$GITIGNORE" ]]; then
+  if ! grep -q 'settings.local.json' "$GITIGNORE" 2>/dev/null; then
+    echo "" >> "$GITIGNORE"
+    echo "# Claude Code local settings (personal overrides, not committed)" >> "$GITIGNORE"
+    echo ".claude/settings.local.json" >> "$GITIGNORE"
+    echo "  [update]    .gitignore — added settings.local.json exclusion"
+  fi
+else
+  cat > "$GITIGNORE" <<'GITIGNORE_CONTENT'
+# Claude Code local settings (personal overrides, not committed)
+.claude/settings.local.json
+
+# Environment
+.env
+.env.*
+!.env.example
+GITIGNORE_CONTENT
+  echo "  [create]    .gitignore"
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # Write version stamp
 # ---------------------------------------------------------------------------
 
@@ -483,15 +611,60 @@ echo "  [create]    .ak-cogos-version (v${VERSION})"
 echo ""
 
 # ---------------------------------------------------------------------------
+# Post-bootstrap validation
+# ---------------------------------------------------------------------------
+
+echo "Running post-bootstrap validation..."
+VALIDATION_PASS=true
+
+# Check critical files exist
+for required in \
+  "CLAUDE.md" \
+  ".claude/commands/architect.md" \
+  ".claude/settings.json" \
+  ".claudeignore" \
+  "memory/MEMORY.md" \
+  "tasks/todo.md" \
+  "tasks/ba-logic.md" \
+  "tasks/ux-specs.md" \
+  "tasks/lessons.md" \
+  "tasks/next-action.md" \
+  "channel.md" \
+  "ANTI-SYCOPHANCY.md" \
+  "scripts/hooks/guard-session-state.sh" \
+  "scripts/hooks/guard-persona-boundaries.sh" \
+  "scripts/hooks/guard-git-push.sh"; do
+  if [[ ! -f "${TARGET_DIR}/${required}" ]]; then
+    echo "  [WARN] Missing: ${required}"
+    VALIDATION_PASS=false
+  fi
+done
+
+# Count commands installed
+CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
+
+if [[ "$VALIDATION_PASS" == true ]]; then
+  echo "  [PASS] All critical files present"
+else
+  echo "  [WARN] Some files missing — check output above"
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 
-TOTAL=$((INSTALLED + SKILL_COUNT))
+TOTAL=$((INSTALLED + SKILL_COUNT + SUB_COUNT))
 echo "=========================================="
 echo "  Bootstrap complete!"
 echo "=========================================="
 echo ""
-echo "  Commands installed: ${TOTAL} (${INSTALLED} personas + ${SKILL_COUNT} skills)"
+echo "  Slash commands:     ${CMD_COUNT} (${INSTALLED} personas + ${SUB_COUNT} sub-personas + ${SKILL_COUNT} skills)"
+echo "  Hook scripts:       $(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l)"
+echo "  Settings:           .claude/settings.json (hooks + permissions configured)"
+echo "  Context filter:     .claudeignore"
+echo "  Memory:             memory/MEMORY.md"
 echo "  Framework version:  v${VERSION}"
 echo ""
 echo "IMPORTANT: Do not start building until planning docs are confirmed."
@@ -502,15 +675,16 @@ if [[ "$INTERACTIVE" == false ]]; then
 else
   echo "  1. Review ${TARGET_DIR}/CLAUDE.md — intake answers have been applied."
 fi
-echo "  2. Open a Claude Code session from your project root:"
+echo "  2. Review .claude/settings.json — adjust permissions for your stack."
+echo "  3. Open a Claude Code session from your project root:"
 echo "       cd ${TARGET_DIR} && claude"
-echo "  3. Run discovery conversation to confirm problem + scope:"
+echo "  4. Run discovery conversation to confirm problem + scope:"
 echo "       /ba → confirm docs/problem-definition.md + docs/scope-brief.md"
-echo "  4. Run HLD conversation → confirm docs/hld.md:"
+echo "  5. Run HLD conversation → confirm docs/hld.md:"
 echo "       /architect → draft and confirm HLD"
-echo "  5. Create LLDs for first features → docs/lld/<feature>.md"
-echo "  6. Derive tasks into tasks/todo.md"
-echo "  7. Begin build"
+echo "  6. Create LLDs for first features → docs/lld/<feature>.md"
+echo "  7. Derive tasks into tasks/todo.md"
+echo "  8. Begin build"
 echo ""
 echo "Planning docs created (Status: draft):"
 echo "  docs/problem-definition.md  docs/scope-brief.md"
@@ -518,4 +692,11 @@ echo "  docs/hld.md                 docs/assumptions.md"
 echo "  docs/decision-log.md        docs/release-truth.md"
 echo "  docs/traceability-matrix.md docs/current-state.md"
 echo "  docs/lld/README.md          docs/lld/feature-template.md"
+echo ""
+echo "Claude Code native integration:"
+echo "  .claude/settings.json       — hooks + permissions active"
+echo "  .claudeignore               — context window optimized"
+echo "  memory/MEMORY.md            — persistent project memory"
+echo "  scripts/hooks/              — enforcement scripts installed"
+echo "  ANTI-SYCOPHANCY.md          — standing instruction active"
 echo ""

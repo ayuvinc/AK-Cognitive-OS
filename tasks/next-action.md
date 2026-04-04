@@ -6,17 +6,29 @@ AK pastes the COMMAND verbatim to start the next terminal.
 -->
 
 NEXT_PERSONA: Architect
-TASK:         Session closed — pick up TASK-011 through TASK-014
-CONTEXT:      Session 3 is closed. Treat TASK-006 through TASK-010 as complete. Current tree includes the Sprint 3 archive, 9 sub-persona command directories with `claude-command.md` plus companion `codex-prompt.md` and `schema.md` files, `skills/check-channel/claude-command.md` execution-contract updates, a new `designer` persona scaffold, and task-state cleanup in `tasks/todo.md`. Carry forward two review findings from the prior review pass before declaring the next batch done.
+TASK:         Phase 4 — Notification/Stop hook upgrades + Agent SDK integration
+CONTEXT:      Session 4 (Phase 3) is closed. Delivered: 2 MCP servers (state_machine_server.py,
+              audit_log_server.py), mcpServers config in both settings.json files, validate-envelope.sh
+              matcher tightened (.*→Bash|Task), validate-framework.sh extended to 16 checks,
+              Context Budget sections added to all 18 persona cards. Coverage: ~55% (10/18).
+              Phase 4 targets ~61% (11/18): Notification hooks, Stop hook improvements, Agent SDK work.
+              Two prior carry-forward items still open (see below).
 COMMAND:      /architect
 
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    TASK-011 to TASK-014
-BLOCKERS:      Repo-root validation is unavailable as configured. There is no root `package.json` or `tsconfig.json`, so `npm run build` fails with ENOENT and `npx tsc --noEmit` cannot validate a local TS project at repo root.
+NEXT_FOCUS:    Phase 4 — Notification hooks + Stop hook upgrades + Agent SDK
+BLOCKERS:      none
 CARRY_FORWARD:
-- Review finding 1: verify the `designer` persona is fully integrated into the framework command/install/validation path rather than only scaffolded in-tree.
-- Review finding 2: verify task/release/audit handoff conventions are consistent, because the working tree used `releases/session-3.md` while the requested closeout path expects `tasks/audit-log.md`.
-HANDOFF_NOTE:  Session closeout executed by Codex on 2026-04-02T16:20:19Z using the user-provided framing: T06-T10 complete, T11-T14 next, two review findings carried forward.
+- Carry-forward 1: Verify the designer persona is fully integrated into the framework
+  command/install/validation path (not only scaffolded in-tree).
+- Carry-forward 2: Verify task/release/audit handoff conventions are consistent —
+  working tree used releases/session-3.md while the requested closeout path expects
+  tasks/audit-log.md. One of these should be canonical.
+PHASE_4_SCOPE:
+- Gap 4.1: PostToolCall Notification hooks — surface structured warnings to user
+- Gap 4.2: Stop hook improvements — richer session integrity check output
+- Gap 3.x: Agent SDK integration — subagent dispatch via sdk, not just slash commands
+- Coverage target: ~61% (11/18 Claude Code native features)
 
 <!--
 COMMAND FORMAT — Architect writes one of these at session close:

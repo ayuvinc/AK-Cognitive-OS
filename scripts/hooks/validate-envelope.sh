@@ -45,4 +45,4 @@ if missing:
     print(f'See schemas/output-envelope.md for the required 10-field contract.', file=sys.stderr)
 
 sys.exit(0)
-" <<< "$INPUT"
+" <<< "$INPUT" 2>/dev/null || true

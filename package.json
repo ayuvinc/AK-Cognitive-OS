@@ -37,6 +37,8 @@
     "guides/",
     "harnesses/",
     "validators/",
+    ".claude-plugin/",
+    ".claude/",
     "CLAUDE.md",
     "ANTI-SYCOPHANCY.md",
     "FRAMEWORK_FLOW.md",

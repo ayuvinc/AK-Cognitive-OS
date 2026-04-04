@@ -163,4 +163,93 @@ echo "[OK] Planning guides present (11, 12)"
 
 echo "[OK] Validator suite present"
 
-echo "[PASS] Framework validation complete (9 checks)"
+# 10) Plugin manifest: settings path exists
+PLUGIN_JSON="${ROOT}/.claude-plugin/plugin.json"
+if [[ -f "$PLUGIN_JSON" ]]; then
+  PLUGIN_SETTINGS="$(python3 -c "
+import json
+with open('${PLUGIN_JSON}') as f:
+    d = json.load(f)
+print(d.get('settings', ''))
+" 2>/dev/null || echo "")"
+  if [[ -n "$PLUGIN_SETTINGS" ]]; then
+    [[ -f "${ROOT}/${PLUGIN_SETTINGS}" ]] || fail "Plugin manifest settings path does not exist: ${PLUGIN_SETTINGS} (declared in .claude-plugin/plugin.json)"
+    echo "[OK] Plugin manifest settings path exists: ${PLUGIN_SETTINGS}"
+  fi
+
+  # 11) Plugin manifest: all command files exist
+  MISSING_CMDS=0
+  while IFS= read -r cmd_file; do
+    [[ -z "$cmd_file" ]] && continue
+    if [[ ! -f "${ROOT}/${cmd_file}" ]]; then
+      echo "[FAIL] Plugin command file missing: ${cmd_file}"
+      MISSING_CMDS=$((MISSING_CMDS + 1))
+    fi
+  done < <(python3 -c "
+import json
+with open('${PLUGIN_JSON}') as f:
+    d = json.load(f)
+for cmd in d.get('commands', []):
+    print(cmd.get('file', ''))
+" 2>/dev/null || echo "")
+  [[ $MISSING_CMDS -eq 0 ]] || exit 1
+  echo "[OK] All plugin command files exist"
+fi
+
+# 12) package.json files list includes .claude-plugin/ and .claude/
+PACKAGE_JSON="${ROOT}/package.json"
+if [[ -f "$PACKAGE_JSON" ]]; then
+  python3 - <<PY || fail "package.json files list is missing .claude-plugin/ or .claude/ — run npm pack will omit native Claude Code assets"
+import json, sys
+with open('${PACKAGE_JSON}') as f:
+    d = json.load(f)
+files = d.get('files', [])
+missing = []
+if not any('.claude-plugin' in entry for entry in files):
+    missing.append('.claude-plugin/')
+if not any(entry.strip('/') == '.claude' for entry in files):
+    missing.append('.claude/')
+if missing:
+    print(f"[FAIL] package.json files missing: {missing}")
+    sys.exit(1)
+PY
+  echo "[OK] package.json files includes .claude-plugin/ and .claude/"
+fi
+
+# 13) Hook scripts referenced in .claude/settings.json all exist
+SETTINGS_JSON="${ROOT}/.claude/settings.json"
+if [[ -f "$SETTINGS_JSON" ]]; then
+  MISSING_HOOKS=0
+  while IFS= read -r hook_cmd; do
+    [[ -z "$hook_cmd" ]] && continue
+    hook_script="$(echo "$hook_cmd" | grep -oE 'scripts/hooks/[^ ]+\.sh' || echo "")"
+    [[ -z "$hook_script" ]] && continue
+    if [[ ! -f "${ROOT}/${hook_script}" ]]; then
+      echo "[FAIL] Hook script missing: ${hook_script}"
+      MISSING_HOOKS=$((MISSING_HOOKS + 1))
+    fi
+  done < <(python3 -c "
+import json
+with open('${SETTINGS_JSON}') as f:
+    d = json.load(f)
+hooks = d.get('hooks', {})
+for event_hooks in hooks.values():
+    for h in event_hooks:
+        print(h.get('command', ''))
+" 2>/dev/null || echo "")
+  [[ $MISSING_HOOKS -eq 0 ]] || exit 1
+  echo "[OK] All hook scripts referenced in .claude/settings.json exist"
+fi
+
+# 14) Bootstrap smoke check: project-template/ required files present
+for req_tmpl in \
+  "project-template/.claude/settings.json" \
+  "project-template/.claudeignore" \
+  "project-template/memory/MEMORY.md" \
+  "project-template/tasks/next-action.md"; do
+  [[ -f "${ROOT}/${req_tmpl}" ]] || fail "Missing required bootstrap template: ${req_tmpl}"
+done
+
+echo "[OK] project-template/ bootstrap files present"
+
+echo "[PASS] Framework validation complete (14 checks)"

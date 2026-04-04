@@ -35,6 +35,8 @@ ACTIVE="${ACTIVE_PERSONA:-}"
 # If no persona is set, remind the user
 if [[ -z "$ACTIVE" ]]; then
   echo "PERSONA HINT: next-action.md expects persona '${EXPECTED_PERSONA}'. Run /${EXPECTED_PERSONA} to activate." >&2
+elif [[ "$ACTIVE" != "$EXPECTED_PERSONA" ]]; then
+  echo "PERSONA MISMATCH: Active persona is '${ACTIVE}' but next-action.md expects '${EXPECTED_PERSONA}'. Run /${EXPECTED_PERSONA} to switch." >&2
 fi
 
 exit 0

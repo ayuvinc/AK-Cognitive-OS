@@ -217,8 +217,8 @@ if [[ "$INTERACTIVE" == true && -f "${TARGET_DIR}/CLAUDE.md" ]]; then
   sed -i.bak "s|\[AUDIT_LOG_PATH\]|${AUDIT_LOG_PATH}|g" "${TARGET_DIR}/CLAUDE.md"
   rm -f "${TARGET_DIR}/CLAUDE.md.bak"
 
-  # Append intake summary if risk level was provided
-  if [[ -n "$RISK_LEVEL" ]]; then
+  # Append intake summary if risk level was provided (idempotent — skip if already present)
+  if [[ -n "$RISK_LEVEL" ]] && ! grep -q "## Intake Summary" "${TARGET_DIR}/CLAUDE.md" 2>/dev/null; then
     cat >> "${TARGET_DIR}/CLAUDE.md" <<EOF
 
 ---

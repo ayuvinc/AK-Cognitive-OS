@@ -47,8 +47,8 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
-10. Update SESSION STATE in tasks/todo.md: Status=CLOSED, Active task=none, Active persona=none, Last updated=Session N close.
-11. Validate SESSION STATE is now CLOSED before emitting PASS. If Status≠CLOSED after write → BLOCKED with SESSION_STATE_VIOLATION.
+10. Call `mcp__ak-state-machine__transition_session(to_state="CLOSED")`. If `result.success` is false, emit BLOCKED with `SESSION_STATE_VIOLATION` and `result.error`. The MCP server updates Last updated automatically on transition.
+11. Call `mcp__ak-state-machine__get_session_state()` and verify `status == "CLOSED"` — BLOCKED with `SESSION_STATE_VIOLATION` if not.
 
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`

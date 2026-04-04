@@ -2,6 +2,7 @@
 name: handoff-validator
 description: Validate QA/Architect handoff completeness — checks acceptance criteria, open boundary flags, and security sign-off before build starts.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /handoff-validator

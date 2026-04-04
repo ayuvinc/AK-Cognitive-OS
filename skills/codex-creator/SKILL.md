@@ -2,6 +2,7 @@
 name: codex-creator
 description: Implement approved review conditions in Reviewer+Creator mode. Fixes S1/S2 findings only — escalates S0.
 tools: Read, Write, Glob, Grep
+role_class: advisory_meta_skill
 ---
 
 # /codex-creator

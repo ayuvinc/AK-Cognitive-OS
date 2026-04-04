@@ -41,6 +41,17 @@ Output format in channel:
 - Final line: `Updated verdict: READY_TO_RUN | READY_WITH_CONDITIONS | STILL_BLOCKED`
 - If conditional/blocked: list only required pre-start actions.
 
+Validation contracts:
+- Required status enum: `PASS|FAIL|BLOCKED`
+- Required envelope fields:
+  - `run_id`, `agent`, `origin`, `status`, `timestamp_utc`, `summary`, `failures[]`, `warnings[]`, `artifacts_written[]`, `next_action`
+- Missing envelope field => `BLOCKED` with `SCHEMA_VIOLATION`
+- Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
+
+Required extra fields for this agent:
+  finding_statuses: []
+  verdict: READY_TO_RUN|READY_WITH_CONDITIONS|STILL_BLOCKED
+
 ## HANDOFF TEMPLATE
 ```yaml
 run_id: "codex-delta-verify-{timestamp}"

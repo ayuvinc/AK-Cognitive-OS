@@ -61,6 +61,11 @@ Validation contracts:
 - Missing extra field => `BLOCKED` with `MISSING_EXTRA_FIELD`
 - Missing input => `BLOCKED` with `MISSING_INPUT`
 
+Required extra fields for this agent:
+  extra_fields: none
+  # check-channel is read-only and produces no structured extra fields beyond the envelope.
+  # All output is inline in the CHANNEL STATUS summary block.
+
 ## HANDOFF
 Return this YAML envelope:
 ```yaml
@@ -74,6 +79,7 @@ failures: []
 warnings: []
 artifacts_written: []
 next_action: "<what AK should do next>"
+extra_fields: none
 ```
 
 ## BOUNDARY_FLAG

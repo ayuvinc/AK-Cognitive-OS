@@ -2,6 +2,7 @@
 name: compact-session
 description: Compress context mid-session by reading current state and writing a compact checkpoint to tasks/todo.md. Does not close the session.
 tools: Read, Write, Bash, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /compact-session

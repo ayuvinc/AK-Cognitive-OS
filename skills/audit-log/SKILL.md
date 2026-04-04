@@ -2,6 +2,7 @@
 name: audit-log
 description: Append a structured, timestamped audit event to the project audit log. Called by other agents after completing work.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /audit-log

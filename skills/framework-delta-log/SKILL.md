@@ -2,6 +2,7 @@
 name: framework-delta-log
 description: Analyze audit log for recurring failures and propose actionable framework improvements to prevent repeat issues.
 tools: Read, Write, Glob, Grep
+role_class: advisory_meta_skill
 ---
 
 # /framework-delta-log

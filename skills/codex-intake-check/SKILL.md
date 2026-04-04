@@ -2,6 +2,7 @@
 name: codex-intake-check
 description: Gate Codex review until all required packet artifacts (sprint summary, criteria map, test evidence, security sign-off) are complete.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /codex-intake-check

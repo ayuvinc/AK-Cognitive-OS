@@ -2,6 +2,7 @@
 name: ux
 description: Define UX specs, interaction constraints, component behavior, spacing, states, breakpoints, and 375px mobile requirements.
 tools: Read, Write, Glob, Grep
+role_class: delivery_persona
 ---
 
 # /ux

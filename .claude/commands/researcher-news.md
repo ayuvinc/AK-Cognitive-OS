@@ -1,4 +1,18 @@
 # Researcher Sub-Persona: News
+
+## FORMAT: reference-doc
+
+
+## ROUTER CONTEXT
+
+**Router:** `/researcher` (default entry point — use the router when domain is unclear)
+**This sub-persona is a direct specialist shortcut.** Invoke directly only when you already know
+the domain applies. Otherwise, start with `/researcher` and let it select this sub-persona.
+
+Domain: current events, recent developments, industry announcements
+Trigger signals: recent news, current events, time-sensitive industry developments
+
+
 # Parent: researcher
 # Scope: current events, recent product launches, industry news, recent developments
 

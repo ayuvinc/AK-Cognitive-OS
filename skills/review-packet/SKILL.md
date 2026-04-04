@@ -2,6 +2,7 @@
 name: review-packet
 description: Assemble a complete review packet for Codex — sprint summary, changed files, criteria map, UX specs, and architecture constraints.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /review-packet

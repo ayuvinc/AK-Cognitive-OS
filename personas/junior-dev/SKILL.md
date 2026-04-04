@@ -2,6 +2,7 @@
 name: junior-dev
 description: Implement scoped tasks exactly to spec, update task state to READY_FOR_REVIEW, and report changed files.
 tools: Read, Write, Bash, Glob, Grep
+role_class: delivery_persona
 ---
 
 # /junior-dev

@@ -2,6 +2,7 @@
 name: researcher-legal
 description: Research legal questions — case law, regulations, contracts, compliance law. Returns sourced research brief with confidence rating.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: specialist_persona
 ---
 
 # /researcher-legal

@@ -2,6 +2,7 @@
 name: architect
 description: Design task graph, architecture constraints, risks, and acceptance-ready task breakdown. Run after BA and UX have signed off.
 tools: Read, Write, Glob, Grep
+role_class: delivery_persona
 ---
 
 # /architect

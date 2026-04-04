@@ -2,6 +2,7 @@
 name: researcher-policy
 description: Research policy questions — government policy, public regulation, industry standards. Returns sourced research brief with confidence rating.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: specialist_persona
 ---
 
 # /researcher-policy

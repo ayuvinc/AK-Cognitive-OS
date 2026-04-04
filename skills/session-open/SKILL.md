@@ -2,6 +2,7 @@
 name: session-open
 description: Generate a 3-line standup from session context (done/next/blockers). Run at the start of every session.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /session-open

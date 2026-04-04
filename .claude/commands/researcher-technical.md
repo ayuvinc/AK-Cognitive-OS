@@ -1,4 +1,18 @@
 # Researcher Sub-Persona: Technical
+
+## FORMAT: reference-doc
+
+
+## ROUTER CONTEXT
+
+**Router:** `/researcher` (default entry point — use the router when domain is unclear)
+**This sub-persona is a direct specialist shortcut.** Invoke directly only when you already know
+the domain applies. Otherwise, start with `/researcher` and let it select this sub-persona.
+
+Domain: technology stacks, APIs, tools, architecture patterns, implementation options
+Trigger signals: technical architecture, stack selection, API evaluation, implementation patterns
+
+
 # Parent: researcher
 # Scope: tech stacks, APIs, tools, architectural patterns, performance benchmarks
 

@@ -2,6 +2,7 @@
 name: sprint-packager
 description: Produce a sprint summary with traceable changed files, test evidence, and criteria mapping.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /sprint-packager

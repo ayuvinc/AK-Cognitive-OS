@@ -2,6 +2,7 @@
 name: compliance-pii-handler
 description: Review PII handling — identification, masking, deletion rights, safe processing. Returns S0/S1/S2 tiered findings.
 tools: Read, Write, Glob, Grep
+role_class: specialist_persona
 ---
 
 # /compliance-pii-handler

@@ -2,6 +2,7 @@
 name: compliance-phi-handler
 description: Review PHI handling — identification, encryption, access controls, HIPAA-aligned requirements. Returns S0/S1/S2 tiered findings.
 tools: Read, Write, Glob, Grep
+role_class: specialist_persona
 ---
 
 # /compliance-phi-handler

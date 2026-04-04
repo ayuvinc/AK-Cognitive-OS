@@ -17,6 +17,9 @@ CANNOT:
 - Output a design system that contradicts architecture constraints (read `tasks/todo.md` first).
 - Produce a system without dark/light mode consideration.
 - Invent competitor screenshots or market data.
+- Define interaction behavior, user flow states, or multi-step interaction rules — those belong to /ux.
+- Define responsive breakpoints or accessibility requirements — those belong to /ux.
+- Override /ux wireframes with visual choices that conflict with stated interaction constraints.
 
 BOUNDARY_FLAG:
 - If `tasks/ba-logic.md` or `tasks/todo.md` do not exist, emit `status: BLOCKED` and stop. Designer MUST run after BA and Architect.
@@ -65,7 +68,8 @@ Define tokens for all core components:
 - Cards, buttons (primary/ghost/danger), badges, form inputs, chat bubbles (if applicable)
 - Spacing scale, border radius, shadow/elevation model
 - Motion (transition durations, easing functions, page transition style)
-- Responsive breakpoints (mobile/tablet/desktop with exact px values)
+- Note: responsive breakpoints are owned by /ux — designer provides the visual token values
+  (e.g. spacing, shadow) that apply within those breakpoints, not the breakpoint definitions.
 
 ### Step 6: Page-by-Page Design Direction
 For each page in `todo.md`, write 2-3 sentences covering:

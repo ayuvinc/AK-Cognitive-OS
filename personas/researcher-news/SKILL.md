@@ -2,6 +2,7 @@
 name: researcher-news
 description: Research current events and recent industry developments. Returns sourced research brief with recency-aware confidence rating.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: specialist_persona
 ---
 
 # /researcher-news

@@ -2,6 +2,7 @@
 name: check-channel
 description: Read channel.md and surface all unactioned items, open verdicts, and pending responses needing attention.
 tools: Read, Glob, Grep
+role_class: advisory_meta_skill
 ---
 
 # /check-channel

@@ -6,11 +6,16 @@ Get a new project running with full Claude + Codex role parity in 15 minutes.
 
 ## What You're Setting Up
 
-- 7 personas (Architect, BA, UI/UX, Junior Dev, QA, Researcher, Compliance)
-- 15 skills (session lifecycle, sprint packaging, Codex handoff, security, QA, audit)
+- **6 delivery personas**: Architect, BA, UX, Designer, Junior Dev, QA
+- **2 router personas**: Researcher (5 specialists), Compliance (4 specialists)
+- **12 mechanical skills**: session lifecycle, gating, CI/QA execution, security sweep, sprint packaging
+- **4 advisory/meta skills**: framework health, lessons, delta tracking, Codex scaffolding
 - Structured output contracts for every agent
 - An audit trail that persists across sessions
 - Optional Codex review integration
+
+> **New to the framework?** Every persona and skill has a `role_class` — understand the five classes before building:
+> [`docs/role-taxonomy.md`](docs/role-taxonomy.md)
 
 ---
 

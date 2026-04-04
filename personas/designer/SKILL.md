@@ -2,6 +2,7 @@
 name: designer
 description: Define brand identity, select UI libraries, and produce a design system document that the /ux agent consumes.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: delivery_persona
 ---
 
 # /designer

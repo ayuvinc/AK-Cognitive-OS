@@ -22,18 +22,25 @@ Both Claude and Codex are supported. The framework runs in three modes: `COMBINE
 
 ## The Team
 
-Personas and skills are defined in `personas/` and `skills/` — see directory listing for the full set.
+Personas and skills are defined in `personas/` and `skills/`. Every artifact belongs to one of five classes — see [`docs/role-taxonomy.md`](docs/role-taxonomy.md) for the full classification table and routing logic.
 
-**Core personas:**
+**Delivery personas** — own named roles in the delivery chain:
 | Command | Persona | Job |
 |---|---|---|
 | `/architect` | Architect | System design, task definition, constraints |
 | `/ba` | Business Analyst | Requirements, business logic, edge cases |
-| `/ux` | UX Designer | UX specs, interaction constraints, mobile |
+| `/ux` | UX Designer | Interaction behavior, states, breakpoints, accessibility |
+| `/designer` | Designer | Visual direction, brand, component look-and-feel |
 | `/junior-dev` | Junior Developer | Implementation, exact scope only |
-| `/qa` | QA Engineer | Acceptance criteria, quality gate |
-| `/researcher` | Researcher | Sourced research briefs (5 sub-personas) |
-| `/compliance` | Compliance Reviewer | S0/S1/S2 compliance gate |
+| `/qa` | QA Engineer | Acceptance criteria design, quality intent gate |
+
+**Router personas** — default entry points that delegate to specialists:
+| Command | Delegates to |
+|---|---|
+| `/researcher` | researcher-business, researcher-legal, researcher-news, researcher-policy, researcher-technical |
+| `/compliance` | compliance-data-privacy, compliance-data-security, compliance-phi-handler, compliance-pii-handler |
+
+**Skills** — mechanical (session lifecycle, gating, CI checks) and advisory/meta (framework health). Full list: [`docs/role-taxonomy.md`](docs/role-taxonomy.md).
 
 ---
 

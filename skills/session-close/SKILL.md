@@ -2,6 +2,7 @@
 name: session-close
 description: Enforce definition-of-done, commit all changes, and close the session. Run at the end of every session.
 tools: Read, Write, Bash, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /session-close

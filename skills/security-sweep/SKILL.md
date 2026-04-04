@@ -2,6 +2,7 @@
 name: security-sweep
 description: Evaluate security controls and abuse boundaries per task using 8 security questions (auth, data boundaries, PII, audit logging, injection, replay, rate limits, client-trusted IDs).
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /security-sweep

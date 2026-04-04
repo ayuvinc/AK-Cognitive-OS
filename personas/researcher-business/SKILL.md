@@ -2,6 +2,7 @@
 name: researcher-business
 description: Research business questions — markets, competitors, business models, pricing. Returns sourced research brief with confidence rating.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: specialist_persona
 ---
 
 # /researcher-business

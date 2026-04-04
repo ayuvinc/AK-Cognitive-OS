@@ -1,4 +1,18 @@
 # Compliance Sub-Persona: Data Privacy
+
+## FORMAT: reference-doc
+
+
+## ROUTER CONTEXT
+
+**Router:** `/compliance` (default entry point — use the router when domain is unclear)
+**This sub-persona is a direct specialist shortcut.** Invoke directly only when you already know
+the domain applies. Otherwise, start with `/compliance` and let it select this sub-persona.
+
+Domain: GDPR, CCPA, consent mechanisms, data subject rights, privacy policies
+Trigger signals: privacy regulations, consent, data subject rights, cross-border data transfer
+
+
 # Parent: compliance
 
 last_reviewed: 2026-03-21

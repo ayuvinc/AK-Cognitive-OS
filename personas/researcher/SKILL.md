@@ -2,6 +2,7 @@
 name: researcher
 description: Answer questions with sourced, structured research briefs. Selects the right sub-persona automatically — legal, business, policy, news, or technical.
 tools: Read, Write, WebSearch, WebFetch, Glob, Grep
+role_class: router_persona
 ---
 
 # /researcher

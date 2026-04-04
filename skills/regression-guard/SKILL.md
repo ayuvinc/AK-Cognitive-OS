@@ -2,6 +2,7 @@
 name: regression-guard
 description: Run regression checks before code review — test suite, build, lint, and policy checks (no :any types, no env vars in components).
 tools: Read, Write, Bash, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /regression-guard

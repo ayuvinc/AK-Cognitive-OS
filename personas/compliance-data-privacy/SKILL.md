@@ -2,6 +2,7 @@
 name: compliance-data-privacy
 description: Review work for data privacy compliance — GDPR, CCPA, consent mechanisms, data retention, user rights. Returns S0/S1/S2 tiered findings.
 tools: Read, Write, Glob, Grep
+role_class: specialist_persona
 ---
 
 # /compliance-data-privacy

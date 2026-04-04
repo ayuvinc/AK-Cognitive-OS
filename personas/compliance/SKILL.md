@@ -2,6 +2,7 @@
 name: compliance
 description: Review work for legal, regulatory, and data handling compliance with S0/S1/S2 severity tiers. S0 = hard block, S1 = AK decision required, S2 = defer.
 tools: Read, Write, Glob, Grep
+role_class: router_persona
 ---
 
 # /compliance

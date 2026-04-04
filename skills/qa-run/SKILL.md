@@ -2,6 +2,7 @@
 name: qa-run
 description: Run post-review QA checks — test suite, build, lint, and per-criterion pass/fail including 375px mobile validation.
 tools: Read, Write, Bash, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /qa-run

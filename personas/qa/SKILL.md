@@ -2,6 +2,7 @@
 name: qa
 description: Define and enforce acceptance criteria quality before and after build. Rejects ambiguous or non-testable criteria.
 tools: Read, Write, Glob, Grep
+role_class: delivery_persona
 ---
 
 # /qa

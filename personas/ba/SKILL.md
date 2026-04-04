@@ -2,6 +2,7 @@
 name: ba
 description: Produce business logic and requirement detail for new features — user outcomes, acceptance intent, edge cases, and out-of-scope items.
 tools: Read, Write, Glob, Grep
+role_class: delivery_persona
 ---
 
 # /ba

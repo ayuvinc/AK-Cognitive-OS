@@ -288,4 +288,7 @@ for f in persona_cards:
 print(f"[OK] Context Budget sections present in all {len(persona_cards)} persona cards")
 PY
 
-echo "[PASS] Framework validation complete (16 checks)"
+# 17) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
+ROOT="$ROOT" bash "${ROOT}/scripts/validate-contracts.sh"
+
+echo "[PASS] Framework validation complete (16 structural checks + semantic lint)"

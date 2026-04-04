@@ -2,6 +2,7 @@
 name: researcher-technical
 description: Research technical questions — tech stacks, APIs, libraries, architecture patterns. Returns sourced research brief with comparison tables where applicable.
 tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+role_class: specialist_persona
 ---
 
 # /researcher-technical

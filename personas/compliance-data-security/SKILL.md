@@ -2,6 +2,7 @@
 name: compliance-data-security
 description: Review work for data security compliance — encryption, access control, authentication boundaries. Returns S0/S1/S2 tiered findings.
 tools: Read, Write, Glob, Grep
+role_class: specialist_persona
 ---
 
 # /compliance-data-security

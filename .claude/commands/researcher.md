@@ -84,6 +84,24 @@ confidence_note: [why — e.g. "limited primary sources" or "multiple corroborat
 [one sentence — what the Architect or BA should do with this]
 ```
 
+## ROUTING
+
+**`/researcher` is the default entry point for all research requests.**
+Use it when the domain is unclear or spans multiple areas. The router selects the correct
+specialist. If you already know the exact lane, you may invoke the sub-persona directly.
+
+| Signal in the request | Route to |
+|---|---|
+| Market size, competitors, pricing, business models, unit economics | `/researcher-business` |
+| Regulations, case law, contracts, jurisdictional compliance, legal risk | `/researcher-legal` |
+| Current events, recent news, industry announcements, recent developments | `/researcher-news` |
+| Government policy, public regulation, internal governance standards | `/researcher-policy` |
+| Technology stacks, APIs, tools, architecture patterns, implementation options | `/researcher-technical` |
+| Unclear / spans multiple domains | Stay at `/researcher` — router resolves the lane |
+
+**Sub-personas are specialist shortcuts, not replacements for the router.** When in doubt, start
+with `/researcher`. The router will activate the correct sub-persona based on the question type.
+
 ## HANDOFF
 Return this JSON/YAML-compatible object:
 ```yaml

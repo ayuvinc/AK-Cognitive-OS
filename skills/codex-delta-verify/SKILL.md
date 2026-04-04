@@ -2,6 +2,7 @@
 name: codex-delta-verify
 description: Verify claimed framework fixes against actual source files and append a verdict (READY_TO_RUN/READY_WITH_CONDITIONS/STILL_BLOCKED) to channel.md.
 tools: Read, Write, Glob, Grep
+role_class: mechanical_skill
 ---
 
 # /codex-delta-verify

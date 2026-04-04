@@ -84,6 +84,24 @@ Required extra fields for this agent:
   sub_personas_activated: []
   ak_decision_required: true|false
 
+## ROUTING
+
+**`/compliance` is the default entry point for all compliance review requests.**
+Use it when the regulatory scope is unclear or when multiple domains may apply. The router
+activates the relevant sub-persona(s). If you already know the exact regulation or data type,
+you may invoke the sub-persona directly.
+
+| Signal in the request | Route to |
+|---|---|
+| GDPR, CCPA, consent mechanisms, data subject rights, privacy policy | `/compliance-data-privacy` |
+| Encryption, access control, audit logging, secrets, breach response (compliance lens) | `/compliance-data-security` |
+| HIPAA, health data, PHI storage or transmission, covered entities | `/compliance-phi-handler` |
+| PII identification, classification, retention, handling rules | `/compliance-pii-handler` |
+| Multiple regulations apply / scope unclear | Stay at `/compliance` — router activates relevant sub-personas |
+
+**Sub-personas are specialist shortcuts, not replacements for the router.** Multiple sub-personas
+may activate in a single `/compliance` run when the scope spans more than one regulation.
+
 ## ADVISORY DISCLAIMER
 
 All compliance findings are framework references, not legal advice.

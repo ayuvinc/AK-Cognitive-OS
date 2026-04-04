@@ -5,6 +5,16 @@
 # Called by Claude Code before Write/Edit tool calls.
 # Receives tool call info via stdin as JSON.
 #
+# MCP IS THE PRIMARY PATH for SESSION STATE transitions.
+# session-open and session-close call mcp__ak-state-machine__transition_session
+# directly — those writes bypass this hook entirely (MCP tool calls are not
+# intercepted by Write/Edit PreToolCall hooks).
+#
+# This guard is DEFENSE-IN-DEPTH: it blocks any direct Edit/Write to
+# tasks/todo.md that touches SESSION STATE without going through the MCP
+# server. In normal workflow this guard should never fire — it exists to
+# catch accidental direct file edits only.
+#
 # Environment:
 #   ACTIVE_SKILL — set by session-open/session-close skills (or empty)
 #

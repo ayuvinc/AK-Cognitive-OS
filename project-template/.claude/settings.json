@@ -58,13 +58,17 @@
       {
         "matcher": "Bash|Task",
         "command": "bash scripts/hooks/validate-envelope.sh",
-        "description": "Warns if skill output is missing required envelope fields. Fires only on Bash/Task tool calls (skill invocations) — Read/Write/Glob/Grep don't produce envelopes. Skips if fewer than 3 envelope keywords detected (matches < 3 heuristic)."
+        "description": "Warns if skill output is missing required envelope fields. Fires only on Bash/Task tool calls (skill invocations) \u2014 Read/Write/Glob/Grep don't produce envelopes. Skips if fewer than 3 envelope keywords detected (matches < 3 heuristic)."
       }
     ],
     "UserPromptSubmit": [
       {
         "command": "bash scripts/hooks/auto-persona-detect.sh",
         "description": "Reads next-action.md and hints which persona to activate"
+      },
+      {
+        "command": "bash scripts/hooks/guard-boundary-flags.sh",
+        "description": "Warns when unresolved BOUNDARY_FLAG entries exist in tasks/todo.md"
       }
     ],
     "Stop": [
@@ -77,14 +81,18 @@
   "mcpServers": {
     "ak-state-machine": {
       "command": "python3",
-      "args": ["mcp-servers/state_machine_server.py"],
+      "args": [
+        "mcp-servers/state_machine_server.py"
+      ],
       "env": {
         "PROJECT_ROOT": "."
       }
     },
     "ak-audit-log": {
       "command": "python3",
-      "args": ["mcp-servers/audit_log_server.py"],
+      "args": [
+        "mcp-servers/audit_log_server.py"
+      ],
       "env": {
         "PROJECT_ROOT": ".",
         "AUDIT_LOG_PATH": "tasks/audit-log.md"

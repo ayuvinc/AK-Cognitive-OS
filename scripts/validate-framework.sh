@@ -252,4 +252,40 @@ done
 
 echo "[OK] project-template/ bootstrap files present"
 
-echo "[PASS] Framework validation complete (14 checks)"
+# 15) MCP server files must exist
+MCP_FILES=(
+  "mcp-servers/state_machine_server.py"
+  "mcp-servers/audit_log_server.py"
+  "mcp-servers/requirements.txt"
+)
+for mcp_file in "${MCP_FILES[@]}"; do
+  [[ -f "${ROOT}/${mcp_file}" ]] || fail "Missing MCP server file: ${mcp_file}"
+done
+
+echo "[OK] MCP server files present (state_machine_server.py, audit_log_server.py, requirements.txt)"
+
+# 16) Context budgets: every persona card must have ## Context Budget + 3 subsections
+ROOT="$ROOT" python3 - <<'PY'
+from pathlib import Path
+import os, sys
+
+root = Path(os.environ["ROOT"])
+persona_cards = sorted(root.glob("personas/*/claude-command.md"))
+
+REQUIRED_BUDGET_HEADER = "## Context Budget"
+REQUIRED_SUBSECTIONS = ["Always load", "Load on demand", "Never load"]
+
+for f in persona_cards:
+    text = f.read_text(encoding="utf-8")
+    if REQUIRED_BUDGET_HEADER not in text:
+        print(f"[FAIL] Missing '## Context Budget' section in {f}")
+        sys.exit(1)
+    missing_sub = [s for s in REQUIRED_SUBSECTIONS if s not in text]
+    if missing_sub:
+        print(f"[FAIL] Missing Context Budget subsections {missing_sub} in {f}")
+        sys.exit(1)
+
+print(f"[OK] Context Budget sections present in all {len(persona_cards)} persona cards")
+PY
+
+echo "[PASS] Framework validation complete (16 checks)"

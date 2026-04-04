@@ -75,6 +75,15 @@ Required extra fields for this agent:
   sub_personas_activated: ["data-security"]
   ak_decision_required: false
 
+
+## Context Budget
+
+| Category | Files |
+|---|---|
+| Always load | `CLAUDE.md`, `tasks/todo.md`, `tasks/next-action.md` |
+| Load on demand | `tasks/ba-logic.md`, `tasks/ux-specs.md`, `tasks/lessons.md` |
+| Never load | `releases/`, `guides/`, large generated files |
+
 ## HANDOFF
 ```yaml
 run_id: "compliance-data-security-{session_id}-{timestamp}"

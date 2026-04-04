@@ -16,7 +16,12 @@
       "Bash(npm run build*)",
       "Bash(npm run dev*)",
       "Bash(python3 validators/*)",
-      "Bash(bash scripts/validate-framework.sh*)"
+      "Bash(bash scripts/validate-framework.sh*)",
+      "mcp__ak-state-machine__get_session_state",
+      "mcp__ak-state-machine__transition_session",
+      "mcp__ak-state-machine__set_active_persona",
+      "mcp__ak-audit-log__append_audit_entry",
+      "mcp__ak-audit-log__get_recent_entries"
     ],
     "deny": [
       "Bash(rm -rf *)",
@@ -51,9 +56,9 @@
         "description": "Auto-appends audit entries after skill execution"
       },
       {
-        "matcher": ".*",
+        "matcher": "Bash|Task",
         "command": "bash scripts/hooks/validate-envelope.sh",
-        "description": "Warns if skill output is missing required envelope fields"
+        "description": "Warns if skill output is missing required envelope fields. Fires only on Bash/Task tool calls (skill invocations) — Read/Write/Glob/Grep don't produce envelopes. Skips if fewer than 3 envelope keywords detected (matches < 3 heuristic)."
       }
     ],
     "UserPromptSubmit": [
@@ -68,5 +73,22 @@
         "description": "Warns if session is still OPEN when exiting"
       }
     ]
+  },
+  "mcpServers": {
+    "ak-state-machine": {
+      "command": "python3",
+      "args": ["mcp-servers/state_machine_server.py"],
+      "env": {
+        "PROJECT_ROOT": "."
+      }
+    },
+    "ak-audit-log": {
+      "command": "python3",
+      "args": ["mcp-servers/audit_log_server.py"],
+      "env": {
+        "PROJECT_ROOT": ".",
+        "AUDIT_LOG_PATH": "tasks/audit-log.md"
+      }
+    }
   }
 }

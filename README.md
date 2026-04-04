@@ -1,20 +1,22 @@
-# AK Cognitive OS — Agentic AI Software Company Framework
+# AK Cognitive OS
 
-A portable, file-based multi-persona development framework for building software with AI agents.
-Clone it, fill in your project context, and your AI team is ready to work.
+A portable, file-based multi-persona development framework for building software with Claude Code and Codex.
 
-Status: **v2.0** — Conversation-first, artifact-driven development. Planning templates, Python validators, greenfield + recovery workflows.
+Status: **v2.1.0** — conversation-first planning, artifact-driven execution, native Claude Code integration, enforcement hooks, bootstrap/remediation flows, and framework validation.
 
 ---
 
 ## What This Is
 
-A complete operating system for running a software project using AI personas as a team.
-Each persona has a defined role, clear boundaries, and a slash command to activate it.
-All handoffs happen through files — no direct terminal communication required.
+AK Cognitive OS is a structured delivery framework for running a software project with AI agents as explicit roles.
 
-Both Claude and Codex are supported with full role parity. The framework runs in three modes:
-COMBINED (default), SOLO_CLAUDE, and SOLO_CODEX.
+- personas define responsibilities and boundaries
+- skills define repeatable workflow actions
+- planning artifacts provide traceable delivery context
+- hooks add runtime guardrails for Claude Code sessions
+- validators check repository integrity and framework contracts
+
+Both Claude and Codex are supported. The framework runs in three modes: `COMBINED` (default), `SOLO_CLAUDE`, and `SOLO_CODEX`.
 
 ---
 
@@ -35,7 +37,7 @@ Personas and skills are defined in `personas/` and `skills/` — see directory l
 
 ---
 
-## Start Here in 10 Minutes
+## Start Here
 
 New? Start with these four files in order:
 
@@ -50,11 +52,9 @@ Not sure about a term? See `glossary.md`. Stuck? See `guides/07-common-failures.
 
 ---
 
-## How to Use
+## Quick Start
 
 See `QUICKSTART.md` for the full setup guide.
-
-### Quick steps (or use the scripts)
 
 > **Note:** All scripts require bash. Run them with `bash scripts/<name>.sh`, not `sh` or `zsh`.
 
@@ -65,19 +65,27 @@ git clone https://github.com/ayuvinc/AK-Cognitive-OS.git ~/AK-Cognitive-OS
 # 2. Install all personas + skills into Claude
 ~/AK-Cognitive-OS/scripts/install-claude-commands.sh --backup
 
-# 3. Bootstrap your project
+# 3. Bootstrap your project with v2.1.0 native Claude Code files
 ~/AK-Cognitive-OS/scripts/bootstrap-project.sh ~/[your-project]
 
-# 4. Start a session (from inside your project)
-cd ~/[your-project]
-~/AK-Cognitive-OS/scripts/new-session.sh 1 1 architect
+# 4. Validate the framework repo itself
+cd ~/AK-Cognitive-OS
+bash scripts/validate-framework.sh
 ```
 
-Then fill in `CLAUDE.md` and open Claude.
+Then move into your target project, review `CLAUDE.md`, and open Claude Code.
+
+## What v2.1.0 Adds
+
+- native Claude Code settings at repo root and in the project template
+- enforcement hooks for session state, persona boundaries, push protection, and envelope validation
+- bootstrap and remediation support for `.claude/`, `.claudeignore`, `memory/`, and hook scripts
+- packaging metadata for `npx ak-cognitive-os`
+- expanded framework validation from 9 checks to 14 checks
 
 ---
 
-## Folder Structure
+## Repository Structure
 
 ```
 AK-Cognitive-OS/
@@ -87,6 +95,8 @@ AK-Cognitive-OS/
 ├── FAQ.md                             ← 22 common questions answered
 ├── DECISION_MATRIX.md                 ← Stack selection tables
 ├── RELEASE_NOTES.md                   ← Changelog
+├── .claude/                           ← Repo-level Claude Code settings + bundled commands
+├── .claude-plugin/                    ← Plugin manifest
 │
 ├── guides/
 │   ├── 00-project-intake.md           ← Answer before writing code
@@ -157,10 +167,12 @@ AK-Cognitive-OS/
 │   └── templates/                    ← sprint summary, sprint review, audit entry, task, next-action
 │
 ├── scripts/
-│   ├── bootstrap-project.sh           ← Copy project-template to a new project
-│   ├── install-claude-commands.sh     ← Install all personas + skills to ~/.claude/commands/
-│   ├── new-session.sh                 ← Pre-flight checks + ready-to-paste session open
-│   └── validate-framework.sh          ← CI lint: BOUNDARY_FLAG, envelope fields, schema headers
+│   ├── bootstrap-project.sh           ← Bootstrap a new project with native Claude Code assets
+│   ├── remediate-project.sh           ← Retrofit an active project to the current framework standard
+│   ├── install-claude-commands.sh     ← Install personas + skills to ~/.claude/commands/
+│   ├── cli.sh                         ← `ak-cognitive-os` / `ak-cogos` entry point
+│   ├── hooks/                         ← Claude Code enforcement hooks
+│   └── validate-framework.sh          ← Framework validation suite
 │
 ├── validators/                        ← Python ground-truth verification suite
 │   ├── base.py                        ← Shared utilities (metadata parser, task parser)
@@ -170,10 +182,13 @@ AK-Cognitive-OS/
 │   ├── release_truth.py              ← "Real" claims backed by actual code
 │   └── session_state.py              ← Session consistency across files
 │
-└── project-template/                  ← Copy this to start a new project
+└── project-template/                  ← Bootstrap source for new projects
     ├── CLAUDE.md
     ├── CLAUDE_START.md                ← First-run sequence for Claude
     ├── CODEX_START.md                 ← Paste protocol + startup checklist for Codex
+    ├── .claude/
+    ├── .claudeignore
+    ├── memory/
     ├── channel.md
     ├── framework-improvements.md
     ├── docs/                          ← Planning artifact templates
@@ -214,6 +229,20 @@ Discovery Conversation → Problem/Scope docs → HLD → LLD → Tasks → Buil
 | `docs/traceability-matrix.md` | Task → scope → HLD → LLD → tests mapping | Task derivation |
 
 Two entry paths: **greenfield** (new projects, Guide 11) and **recovery** (mid-build projects, Guide 12).
+
+## Enforcement Layer
+
+`v2.1.0` adds runtime guardrails through Claude Code hooks:
+
+- `guard-session-state.sh`
+- `guard-persona-boundaries.sh`
+- `guard-git-push.sh`
+- `auto-audit-log.sh`
+- `auto-persona-detect.sh`
+- `session-integrity-check.sh`
+- `validate-envelope.sh`
+
+These are intended to reduce drift between documented process and actual session behavior.
 
 ---
 
@@ -257,6 +286,13 @@ See `framework/dual-stack-architecture.md` for full mode specification.
 
 Every persona has explicit **CAN / CANNOT** rules. When a request falls outside those rules,
 the persona emits a **BOUNDARY_FLAG** and stops — it does not comply or refuse silently.
+
+## Contributing and Policy
+
+- Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
+- Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+- Security policy: [SECURITY.md](SECURITY.md)
+- License: [LICENSE](LICENSE)
 
 ---
 

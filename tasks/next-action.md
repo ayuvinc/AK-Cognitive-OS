@@ -1,30 +1,19 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Architect
-TASK:         Phase 7 — Code review + merge TASK-025 and TASK-019
-CONTEXT:      Session 10. Both tasks QA_APPROVED.
+NEXT_PERSONA: session-close
+TASK:         Close Session 11 — Phase 8 Enforcement Layer delivered
+CONTEXT:      Session 11 complete. Phase 8 (STEP-28..31) merged. 31/76 plan steps done.
+              Deferred tasks still in todo.md: TASK-018, TASK-020, TASK-021, TASK-022.
+              Next session: Phase 9 — Operating Tiers (STEP-32..35).
 
-              TASK-025: QA_APPROVED (6/6) — project-template/tasks/design-system.md
-              TASK-019: QA_APPROVED (9/9) — artifact-map.md + artifact-ownership.md
-                Note: required one fix cycle (AC-4 — added project-template/tasks/audit-log.md)
+              Delivered this session:
+                TASK-026: guard-planning-artifacts.sh + settings.json (11/11 AC)
+                TASK-027: guard-git-push.sh security gate (9/9 AC)
+                TASK-028: session-integrity-check.sh hardening (10/10 AC)
+                Archived to: releases/session-11.md
 
-              Files to merge:
-                project-template/tasks/design-system.md
-                project-template/tasks/audit-log.md
-                framework/governance/artifact-map.md
-                framework/governance/artifact-ownership.md
-
-              Architect actions:
-                1. Review all 4 files against spec and Architect Notes
-                2. Archive TASK-025 and TASK-019 to releases/session-10.md
-                3. Delete TASK-025 and TASK-019 from tasks/todo.md
-                4. Update framework-upgrade-plan.md: STEP-25, STEP-26, STEP-27 → [x] DONE
-                5. Update progress tracker: Phase 7 done (3/3), overall 27/76
-                6. git commit + push
-                7. Write next-action.md pointing to Phase 8
-
-COMMAND:      /architect
+COMMAND:      /session-close
 SESSION_STATUS: OPEN
-NEXT_FOCUS:    Session 10 — Architect review + merge + session close
+NEXT_FOCUS:    Session 12 — Phase 9 Operating Tiers (STEP-32..35)
 BLOCKERS:      none
 PLAN_FILE:     tasks/framework-upgrade-plan.md

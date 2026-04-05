@@ -168,7 +168,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 8 — Enforcement Layer Completion (v3.0 WS6)
 > Deliverable: Hard gates on the full SDLC — planning → build → QA → security → release
 
-- [ ] STEP-28  Write guard-planning-artifacts.sh (new PreToolUse hook)
+- [x] STEP-28  Write guard-planning-artifacts.sh (new PreToolUse hook)
                Trigger: PreToolUse — Write/Edit matcher on any source code file (not tasks/, not docs/)
                Gate: Block Junior Dev from writing code if docs/problem-definition.md or
                      docs/scope-brief.md are missing (for Standard + High-Risk tiers)
@@ -176,13 +176,13 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: Script exists, blocks code writes when planning docs absent
                Depends on: STEP-23 (stage-gates defines what's required per tier)
 
-- [ ] STEP-29  Update guard-git-push.sh — add security + compliance gate
+- [x] STEP-29  Update guard-git-push.sh — add security + compliance gate
                Current: blocks unless Architect + QA_APPROVED + Codex PASS
                New: also check channel.md for security-sweep sign-off on Standard/High-Risk tiers
                Success: Push blocked when security-sweep has unresolved HIGH findings
                Depends on: STEP-28
 
-- [ ] STEP-30  Update session-integrity-check.sh — full closeout validation
+- [x] STEP-30  Update session-integrity-check.sh — full closeout validation
                Current: warns if SESSION STATE is OPEN
                New: also warn if:
                  - tasks/codex-review.md has VERDICT: without Status: PROCESSED
@@ -191,7 +191,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: Script catches all 4 closeout conditions
                Depends on: nothing (independent improvement)
 
-- [ ] STEP-31  Update settings.json template — add guard-planning-artifacts.sh
+- [x] STEP-31  Update settings.json template — add guard-planning-artifacts.sh
                Add to PreToolUse Write/Edit block
                Success: settings.json has 12 hook entries total
                Depends on: STEP-28
@@ -517,7 +517,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 5 — Source Validation | 3 | 3 | 0 |
 | Phase 6 — Operating Model | 3 | 3 | 0 |
 | Phase 7 — Artifact System | 3 | 3 | 0 |
-| Phase 8 — Enforcement Completion | 4 | 0 | 4 |
+| Phase 8 — Enforcement Completion | 4 | 4 | 0 |
 | Phase 9 — Operating Tiers | 4 | 0 | 4 |
 | Phase 10 — Taxonomy + Governance | 5 | 0 | 5 |
 | Phase 11 — Non-Coder + Docs | 2 | 0 | 2 |
@@ -530,7 +530,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **27** | **49** |
+| **TOTAL** | **76** | **31** | **45** |
 
 ---
 

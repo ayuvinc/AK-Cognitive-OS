@@ -81,6 +81,44 @@ if targets_main "$COMMAND"; then
   else
     echo "WARNING: tasks/codex-review.md not found — Codex review gate skipped. Consider running /codex-prep before merge." >&2
   fi
+
+  # Security/compliance gate (Standard and High-Risk tiers only; skip for MVP)
+  # Blocks push when tasks/risk-register.md has any OPEN entry with Category: Security.
+  # This implements stage-gates.md Pre-Release Gate rows 4-5 (STEP-29).
+  TIER_SEC=""
+  if [[ -f "CLAUDE.md" ]]; then
+    TIER_SEC="$(grep -E '^Tier:' CLAUDE.md 2>/dev/null | head -1 | awk '{print $2}' || echo "")"
+  fi
+
+  if [[ "$TIER_SEC" != "MVP" ]]; then
+    if [[ -f "tasks/risk-register.md" ]]; then
+      OPEN_SECURITY_RISKS="$(python3 -c "
+import re, sys
+try:
+    with open('tasks/risk-register.md', 'r') as f:
+        content = f.read()
+    blocks = re.split(r'(?=^## \[RISK-)', content, flags=re.MULTILINE)
+    found = []
+    for block in blocks:
+        if (re.search(r'^- Status:\s+OPEN', block, re.MULTILINE) and
+                re.search(r'^- Category:\s+Security', block, re.MULTILINE)):
+            m = re.search(r'^## \[(RISK-\d+)\]', block, re.MULTILINE)
+            if m:
+                found.append(m.group(1))
+    print(' '.join(found))
+except Exception:
+    pass
+" 2>/dev/null || echo "")"
+      if [[ -n "$OPEN_SECURITY_RISKS" ]]; then
+        echo "BLOCKED: Open security risks must be resolved before pushing to main." >&2
+        echo "         OPEN security entries: ${OPEN_SECURITY_RISKS}" >&2
+        echo "         Run /security-sweep, update tasks/risk-register.md to MITIGATED, then retry." >&2
+        exit 2
+      fi
+    else
+      echo "WARNING: tasks/risk-register.md not found — security risk gate skipped." >&2
+    fi
+  fi
 fi
 
 exit 0

@@ -1,53 +1,52 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-05T10:01:00Z — Architect (Session 10 — Phase 7 design complete)
+2026-04-05T11:01:00Z — Architect (Session 11 — Phase 8 design complete)
 
 ## Current Session
 - Status: SESSION OPEN
-- Session ID: 10
+- Session ID: 11
 - Sprint: v3-delivery
 - Active persona: Architect → dispatching to QA
-- Next task: QA — update TASK-019 AC-4 + write TASK-025 AC
+- Next task: QA — write AC for TASK-026, TASK-027, TASK-028
 
 ## Standup
-- Done: Session 9 Phase 6 complete (delivery-lifecycle.md, stage-gates.md, default-workflows.md, PLANNING_SESSION mode). 24/76 plan steps done.
-- Next: Phase 7 — artifact-map.md + artifact-ownership.md (TASK-019) + design-system.md placeholder (TASK-025)
+- Done: Session 10 Phase 7 complete (artifact-map.md, artifact-ownership.md, design-system.md placeholder, audit-log.md placeholder). 27/76 steps done.
+- Next: Phase 8 — Enforcement Layer. 3 new hook tasks (TASK-026, 027, 028).
 - Blockers: none
 
-## Phase 7 Task Plan
+## Phase 8 Task Plan
 
-| ID | Title | Status | Depends On | STEP |
+| ID | Title | Status | STEP | Depends On |
 |---|---|---|---|---|
-| TASK-025 | project-template/tasks/design-system.md placeholder | PENDING | — | STEP-27 |
-| TASK-019 | framework/governance/artifact-map.md + artifact-ownership.md | PENDING | TASK-025 (path check) | STEP-25, STEP-26 |
+| TASK-026 | guard-planning-artifacts.sh + settings.json update | PENDING | STEP-28, STEP-31 | — |
+| TASK-027 | guard-git-push.sh security/compliance gate | PENDING | STEP-29 | — |
+| TASK-028 | session-integrity-check.sh full closeout validation | PENDING | STEP-30 | — |
 
 ## Architecture Constraints
 
-1. TASK-025 must be built BEFORE TASK-019 — artifact-map.md references `tasks/design-system.md`; TASK-019 AC-4 (project-template path check) will fail if TASK-025 hasn't landed yet
-2. Authoritative artifact list for artifact-map.md: STEP-25 of framework-upgrade-plan.md (16 named artifacts)
-3. `tasks/codex-review.md` and `tasks/teaching-log.md` are CREATED-ON-DEMAND — mark in path column, exclude from AC-4 check
-4. Lifecycle stage names in artifact-map.md stage column must match delivery-lifecycle.md exactly (11 stages)
-5. Persona names in artifact-ownership.md must match the 20 commands in .claude/commands/ — no invented personas
-6. Tier column: [TIER-TBD] acceptable until operating-tiers.md (STEP-32) is written
-7. No hook, schema, or script changes in Phase 7 — doc creation only
+1. All three hook changes are ADDITIVE — no existing logic in any script is modified or removed
+2. TASK-026: scoped to ACTIVE_PERSONA=junior-dev only; Architect + BA must not be blocked
+3. TASK-026: tier check reads `CLAUDE.md` for `Tier:` field; missing Tier defaults to Standard (enforce)
+4. TASK-026: path exclusions prevent blocking writes to tasks/, docs/, framework/, .claude/, scripts/, etc.
+5. TASK-027: new block appended AFTER line 83 of guard-git-push.sh (after codex block, before exit 0)
+6. TASK-027: reads risk-register.md; OPEN + Category: Security → block; MVP tier → skip
+7. TASK-028: all 3 new checks are advisory (exit 0); independent if-blocks so one failure doesn't suppress others
+8. settings.json: guard-planning-artifacts.sh added to PreToolUse Write|Edit block → 3 hooks in that block
+9. No schema changes, no new personas, no governance doc changes in Phase 8
 
-## AC-4 Amendment (TASK-019)
-QA updated AC-4 this session to: "All artifact paths match project-template/ — EXCEPT tasks/codex-review.md and tasks/teaching-log.md (CREATED-ON-DEMAND, explicitly excluded)"
+## Stage-Gates.md Traceability
 
-## Other Open Tasks (deferred to later phases)
-
-| ID | Title | Status | Phase |
+| TASK | Stage-Gate Row | Was | After |
 |---|---|---|---|
-| TASK-018 | role-design-rules.md | PENDING | Phase 10 |
-| TASK-020 | remediate-project.sh --audit-only | PENDING | Phase 13 |
-| TASK-021 | guides/15 + guides/16 | PENDING | Phase 11 |
-| TASK-022 | validate-framework.sh v3.0 hardening | PENDING | Phase 12 |
+| TASK-026 | Pre-Implementation Gate rows 1-3 | MANUAL [TODO: STEP-28] | MECHANICAL |
+| TASK-027 | Pre-Release Gate rows 4-5 | MANUAL [TODO: STEP-29] | MECHANICAL |
+| TASK-028 | Pre-Closeout Gate rows 4-5 | MANUAL [TODO: STEP-30] | MECHANICAL (advisory) |
 
 ## Last Agent Run
-- 2026-04-05T10:01:00Z — Architect — Phase 7 design + TASK-025 created, TASK-019 AC-4 amended
+- 2026-04-05T11:01:00Z — Architect — Phase 8 design + TASK-026/027/028 written
 
 ## Pipeline / Build Queue
-- Status: AWAITING QA — TASK-025 needs AC; TASK-019 AC-4 updated
+- Status: AWAITING QA — AC needed for TASK-026, TASK-027, TASK-028
 
 ## Open Risks: 0

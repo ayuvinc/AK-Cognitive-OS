@@ -70,4 +70,70 @@ echo "" >&2
 echo "  To fix: Re-open Claude Code and run /session-close" >&2
 echo "================================================================" >&2
 
+# Advisory check 1: Unprocessed Codex verdict
+# Warns if tasks/codex-review.md has a VERDICT line but has not been marked Status: PROCESSED.
+# Implements stage-gates.md Pre-Closeout Gate row 4 (STEP-30).
+if [[ -f "tasks/codex-review.md" ]]; then
+  if grep -q 'VERDICT:' "tasks/codex-review.md" 2>/dev/null; then
+    if ! grep -q 'Status: PROCESSED' "tasks/codex-review.md" 2>/dev/null; then
+      echo "" >&2
+      echo "================================================================" >&2
+      echo "  WARNING: Unprocessed Codex verdict detected!" >&2
+      echo "================================================================" >&2
+      echo "" >&2
+      echo "  tasks/codex-review.md contains a VERDICT but has not been" >&2
+      echo "  marked Status: PROCESSED. Run /codex-read to process it." >&2
+      echo "================================================================" >&2
+    fi
+  fi
+fi
+
+# Advisory check 2: Open BOUNDARY_FLAGs
+# Warns if tasks/todo.md contains unresolved BOUNDARY_FLAG entries.
+if [[ -f "$TODO_FILE" ]]; then
+  FLAG_COUNT="$(grep -cE '^BOUNDARY_FLAG:' "$TODO_FILE" 2>/dev/null || echo "0")"
+  if [[ "$FLAG_COUNT" -gt 0 ]]; then
+    echo "" >&2
+    echo "================================================================" >&2
+    echo "  WARNING: Open BOUNDARY_FLAGs detected!" >&2
+    echo "================================================================" >&2
+    echo "" >&2
+    echo "  tasks/todo.md contains ${FLAG_COUNT} unresolved BOUNDARY_FLAG" >&2
+    echo "  entries. Resolve all flags before closing the session." >&2
+    echo "================================================================" >&2
+  fi
+fi
+
+# Advisory check 3: Unresolved S0 risks
+# Warns if tasks/risk-register.md has any OPEN risk block containing "S0".
+# Implements stage-gates.md Pre-Closeout Gate (STEP-30).
+if [[ -f "tasks/risk-register.md" ]]; then
+  S0_COUNT="$(python3 -c "
+import re
+try:
+    with open('tasks/risk-register.md', 'r') as f:
+        content = f.read()
+    blocks = re.split(r'(?=^## \[RISK-)', content, flags=re.MULTILINE)
+    count = 0
+    for block in blocks:
+        if (re.search(r'^- Status:\s+OPEN', block, re.MULTILINE) and
+                re.search(r'S0', block)):
+            count += 1
+    print(count)
+except Exception:
+    print(0)
+" 2>/dev/null || echo "0")"
+  if [[ "$S0_COUNT" -gt 0 ]]; then
+    echo "" >&2
+    echo "================================================================" >&2
+    echo "  WARNING: Unresolved S0 risk(s) detected!" >&2
+    echo "================================================================" >&2
+    echo "" >&2
+    echo "  tasks/risk-register.md contains ${S0_COUNT} OPEN risk(s) tagged S0." >&2
+    echo "  S0 risks require explicit resolution before release." >&2
+    echo "  Run /risk-manager to review and update risk status." >&2
+    echo "================================================================" >&2
+  fi
+fi
+
 exit 0

@@ -4,28 +4,30 @@ set -euo pipefail
 [[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/remediate-project.sh"; exit 1; }
 
 # remediate-project.sh
-# Usage: remediate-project.sh <target_project_path> [--dry-run] [--force]
+# Usage: remediate-project.sh <target_project_path> [--dry-run] [--force] [--audit-only]
 #
-# Brings an existing AK-Cognitive-OS project up to v2.2.0 standard.
+# Brings an existing AK-Cognitive-OS project up to v3.0 standard.
 # Safe to run multiple times — checks before acting, skips what already exists.
 #
 # What it does:
-#   1. Ensures tasks/todo.md has a SESSION STATE block
-#   2. Installs exactly 20 commands into .claude/commands/ (explicit deploy list)
-#   3. Removes 17 retired command files from .claude/commands/ (if present)
-#   4. Creates framework/ directory with contracts, templates, schemas
-#   5. Creates docs/ directory with planning doc templates
-#   6. Installs Claude Code native integration (settings, hooks, ignore, memory)
-#   7. Installs enforcement hook scripts
-#   8. Installs MCP servers
-#   9. Creates tasks/codex-review.md placeholder (if missing)
-#  10. Creates memory/teaching-log.md placeholder (if missing)
-#  11. Updates .gitignore
-#  12. Writes .ak-cogos-version
+#   1.  Ensures tasks/todo.md has a SESSION STATE block
+#   1b. Checks CLAUDE.md for Tier: field (advisory)
+#   2.  Installs exactly 20 commands into .claude/commands/ (explicit deploy list)
+#   3.  Removes 17 retired command files from .claude/commands/ (if present)
+#   4.  Creates framework/ directory with contracts, templates, schemas
+#   5.  Creates docs/ directory with planning doc templates
+#   6.  Installs Claude Code native integration (settings, hooks, ignore, memory)
+#   7.  Installs enforcement hook scripts
+#   8.  Installs MCP servers
+#   9.  Creates tasks/codex-review.md placeholder (if missing)
+#  10.  Creates memory/teaching-log.md placeholder (if missing)
+#  11.  Updates .gitignore
+#  12.  Writes .ak-cogos-version
+#  13.  Creates tasks/design-system.md placeholder (if missing)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="2.2.0"
+VERSION="3.0.0"
 
 # ---------------------------------------------------------------------------
 # Explicit deploy list — exactly 20 commands deployed to every project
@@ -92,7 +94,7 @@ RETIRED_COMMANDS=(
 
 if [[ $# -lt 1 ]]; then
   echo "ERROR: Missing required argument."
-  echo "Usage: $(basename "$0") <target_project_path> [--dry-run] [--force]"
+  echo "Usage: $(basename "$0") <target_project_path> [--dry-run] [--force] [--audit-only]"
   exit 1
 fi
 
@@ -100,11 +102,13 @@ TARGET_DIR="$1"
 shift
 DRY_RUN=false
 FORCE=false
+AUDIT_ONLY=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run) DRY_RUN=true ;;
     --force) FORCE=true ;;
+    --audit-only) AUDIT_ONLY=true; DRY_RUN=true ;;
     *) echo "WARNING: Unknown argument: $1" ;;
   esac
   shift
@@ -124,7 +128,11 @@ echo "=========================================="
 echo ""
 echo "Target:    $TARGET_DIR"
 echo "Framework: $FRAMEWORK_DIR"
-echo "Dry run:   $DRY_RUN"
+if [[ "$AUDIT_ONLY" == true ]]; then
+  echo "Mode:      AUDIT ONLY"
+else
+  echo "Dry run:   $DRY_RUN"
+fi
 echo "Force:     $FORCE"
 echo ""
 
@@ -229,6 +237,29 @@ else
   echo "  [warn] SESSION STATE block missing from tasks/todo.md"
   echo "         Run /session-open to create it, or add manually"
   WARNINGS+=("tasks/todo.md missing SESSION STATE block — run /session-open to fix")
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 1b. Tier field check (advisory — reads CLAUDE.md, never modifies it)
+# ---------------------------------------------------------------------------
+
+echo "--- Step 1b: Tier field check (read-only advisory) ---"
+
+CLAUDE_MD="${TARGET_DIR}/CLAUDE.md"
+
+if [[ ! -f "$CLAUDE_MD" ]]; then
+  echo "  [warn] CLAUDE.md not found — Tier field cannot be checked"
+  WARNINGS+=("CLAUDE.md not found — Tier field cannot be checked; create CLAUDE.md before opening a session")
+elif grep -qE '^Tier:' "$CLAUDE_MD" 2>/dev/null; then
+  TIER_VALUE="$(grep -E '^Tier:' "$CLAUDE_MD" | head -1 | sed 's/^Tier:[[:space:]]*//')"
+  echo "  [ok] Tier field found: ${TIER_VALUE}"
+else
+  echo "  [warn] CLAUDE.md is missing Tier: field"
+  echo "         Add 'Tier: Standard' before opening a session"
+  echo "         See: framework/governance/operating-tiers.md"
+  WARNINGS+=("CLAUDE.md is missing Tier: field — add 'Tier: Standard' before opening a session (see framework/governance/operating-tiers.md)")
 fi
 
 echo ""
@@ -611,6 +642,27 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
+# 13. Create tasks/design-system.md placeholder
+# ---------------------------------------------------------------------------
+
+echo "--- Step 13: tasks/design-system.md placeholder ---"
+
+if [[ "$DRY_RUN" == false ]]; then
+  mkdir -p "${TARGET_DIR}/tasks"
+fi
+
+DESIGN_SYSTEM_SRC="${FRAMEWORK_DIR}/project-template/tasks/design-system.md"
+
+if [[ -f "$DESIGN_SYSTEM_SRC" ]]; then
+  safe_copy_project "$DESIGN_SYSTEM_SRC" "${TARGET_DIR}/tasks/design-system.md"
+else
+  echo "  [warn] project-template/tasks/design-system.md not found in framework — skipping"
+  WARNINGS+=("Framework missing project-template/tasks/design-system.md")
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 
@@ -619,15 +671,17 @@ echo "  Remediation Summary"
 echo "=========================================="
 echo ""
 
-if [[ "$DRY_RUN" == true ]]; then
+if [[ "$AUDIT_ONLY" == true ]]; then
+  echo "  Mode:    AUDIT ONLY (no changes made)"
+elif [[ "$DRY_RUN" == true ]]; then
   echo "  Mode:    DRY RUN (no changes made)"
 else
   echo "  Mode:    LIVE"
 fi
 
-CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
-HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
-MCP_COUNT=$(find "${TARGET_DIR}/mcp-servers" -type f 2>/dev/null | wc -l | tr -d ' ')
+CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l | tr -d ' ') || CMD_COUNT=0
+HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l | tr -d ' ') || HOOK_COUNT=0
+MCP_COUNT=$(find "${TARGET_DIR}/mcp-servers" -type f 2>/dev/null | wc -l | tr -d ' ') || MCP_COUNT=0
 
 echo "  Changes: ${CHANGES}"
 echo ""
@@ -639,6 +693,7 @@ echo "  Context filter:   $([ -f "${TARGET_DIR}/.claudeignore" ] && echo 'instal
 echo "  Memory:           $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo 'installed' || echo 'MISSING')"
 echo "  Codex review:     $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo 'installed' || echo 'MISSING')"
 echo "  Teaching log:     $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo 'installed' || echo 'MISSING')"
+echo "  Design system:    $([ -f "${TARGET_DIR}/tasks/design-system.md" ] && echo 'installed' || echo 'MISSING')"
 echo "  Version:          $([ -f "${TARGET_DIR}/.ak-cogos-version" ] && cat "${TARGET_DIR}/.ak-cogos-version" || echo 'MISSING')"
 
 if [[ "$CMD_COUNT" -ne 20 && "$DRY_RUN" == false ]]; then
@@ -658,7 +713,11 @@ fi
 
 echo ""
 
-if [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
+if [[ "$AUDIT_ONLY" == true ]]; then
+  echo "AUDIT COMPLETE — review warnings before running live."
+  echo "Run without --audit-only (and without --dry-run) to apply changes."
+  echo "Add --force to overwrite existing files."
+elif [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
   echo "Add --force to overwrite existing files."
 fi
@@ -673,6 +732,7 @@ echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]')
 echo "  $([ -d "${TARGET_DIR}/mcp-servers" ] && echo '[x]' || echo '[ ]') mcp-servers/ — state machine + audit log MCP servers"
 echo "  $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo '[x]' || echo '[ ]') tasks/codex-review.md — Codex review file"
 echo "  $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo '[x]' || echo '[ ]') memory/teaching-log.md — teaching log"
+echo "  $([ -f "${TARGET_DIR}/tasks/design-system.md" ] && echo '[x]' || echo '[ ]') tasks/design-system.md — design system placeholder"
 echo ""
 
 # ---------------------------------------------------------------------------

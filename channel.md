@@ -1,35 +1,40 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-05T15:00:00Z — architect (Session 15 — merged, SESSION CLOSED)
+2026-04-05T15:35:00Z — qa-run (Session 16 — TASK-044+045 QA_APPROVED)
 
 ## Current Session
-- Status: SESSION CLOSED
-- Session ID: 15
+- Status: SESSION OPEN
+- Session ID: 16
 - Sprint: v3-delivery
-- Active persona: none
-- Next task: Session 16 — STEP-47 (.ak-cogos-version → 3.0.0)
+- Active persona: architect
+- Next task: Architect reviews, merges, archives to releases/session-16.md
 
 ## Standup
-- Done: Session 15 merged — TASK-040..043, 30/30 AC passed. Phase 11+12 complete. Progress 47/77. Pushed.
-- Next: Session 16 — /architect → STEP-47 (.ak-cogos-version → 3.0.0), then STEP-48 (remediate-project.sh), then STEP-49 (AK gate)
+- Done: QA_APPROVED — TASK-044+045, 14/14 AC passed
+- Next: Architect reviews, merges, archives, dispatches session-close or next override
 - Blockers: none
 
-## Session 15 Results — TASK-040..043
+## QA Run Results — TASK-044 + TASK-045
 
 | Task | AC | Result | Notes |
 |---|---|---|---|
-| TASK-040 | 8/8 | QA_APPROVED | guides/13-non-coder-mode.md — 101 lines |
-| TASK-041 | 8/8 | QA_APPROVED | README.md v3.0; QUICKSTART.md /session-close added |
-| TASK-042 | 7/7 | QA_APPROVED | AC-6 note: echo shows "20" not "19" — non-blocking |
-| TASK-043 | 7/7 | QA_APPROVED | All 12 governance docs + 15 guides verified |
+| TASK-044 | 6/6 | QA_APPROVED | .ak-cogos-version=3.0.0, VERSION var updated, v2.2.0 absent, bootstrap untouched, banner correct, validate PASS |
+| TASK-045 | 8/8 | QA_APPROVED | QA note: pipefail fix applied to 3 find commands in summary block (pre-existing bug, fixed in scope) |
 
-**Total: 30/30 PASS. 0 failures. 1 QA note (non-blocking).**
+**Total: 14/14 PASS. 0 failures. 1 QA note (non-blocking fix applied inline).**
 
 **validate-framework.sh: PASS (20 structural checks + semantic lint)**
+
+## QA Note — Pipefail Fix (non-blocking)
+
+The `CMD_COUNT`, `HOOK_COUNT`, `MCP_COUNT` find pipelines in the summary block exited 1 on
+empty directories (`pipefail` propagated `find`'s exit code on nonexistent dirs). Fixed with
+`|| CMD_COUNT=0` / `HOOK_COUNT=0` / `MCP_COUNT=0` fallbacks. Pre-existing bug, discovered and
+fixed as part of TASK-045 scope.
 
 ## Open Risks: 0
 
 ## Last Agent Run
-- 2026-04-05T15:00:00Z — architect — Session 15 closed: TASK-040..043 merged (30/30). Plan 47/77. Pushed. SESSION CLOSED.
+- 2026-04-05T15:35:00Z — qa-run — QA_APPROVED: TASK-044+045 (14/14). Architect dispatched.
 

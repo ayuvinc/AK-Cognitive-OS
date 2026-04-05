@@ -337,12 +337,12 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: Exit 0, no FAIL lines
                Depends on: STEP-45
 
-- [ ] STEP-47  Update .ak-cogos-version to 3.0.0
+- [x] STEP-47  Update .ak-cogos-version to 3.0.0
                Also update VERSION variable in remediate-project.sh and bootstrap-project.sh
                Success: .ak-cogos-version reads 3.0.0
                Depends on: STEP-46
 
-- [ ] STEP-48  Update remediate-project.sh — v3.0 additions
+- [x] STEP-48  Update remediate-project.sh — v3.0 additions
                Changes:
                  - Deploy design-system.md placeholder (STEP-27)
                  - Add guard-planning-artifacts.sh to hook deployment
@@ -537,7 +537,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 10.5 — Governance Enforcement | 1 | 1 | 0 |
 | Phase 11 — Non-Coder + Docs | 2 | 2 | 0 |
 | Phase 12 — Validation Hardening | 3 | 3 | 0 |
-| Phase 13 — v3.0 Source Sign-off | 4 | 1 | 3 |
+| Phase 13 — v3.0 Source Sign-off | 4 | 3 | 1 |
 | Phase 14 — Pharma-Base | 4 | 0 | 4 |
 | Phase 15 — forensic-ai | 4 | 0 | 4 |
 | Phase 16 — policybrain | 5 | 0 | 5 |
@@ -545,7 +545,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **77** | **47** | **30** |
+| **TOTAL** | **77** | **49** | **28** |
 
 ---
 

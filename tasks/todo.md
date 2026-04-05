@@ -143,7 +143,7 @@ RULES:
 
 <!-- TASK-031 -->
 ## [TASK-031] Add Tier field to project-template/CLAUDE.md
-- Status: PENDING
+- Status: READY_FOR_QA
 - Branch: feature/TASK-031-template-tier-field
 - BA sign-off: N/A
 - UX sign-off: N/A

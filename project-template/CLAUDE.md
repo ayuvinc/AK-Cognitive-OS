@@ -1,6 +1,7 @@
 # CLAUDE.md — [PROJECT_NAME]
 # [One line: what this product does]
 # Stack: [Framework], [Language], [DB], [Auth], [AI SDK if applicable]
+Tier: Standard  # MVP | Standard | High-Risk — controls which gates are active (see framework/governance/operating-tiers.md)
 
 ---
 
@@ -88,6 +89,7 @@ The following hooks are configured in `.claude/settings.json` and run automatica
 | `guard-session-state.sh` | Blocks unauthorized writes to SESSION STATE in tasks/todo.md |
 | `guard-persona-boundaries.sh` | Enforces persona CAN/CANNOT file-path restrictions |
 | `guard-git-push.sh` | Blocks git push to main unless Architect with QA_APPROVED |
+| `guard-planning-artifacts.sh` | Blocks Junior Dev from writing source code when planning docs missing (Standard + High-Risk tiers only; MVP exempt) |
 
 **PostToolCall hooks** (run after tool calls):
 

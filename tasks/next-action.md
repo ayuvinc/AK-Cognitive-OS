@@ -1,19 +1,23 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Junior Dev
-TASK:         TASK-023 first (session-close contract fix), then TASK-016, TASK-018, TASK-019 in parallel
-CONTEXT:      Session 7 closed as planning session — 8 tasks deferred (TASK-016..023).
-              TASK-023 is P0: fixes session-close contract to support PLANNING_SESSION mode.
-              After TASK-023 merged, build v3.0 Alpha in dependency order:
-                Parallel (no deps): TASK-016, TASK-018, TASK-019
-                After TASK-016: TASK-017
-                After TASK-016 + 017: TASK-021
-                After TASK-019: TASK-020
-                After all above merged: TASK-022
-              QA AC already written for TASK-016..022. QA must fill AC for TASK-023 before build.
-COMMAND:      /qa (for TASK-023 AC) → /junior-dev
+NEXT_PERSONA: Architect
+TASK:         v3.0 Delivery Plan — Phase 6 (Operating Model)
+CONTEXT:      Session 8 completed all v2.2 foundation work (Phases 1–5 of the delivery plan).
+              Branch pushed: chore/v2.2-framework-foundation on ayuvinc/AK-Cognitive-OS
+              All 20 commands v2-FULL. Enforcement hooks blocking (exit 2). validate-framework.sh PASS.
 
+              Next work is Phase 6 — writing the v3.0 governance documents that Claude will
+              reference at runtime to know WHAT to enforce and WHEN:
+                STEP-22: framework/governance/delivery-lifecycle.md (11-stage canonical lifecycle)
+                STEP-23: framework/governance/stage-gates.md (entry/exit conditions per stage)
+                STEP-24: framework/governance/default-workflows.md (standard paths per project type)
+
+              Full plan: tasks/framework-upgrade-plan.md
+              21 steps done. 55 remaining.
+              Projects are NOT touched until all v3.0 source is built and AK approves (STEP-49).
+
+COMMAND:      /architect
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Session 8 — QA fills TASK-023 AC → Junior Dev builds all 8 tasks
+NEXT_FOCUS:    Session 9 — Phase 6: Operating Model documents (STEP-22, 23, 24)
 BLOCKERS:      none
-TASK_QUEUE:    TASK-023, TASK-016, TASK-017, TASK-018, TASK-019, TASK-020, TASK-021, TASK-022
+PLAN_FILE:     tasks/framework-upgrade-plan.md

@@ -75,6 +75,8 @@ failures: []
 warnings: []
 artifacts_written: []
 next_action: "<what to run next>"
+manual_action: NONE
+override: "NOT_OVERRIDABLE — session must close cleanly; open sessions block next session start"
 extra_fields:
   closure_checklist: []
 ```

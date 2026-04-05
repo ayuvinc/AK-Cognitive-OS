@@ -58,6 +58,19 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/set-teach-me-flag.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/set-codex-prep-flag.sh"
+          }
+        ]
+      },
+      {
         "matcher": "Bash",
         "hooks": [
           {
@@ -81,6 +94,18 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/guard-boundary-flags.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-teach.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-codex-prep.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-codex-read.sh"
           }
         ]
       }

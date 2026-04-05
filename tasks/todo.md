@@ -34,6 +34,25 @@ RULES:
 - Hard limit: 100 active lines
 -->
 
+## Checkpoint
+Timestamp: 2026-04-05T12:00:00Z
+
+### Done this session (13/49 steps of framework-upgrade-plan.md)
+- STEP-14: output-envelope.md → 12-field schema (+manual_action, +override)
+- STEP-01..04: /teach-me, /risk-manager, /codex-prep, /codex-read written (v2-FULL)
+- STEP-05..08: 3 new hooks written + guard-git-push.sh updated with Codex PASS gate
+- STEP-09..13: architect, ba, junior-dev, qa, ux upgraded to v2-FULL
+
+### Next immediate action (before continuing plan steps)
+Upgrade auto-teach/auto-codex-prep/auto-codex-read from PostToolUse (advisory) to
+UserPromptSubmit (blocking) — AK requires enforcement, not just hints.
+
+### Remaining: STEP-15 to STEP-49 (36 steps)
+Phase 4 (infra) → Phase 5 (validation) → Phases 6-10 (project remediation) →
+Phase 11 (global cleanup) → Phase 12 (verification)
+
+---
+
 <!-- TASK-016 -->
 ## [TASK-016] Write framework/governance/delivery-lifecycle.md
 - Status: PENDING

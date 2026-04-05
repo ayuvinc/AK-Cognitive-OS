@@ -6,22 +6,85 @@ set -euo pipefail
 # remediate-project.sh
 # Usage: remediate-project.sh <target_project_path> [--dry-run] [--force]
 #
-# Brings an existing AK-Cognitive-OS project up to the current standard.
+# Brings an existing AK-Cognitive-OS project up to v2.2.0 standard.
 # Safe to run multiple times — checks before acting, skips what already exists.
 #
 # What it does:
-#   1. Ensures tasks/todo.md has a SESSION STATE block (adds if missing)
-#   2. Installs persona commands into .claude/commands/ (skips existing)
-#   3. Installs skill commands into .claude/commands/ (skips existing)
+#   1. Ensures tasks/todo.md has a SESSION STATE block
+#   2. Installs exactly 20 commands into .claude/commands/ (explicit deploy list)
+#   3. Removes 17 retired command files from .claude/commands/ (if present)
 #   4. Creates framework/ directory with contracts, templates, schemas
-#   5. Creates docs/ directory with planning doc templates (skips existing)
-#   6. Writes .ak-cogos-version
-#   7. Detects mid-build state and prints recovery guidance
-#   8. Reports warnings for anything it can't auto-fix
+#   5. Creates docs/ directory with planning doc templates
+#   6. Installs Claude Code native integration (settings, hooks, ignore, memory)
+#   7. Installs enforcement hook scripts
+#   8. Installs MCP servers
+#   9. Creates tasks/codex-review.md placeholder (if missing)
+#  10. Creates memory/teaching-log.md placeholder (if missing)
+#  11. Updates .gitignore
+#  12. Writes .ak-cogos-version
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="2.0.0"
+VERSION="2.2.0"
+
+# ---------------------------------------------------------------------------
+# Explicit deploy list — exactly 20 commands deployed to every project
+# Format: "source_subdir|target_filename"
+# ---------------------------------------------------------------------------
+
+DEPLOY_COMMANDS=(
+  # Session
+  "skills/session-open|session-open.md"
+  "skills/session-close|session-close.md"
+  "skills/compact-session|compact-session.md"
+  # Personas
+  "personas/architect|architect.md"
+  "personas/ba|ba.md"
+  "personas/junior-dev|junior-dev.md"
+  "personas/qa|qa.md"
+  "personas/ux|ux.md"
+  "personas/designer|designer.md"
+  # Quality
+  "skills/qa-run|qa-run.md"
+  "skills/security-sweep|security-sweep.md"
+  "personas/compliance|compliance.md"
+  # Research
+  "personas/researcher|researcher.md"
+  # Codex
+  "skills/codex-prep|codex-prep.md"
+  "skills/codex-read|codex-read.md"
+  # Intelligence
+  "skills/teach-me|teach-me.md"
+  "skills/lessons-extractor|lessons-extractor.md"
+  "personas/risk-manager|risk-manager.md"
+  # Utility
+  "skills/audit-log|audit-log.md"
+  "skills/check-channel|check-channel.md"
+)
+
+# ---------------------------------------------------------------------------
+# Retired commands — deleted from target projects (keep in source only)
+# ---------------------------------------------------------------------------
+
+RETIRED_COMMANDS=(
+  "researcher-business.md"
+  "researcher-technical.md"
+  "researcher-legal.md"
+  "researcher-policy.md"
+  "researcher-news.md"
+  "review-packet.md"
+  "codex-intake-check.md"
+  "codex-creator.md"
+  "codex-delta-verify.md"
+  "framework-delta-log.md"
+  "handoff-validator.md"
+  "sprint-packager.md"
+  "regression-guard.md"
+  "compliance-data-privacy.md"
+  "compliance-data-security.md"
+  "compliance-phi-handler.md"
+  "compliance-pii-handler.md"
+)
 
 # ---------------------------------------------------------------------------
 # Argument parsing
@@ -56,6 +119,7 @@ TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 echo "=========================================="
 echo "  AK-Cognitive-OS Project Remediation"
+echo "  Target version: v${VERSION}"
 echo "=========================================="
 echo ""
 echo "Target:    $TARGET_DIR"
@@ -68,7 +132,8 @@ WARNINGS=()
 CHANGES=0
 
 # ---------------------------------------------------------------------------
-# Helper: copy a file with dry-run and force support
+# Helper: copy a framework file (commands, hooks, settings, MCP)
+#   --force applies here: overwrites existing files when set
 # ---------------------------------------------------------------------------
 
 safe_copy() {
@@ -85,7 +150,7 @@ safe_copy() {
       fi
       CHANGES=$((CHANGES + 1))
     else
-      return 0  # skip silently
+      return 0  # skip silently without --force
     fi
   else
     if [[ "$DRY_RUN" == true ]]; then
@@ -99,136 +164,141 @@ safe_copy() {
 }
 
 # ---------------------------------------------------------------------------
+# Helper: copy a project-owned file (docs, planning artifacts)
+#   --force is IGNORED here — these are never overwritten by remediation
+# ---------------------------------------------------------------------------
+
+safe_copy_project() {
+  local src="$1"
+  local dst="$2"
+
+  if [[ -f "$dst" ]]; then
+    return 0  # always skip — project file, never overwrite
+  fi
+
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  [would create] $(basename "$dst")"
+  else
+    echo "  [create] $(basename "$dst")"
+    cp "$src" "$dst"
+  fi
+  CHANGES=$((CHANGES + 1))
+}
+
+# ---------------------------------------------------------------------------
+# Helper: create a placeholder file (only if missing, never overwrite)
+# ---------------------------------------------------------------------------
+
+create_placeholder() {
+  local dst="$1"
+  local content="$2"
+
+  if [[ -f "$dst" ]]; then
+    echo "  [ok] $(basename "$dst") exists"
+    return 0
+  fi
+
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  [would create] $(basename "$dst")"
+  else
+    echo "  [create] $(basename "$dst")"
+    printf '%s\n' "$content" > "$dst"
+  fi
+  CHANGES=$((CHANGES + 1))
+}
+
+# ---------------------------------------------------------------------------
 # 1. Ensure tasks/todo.md has SESSION STATE block
 # ---------------------------------------------------------------------------
 
-echo "--- Step 1: SESSION STATE in tasks/todo.md ---"
+echo "--- Step 1: SESSION STATE check (read-only diagnostic) ---"
+echo "  [note] tasks/todo.md is a project file — remediation never modifies it"
 
 TODO_FILE="${TARGET_DIR}/tasks/todo.md"
 
 if [[ ! -f "$TODO_FILE" ]]; then
-  echo "  [warn] tasks/todo.md does not exist — cannot add SESSION STATE"
-  WARNINGS+=("tasks/todo.md missing entirely")
+  echo "  [warn] tasks/todo.md does not exist"
+  WARNINGS+=("tasks/todo.md missing — create manually before opening a session")
 elif grep -q '## SESSION STATE' "$TODO_FILE" 2>/dev/null; then
-  echo "  [ok] SESSION STATE block already exists"
-
-  # Check for OPEN state (warning only)
+  echo "  [ok] SESSION STATE block present"
   if grep -q 'Status:.*OPEN' "$TODO_FILE" 2>/dev/null; then
-    echo "  [warn] Session appears to be OPEN — verify this is intentional"
-    WARNINGS+=("Session left OPEN in tasks/todo.md")
+    echo "  [warn] Session is OPEN — verify this is intentional before remediating"
+    WARNINGS+=("Session left OPEN in tasks/todo.md — verify before proceeding")
   fi
 else
-  echo "  [fix] Adding SESSION STATE block to tasks/todo.md"
-
-  if [[ "$DRY_RUN" == true ]]; then
-    echo "  [would prepend] SESSION STATE block"
-  else
-    # Read existing content
-    EXISTING="$(cat "$TODO_FILE")"
-
-    # Check if file starts with a heading
-    if [[ "$EXISTING" =~ ^#\  ]]; then
-      # Extract first line (heading) and rest
-      FIRST_LINE="$(head -1 "$TODO_FILE")"
-      REST="$(tail -n +2 "$TODO_FILE")"
-
-      cat > "$TODO_FILE" <<EOF
-${FIRST_LINE}
-
-## SESSION STATE
-
-\`\`\`
-Status:         CLOSED
-Active task:    none
-Active persona: none
-Blocking issue: none
-Last updated:   — (added by remediation script)
-\`\`\`
-
----
-${REST}
-EOF
-    else
-      # Prepend to file
-      cat > "$TODO_FILE" <<EOF
-## SESSION STATE
-
-\`\`\`
-Status:         CLOSED
-Active task:    none
-Active persona: none
-Blocking issue: none
-Last updated:   — (added by remediation script)
-\`\`\`
-
----
-
-${EXISTING}
-EOF
-    fi
-  fi
-  CHANGES=$((CHANGES + 1))
+  echo "  [warn] SESSION STATE block missing from tasks/todo.md"
+  echo "         Run /session-open to create it, or add manually"
+  WARNINGS+=("tasks/todo.md missing SESSION STATE block — run /session-open to fix")
 fi
 
 echo ""
 
 # ---------------------------------------------------------------------------
-# 2. Install persona commands
+# 2. Install exactly 20 commands from explicit deploy list
 # ---------------------------------------------------------------------------
 
-echo "--- Step 2: Persona commands in .claude/commands/ ---"
+echo "--- Step 2: Install 20 commands into .claude/commands/ ---"
 
 COMMANDS_DIR="${TARGET_DIR}/.claude/commands"
 if [[ "$DRY_RUN" == false ]]; then
   mkdir -p "$COMMANDS_DIR"
 fi
 
-PERSONAS_DIR="${FRAMEWORK_DIR}/personas"
-PERSONA_COUNT=0
+DEPLOY_COUNT=0
+MISSING_SRC=()
 
-if [[ -d "$PERSONAS_DIR" ]]; then
-  for persona_dir in "${PERSONAS_DIR}"/*/; do
-    persona_name="$(basename "$persona_dir")"
-    [[ "$persona_name" == "_template" ]] && continue
+for entry in "${DEPLOY_COMMANDS[@]}"; do
+  src_subdir="${entry%%|*}"
+  dst_name="${entry##*|}"
+  src_file="${FRAMEWORK_DIR}/${src_subdir}/claude-command.md"
+  dst_file="${COMMANDS_DIR}/${dst_name}"
 
-    src_file="${persona_dir}claude-command.md"
-    dst_file="${COMMANDS_DIR}/${persona_name}.md"
+  if [[ -f "$src_file" ]]; then
+    safe_copy "$src_file" "$dst_file"
+    DEPLOY_COUNT=$((DEPLOY_COUNT + 1))
+  else
+    echo "  [MISSING SRC] ${src_file} — cannot deploy ${dst_name}"
+    MISSING_SRC+=("$src_file")
+    WARNINGS+=("Source missing: ${src_subdir}/claude-command.md")
+  fi
+done
 
-    if [[ -f "$src_file" ]]; then
-      safe_copy "$src_file" "$dst_file"
-      PERSONA_COUNT=$((PERSONA_COUNT + 1))
-    fi
-  done
+echo "  [ok] ${DEPLOY_COUNT}/20 command(s) processed"
+
+if [[ ${#MISSING_SRC[@]} -gt 0 ]]; then
+  echo "  [WARN] ${#MISSING_SRC[@]} source file(s) missing — check personas/ and skills/"
 fi
 
-echo "  [ok] ${PERSONA_COUNT} persona(s) processed"
 echo ""
 
 # ---------------------------------------------------------------------------
-# 3. Install skill commands
+# 3. Remove retired commands from .claude/commands/
 # ---------------------------------------------------------------------------
 
-echo "--- Step 3: Skill commands in .claude/commands/ ---"
+echo "--- Step 3: Remove retired commands ---"
 
-SKILLS_DIR="${FRAMEWORK_DIR}/skills"
-SKILL_COUNT=0
+RETIRED_COUNT=0
 
-if [[ -d "$SKILLS_DIR" ]]; then
-  for skill_dir in "${SKILLS_DIR}"/*/; do
-    skill_name="$(basename "$skill_dir")"
-    [[ "$skill_name" == "_template" ]] && continue
-
-    src_file="${skill_dir}claude-command.md"
-    dst_file="${COMMANDS_DIR}/${skill_name}.md"
-
-    if [[ -f "$src_file" ]]; then
-      safe_copy "$src_file" "$dst_file"
-      SKILL_COUNT=$((SKILL_COUNT + 1))
+for fname in "${RETIRED_COMMANDS[@]}"; do
+  target_file="${COMMANDS_DIR}/${fname}"
+  if [[ -f "$target_file" ]]; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would delete] ${fname}"
+    else
+      echo "  [delete] ${fname}"
+      rm "$target_file"
     fi
-  done
+    RETIRED_COUNT=$((RETIRED_COUNT + 1))
+    CHANGES=$((CHANGES + 1))
+  fi
+done
+
+if [[ "$RETIRED_COUNT" -eq 0 ]]; then
+  echo "  [ok] No retired commands found"
+else
+  echo "  [ok] ${RETIRED_COUNT} retired command(s) removed"
 fi
 
-echo "  [ok] ${SKILL_COUNT} skill(s) processed"
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -246,7 +316,6 @@ if [[ "$DRY_RUN" == false ]]; then
   mkdir -p "${TARGET_DIR}/framework/governance"
 fi
 
-# Interop contracts
 INTEROP_SRC="${FRAMEWORK_DIR}/framework/interop"
 if [[ -d "$INTEROP_SRC" ]]; then
   for src_file in "${INTEROP_SRC}"/*.md; do
@@ -255,7 +324,6 @@ if [[ -d "$INTEROP_SRC" ]]; then
   done
 fi
 
-# Codex-core
 CODEX_SRC="${FRAMEWORK_DIR}/framework/codex-core"
 if [[ -d "$CODEX_SRC" ]]; then
   for src_file in "${CODEX_SRC}"/*.md; do
@@ -276,7 +344,6 @@ if [[ -d "$CODEX_SRC" ]]; then
   fi
 fi
 
-# Governance
 GOVERNANCE_SRC="${FRAMEWORK_DIR}/framework/governance"
 if [[ -d "$GOVERNANCE_SRC" ]]; then
   for src_file in "${GOVERNANCE_SRC}"/*.md; do
@@ -285,7 +352,6 @@ if [[ -d "$GOVERNANCE_SRC" ]]; then
   done
 fi
 
-# Templates
 TEMPLATES_SRC="${FRAMEWORK_DIR}/framework/templates"
 if [[ -d "$TEMPLATES_SRC" ]]; then
   for src_file in "${TEMPLATES_SRC}"/*.md; do
@@ -294,7 +360,6 @@ if [[ -d "$TEMPLATES_SRC" ]]; then
   done
 fi
 
-# Schemas
 SCHEMAS_SRC="${FRAMEWORK_DIR}/schemas"
 if [[ -d "$SCHEMAS_SRC" ]]; then
   for src_file in "${SCHEMAS_SRC}"/*.md; do
@@ -303,7 +368,6 @@ if [[ -d "$SCHEMAS_SRC" ]]; then
   done
 fi
 
-# Dual-stack architecture doc
 if [[ -f "${FRAMEWORK_DIR}/framework/dual-stack-architecture.md" ]]; then
   safe_copy "${FRAMEWORK_DIR}/framework/dual-stack-architecture.md" "${TARGET_DIR}/framework/dual-stack-architecture.md"
 fi
@@ -322,16 +386,17 @@ if [[ "$DRY_RUN" == false ]]; then
   mkdir -p "${TARGET_DIR}/docs/lld"
 fi
 
+echo "  [note] docs/ are project-owned files — only created if missing, never overwritten"
+
 if [[ -d "$TEMPLATE_DOCS_DIR" ]]; then
   for src_file in "${TEMPLATE_DOCS_DIR}"/*.md; do
     [[ -f "$src_file" ]] || continue
-    safe_copy "$src_file" "${TARGET_DIR}/docs/$(basename "$src_file")"
+    safe_copy_project "$src_file" "${TARGET_DIR}/docs/$(basename "$src_file")"
   done
-  # Copy lld/ subdirectory
   if [[ -d "${TEMPLATE_DOCS_DIR}/lld" ]]; then
     for src_file in "${TEMPLATE_DOCS_DIR}/lld"/*.md; do
       [[ -f "$src_file" ]] || continue
-      safe_copy "$src_file" "${TARGET_DIR}/docs/lld/$(basename "$src_file")"
+      safe_copy_project "$src_file" "${TARGET_DIR}/docs/lld/$(basename "$src_file")"
     done
   fi
 else
@@ -349,7 +414,6 @@ echo "--- Step 6: Claude Code native integration ---"
 
 TEMPLATE_DIR="${FRAMEWORK_DIR}/project-template"
 
-# .claude/settings.json
 SETTINGS_SRC="${TEMPLATE_DIR}/.claude/settings.json"
 if [[ -f "$SETTINGS_SRC" ]]; then
   if [[ "$DRY_RUN" == false ]]; then
@@ -358,19 +422,16 @@ if [[ -f "$SETTINGS_SRC" ]]; then
   safe_copy "$SETTINGS_SRC" "${TARGET_DIR}/.claude/settings.json"
 fi
 
-# .claude/settings.local.json.example
 SETTINGS_LOCAL_SRC="${TEMPLATE_DIR}/.claude/settings.local.json.example"
 if [[ -f "$SETTINGS_LOCAL_SRC" ]]; then
   safe_copy "$SETTINGS_LOCAL_SRC" "${TARGET_DIR}/.claude/settings.local.json.example"
 fi
 
-# .claudeignore
 CLAUDEIGNORE_SRC="${TEMPLATE_DIR}/.claudeignore"
 if [[ -f "$CLAUDEIGNORE_SRC" ]]; then
   safe_copy "$CLAUDEIGNORE_SRC" "${TARGET_DIR}/.claudeignore"
 fi
 
-# memory/MEMORY.md
 MEMORY_SRC="${TEMPLATE_DIR}/memory/MEMORY.md"
 if [[ -f "$MEMORY_SRC" ]]; then
   if [[ "$DRY_RUN" == false ]]; then
@@ -379,7 +440,6 @@ if [[ -f "$MEMORY_SRC" ]]; then
   safe_copy "$MEMORY_SRC" "${TARGET_DIR}/memory/MEMORY.md"
 fi
 
-# ANTI-SYCOPHANCY.md
 ANTI_SRC="${FRAMEWORK_DIR}/ANTI-SYCOPHANCY.md"
 if [[ -f "$ANTI_SRC" ]]; then
   safe_copy "$ANTI_SRC" "${TARGET_DIR}/ANTI-SYCOPHANCY.md"
@@ -433,46 +493,51 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
-# 9. Install sub-persona commands (researcher-*, compliance-*)
+# 9. Create tasks/codex-review.md placeholder
 # ---------------------------------------------------------------------------
 
-echo "--- Step 8: Sub-persona commands ---"
+echo "--- Step 9: tasks/codex-review.md placeholder ---"
 
-SUB_COUNT=0
-
-# Researcher sub-personas
-RESEARCHER_SUBS="${FRAMEWORK_DIR}/personas/researcher/sub-personas"
-if [[ -d "$RESEARCHER_SUBS" ]]; then
-  for sub_file in "${RESEARCHER_SUBS}"/*.md; do
-    [[ -f "$sub_file" ]] || continue
-    sub_name="researcher-$(basename "$sub_file" .md)"
-    dst_file="${COMMANDS_DIR}/${sub_name}.md"
-    safe_copy "$sub_file" "$dst_file"
-    SUB_COUNT=$((SUB_COUNT + 1))
-  done
+if [[ "$DRY_RUN" == false ]]; then
+  mkdir -p "${TARGET_DIR}/tasks"
 fi
 
-# Compliance sub-personas
-COMPLIANCE_SUBS="${FRAMEWORK_DIR}/personas/compliance/sub-personas"
-if [[ -d "$COMPLIANCE_SUBS" ]]; then
-  for sub_file in "${COMPLIANCE_SUBS}"/*.md; do
-    [[ -f "$sub_file" ]] || continue
-    [[ -d "$sub_file" ]] && continue
-    sub_name="compliance-$(basename "$sub_file" .md)"
-    dst_file="${COMMANDS_DIR}/${sub_name}.md"
-    safe_copy "$sub_file" "$dst_file"
-    SUB_COUNT=$((SUB_COUNT + 1))
-  done
-fi
+CODEX_REVIEW_PLACEHOLDER='# Codex Review
+# This file is written by /codex-prep and read by /codex-read.
+# It is overwritten each review cycle. Do not edit manually.
+#
+# Status: EMPTY — no review pending
+'
 
-echo "  [ok] ${SUB_COUNT} sub-persona(s) processed"
+create_placeholder "${TARGET_DIR}/tasks/codex-review.md" "$CODEX_REVIEW_PLACEHOLDER"
+
 echo ""
 
 # ---------------------------------------------------------------------------
-# 10. Update .gitignore
+# 10. Create memory/teaching-log.md placeholder
 # ---------------------------------------------------------------------------
 
-echo "--- Step 10: .gitignore update ---"
+echo "--- Step 10: memory/teaching-log.md placeholder ---"
+
+if [[ "$DRY_RUN" == false ]]; then
+  mkdir -p "${TARGET_DIR}/memory"
+fi
+
+TEACHING_LOG_PLACEHOLDER='# Teaching Log
+# Written by /teach-me when a new task starts.
+# Each entry: task ID, plain-language brief, timestamp.
+# Read by AK to understand what was built and why.
+'
+
+create_placeholder "${TARGET_DIR}/memory/teaching-log.md" "$TEACHING_LOG_PLACEHOLDER"
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 11. Update .gitignore
+# ---------------------------------------------------------------------------
+
+echo "--- Step 11: .gitignore update ---"
 
 GITIGNORE="${TARGET_DIR}/.gitignore"
 if [[ -f "$GITIGNORE" ]]; then
@@ -494,13 +559,29 @@ else
   WARNINGS+=("No .gitignore found")
 fi
 
+# Also ensure flag files are gitignored
+if [[ -f "$GITIGNORE" ]]; then
+  if ! grep -q '\.teach-me-required' "$GITIGNORE" 2>/dev/null; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would add] hook flag files to .gitignore"
+    else
+      echo "" >> "$GITIGNORE"
+      echo "# AK-Cognitive-OS hook flag files (runtime state, not committed)" >> "$GITIGNORE"
+      echo ".teach-me-required" >> "$GITIGNORE"
+      echo ".codex-prep-required" >> "$GITIGNORE"
+      echo "  [update] .gitignore — added hook flag file exclusions"
+    fi
+    CHANGES=$((CHANGES + 1))
+  fi
+fi
+
 echo ""
 
 # ---------------------------------------------------------------------------
-# 11. Write .ak-cogos-version
+# 12. Write .ak-cogos-version
 # ---------------------------------------------------------------------------
 
-echo "--- Step 11: Version stamp ---"
+echo "--- Step 12: Version stamp ---"
 
 VERSION_FILE="${TARGET_DIR}/.ak-cogos-version"
 
@@ -544,19 +625,28 @@ else
   echo "  Mode:    LIVE"
 fi
 
-CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
-HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l)
-
-MCP_COUNT=$(find "${TARGET_DIR}/mcp-servers" -type f 2>/dev/null | wc -l)
+CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l | tr -d ' ')
+HOOK_COUNT=$(find "${TARGET_DIR}/scripts/hooks" -name '*.sh' 2>/dev/null | wc -l | tr -d ' ')
+MCP_COUNT=$(find "${TARGET_DIR}/mcp-servers" -type f 2>/dev/null | wc -l | tr -d ' ')
 
 echo "  Changes: ${CHANGES}"
 echo ""
-echo "  Slash commands:   ${CMD_COUNT}"
+echo "  Slash commands:   ${CMD_COUNT} (target: 20)"
 echo "  Hook scripts:     ${HOOK_COUNT}"
 echo "  MCP servers:      ${MCP_COUNT} file(s)"
 echo "  Settings:         $([ -f "${TARGET_DIR}/.claude/settings.json" ] && echo 'installed' || echo 'MISSING')"
 echo "  Context filter:   $([ -f "${TARGET_DIR}/.claudeignore" ] && echo 'installed' || echo 'MISSING')"
 echo "  Memory:           $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo 'installed' || echo 'MISSING')"
+echo "  Codex review:     $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo 'installed' || echo 'MISSING')"
+echo "  Teaching log:     $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo 'installed' || echo 'MISSING')"
+echo "  Version:          $([ -f "${TARGET_DIR}/.ak-cogos-version" ] && cat "${TARGET_DIR}/.ak-cogos-version" || echo 'MISSING')"
+
+if [[ "$CMD_COUNT" -ne 20 && "$DRY_RUN" == false ]]; then
+  echo ""
+  echo "  [WARN] Expected exactly 20 commands, found ${CMD_COUNT}"
+  echo "         Run 'ls ${TARGET_DIR}/.claude/commands/' to investigate"
+  WARNINGS+=("Command count mismatch: expected 20, got ${CMD_COUNT}")
+fi
 
 if [[ ${#WARNINGS[@]} -gt 0 ]]; then
   echo ""
@@ -570,6 +660,7 @@ echo ""
 
 if [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
+  echo "Add --force to overwrite existing files."
 fi
 
 echo ""
@@ -580,6 +671,8 @@ echo "  $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo '[x]' || echo '[ ]') m
 echo "  $([ -d "${TARGET_DIR}/scripts/hooks" ] && echo '[x]' || echo '[ ]') scripts/hooks/ — enforcement hook scripts"
 echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]') ANTI-SYCOPHANCY.md — standing instruction"
 echo "  $([ -d "${TARGET_DIR}/mcp-servers" ] && echo '[x]' || echo '[ ]') mcp-servers/ — state machine + audit log MCP servers"
+echo "  $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo '[x]' || echo '[ ]') tasks/codex-review.md — Codex review file"
+echo "  $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo '[x]' || echo '[ ]') memory/teaching-log.md — teaching log"
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -588,13 +681,6 @@ echo ""
 
 TODO_CHECK="${TARGET_DIR}/tasks/todo.md"
 if [[ -f "$TODO_CHECK" ]]; then
-  # Check for non-ARCHIVED tasks (indicates active project).
-  # Covers all known task formats across projects:
-  #   canonical:  ## [TASK-001] or ### TASK-001
-  #   checkbox:   - [ ] TASK-001 or - [x] TASK-001
-  #   AKR-style:  #### AKR-01 —
-  #   phase-based: ### Phase N or ### Sprint-N
-  #   pending section: ## PENDING TASKS
   ACTIVE_TASKS="$(grep -cE '^##+ \[?TASK-[0-9]+\]?|^\- \[[ x]\] TASK-[0-9]+|^#### [A-Z]+-[0-9]+|^### (Phase|Sprint)[- ][0-9]|^## PENDING TASKS' "$TODO_CHECK" 2>/dev/null || true)"
   if [[ "$ACTIVE_TASKS" -gt 0 ]]; then
     echo ""
@@ -606,7 +692,5 @@ if [[ -f "$TODO_CHECK" ]]; then
     echo "Recommended: Run mid-build recovery flow."
     echo "See: guides/12-mid-build-recovery.md"
     echo ""
-    echo "Quick start:"
-    echo "  ~/AK-Cognitive-OS/scripts/new-session.sh <session_id> <sprint_id> architect --mode recovery"
   fi
 fi

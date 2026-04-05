@@ -92,6 +92,8 @@ EXEMPT_TOKENS = {
     "AUDIT_LOG_PATH",  # canonical path placeholder; projects override via CLAUDE.md
     "SCAFFOLD",        # intentional output label in architect.md templates
     "UNVERIFIED",      # intentional output label in researcher-news.md templates
+    "NNN",             # task/risk number pattern label (TASK-[NNN], RISK-[NNN])
+    "VERDICT",         # codex-read verdict routing label
 }
 placeholder_re = re.compile(r'\[([A-Z][A-Z_]{2,})\]')
 

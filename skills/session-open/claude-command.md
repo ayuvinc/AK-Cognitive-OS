@@ -72,6 +72,8 @@ failures: []
 warnings: []
 artifacts_written: []
 next_action: "<what to run next>"
+manual_action: NONE
+override: "NOT_OVERRIDABLE — session must open cleanly before any task work"
 extra_fields:
   standup_lines: ["line1", "line2", "line3"]
 ```

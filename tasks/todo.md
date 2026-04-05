@@ -123,7 +123,7 @@ RULES:
 
 <!-- TASK-030 -->
 ## [TASK-030] Write guides/14-risk-tier-selection.md
-- Status: PENDING
+- Status: READY_FOR_QA
 - Branch: feature/TASK-030-tier-selection-guide
 - BA sign-off: N/A
 - UX sign-off: N/A

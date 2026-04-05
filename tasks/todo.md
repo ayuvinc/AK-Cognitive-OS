@@ -1,9 +1,9 @@
 ## SESSION STATE
-Status:         CLOSED
-Active task:    none
-Active persona: none
+Status:         OPEN
+Active task:    v3.0 Phase 6 — Operating Model documents (STEP-22, 23, 24)
+Active persona: Architect
 Blocking issue: none
-Last updated:   2026-04-05T09:15:00Z — Session 7 close (planning session — 8 tasks deferred to Session 8)
+Last updated:   2026-04-05T00:00:00Z — Session 9 open
 
 ---
 
@@ -55,7 +55,7 @@ Phase 11 (global cleanup) → Phase 12 (verification)
 
 <!-- TASK-016 -->
 ## [TASK-016] Write framework/governance/delivery-lifecycle.md
-- Status: PENDING
+- Status: QA_APPROVED
 - Branch: feature/TASK-016-delivery-lifecycle
 - BA sign-off: N/A
 - UX sign-off: N/A
@@ -73,7 +73,7 @@ Phase 11 (global cleanup) → Phase 12 (verification)
 
 <!-- TASK-017 -->
 ## [TASK-017] Write framework/governance/stage-gates.md
-- Status: PENDING
+- Status: QA_APPROVED
 - Branch: feature/TASK-017-stage-gates
 - BA sign-off: N/A
 - UX sign-off: N/A
@@ -187,6 +187,31 @@ Phase 11 (global cleanup) → Phase 12 (verification)
   - [ ] AC-6: Contract change does not break existing session-close hook or audit-log integration
 - QA Notes:
 <!-- /TASK-023 -->
+
+<!-- TASK-024 -->
+## [TASK-024] Write framework/governance/default-workflows.md
+- Status: QA_APPROVED
+- Branch: feature/TASK-024-default-workflows
+- BA sign-off: N/A
+- UX sign-off: N/A
+- Spec: Create `framework/governance/default-workflows.md` defining standard execution paths per project type. Must cover exactly 4 workflow types: (1) greenfield SaaS, (2) AI/RAG project, (3) regulated app (HIPAA/pharma/fintech), (4) internal tool. For each workflow type: list which lifecycle stages are required vs optional, which stage gates are hard-stop vs advisory, and the recommended operating tier. Cross-reference `framework/governance/delivery-lifecycle.md` for stage names and `framework/governance/stage-gates.md` for gate names.
+- Architect Notes: This is the third and final Phase 6 doc (STEP-24 in framework-upgrade-plan.md). Depends on TASK-016 (lifecycle) and TASK-017 (stage-gates) being complete — stage names and gate names must be referenced exactly. Present each workflow as a stage map table: rows = lifecycle stages, columns = required/optional/skip per workflow type. Hard vs soft gate distinction follows stage-gates.md definitions — do not invent new gate classifications. Keep workflow descriptions declarative. The "regulated app" type maps to High-Risk tier; the others map to Standard or MVP as noted in operating-tiers.md (placeholder reference OK for now).
+- Acceptance Criteria:
+  - [ ] AC-1: File exists at `framework/governance/default-workflows.md`
+  - [ ] AC-2: Exactly 4 workflow types documented: greenfield SaaS, AI/RAG, regulated app, internal tool — no missing types, no extras
+  - [ ] AC-3: Each workflow's stage map table has exactly 3 data columns: Stage Status (required/optional/skip), Gate Type (hard/soft/none), and Recommended Tier — no columns missing, no extra columns added
+  - [ ] AC-4: Stage names used in stage maps match `framework/governance/delivery-lifecycle.md` exactly — no renamed or invented stages (verify by direct string comparison after TASK-016 merges)
+  - [ ] AC-5: Gate names referenced match `framework/governance/stage-gates.md` exactly — no renamed or invented gates (verify by direct string comparison after TASK-017 merges)
+  - [ ] AC-6: Stage map for each workflow is presented as a markdown table (pipe-delimited) — no free-form prose stage maps
+  - [ ] AC-7: "Regulated app" workflow type maps to High-Risk tier; internal tool maps to MVP or Standard — documented in the tier recommendation column
+  - [ ] AC-8: File passes `validate-framework.sh` without adding new FAIL lines
+  - [ ] AC-9: Each workflow's stage map table has exactly 11 rows — one per lifecycle stage, no stages omitted, no extra rows
+  - [ ] AC-10: Stage Status column values are constrained to exactly three values: `required`, `optional`, or `skip` — no other values, no blanks, no abbreviations
+- QA Notes:
+  - AC-4 and AC-5 are cross-reference checks — only verifiable after TASK-016 and TASK-017 are merged to branch. Junior Dev must self-verify these before marking READY_FOR_QA. Do not mark READY_FOR_QA until both dependency tasks are complete.
+  - TASK-024 is last in the Phase 6 dependency chain — do not start until TASK-016 and TASK-017 feature branches are merged.
+  - AC-3 replaces the original broad phrasing; the 3-column constraint is the testable form of the original "includes stage map, gate classification, and tier" requirement.
+<!-- /TASK-024 -->
 
 <!-- TASK-022 -->
 ## [TASK-022] Harden validate-framework.sh for v3.0 Alpha governance files

@@ -2,7 +2,7 @@
 
 A portable, file-based multi-persona development framework for building software with Claude Code and Codex.
 
-Status: **v2.1.0** — conversation-first planning, artifact-driven execution, native Claude Code integration, enforcement hooks, bootstrap/remediation flows, and framework validation.
+Status: **v3.0** — 20 rationalized commands, three-layer enforcement (hooks + commands + governance docs), operating tier awareness (MVP / Standard / High-Risk), canonical 11-stage lifecycle, and machine-enforced governance.
 
 ---
 
@@ -44,6 +44,34 @@ Personas and skills are defined in `personas/` and `skills/`. Every artifact bel
 
 ---
 
+## The 20 Commands (v3.0)
+
+```
+Session:      /session-open  /session-close  /compact-session
+Personas:     /architect  /ba  /junior-dev  /qa  /ux  /designer
+Quality:      /qa-run  /security-sweep  /compliance
+Research:     /researcher
+Codex:        /codex-prep  /codex-read
+Intelligence: /teach-me  /lessons-extractor  /risk-manager
+Utility:      /audit-log  /check-channel
+```
+
+---
+
+## Operating Tiers
+
+Every project runs at one of three tiers. The tier controls which gates are enforced:
+
+| Tier | Who it's for | Planning gates | Compliance gate |
+|---|---|---|---|
+| **MVP** | Prototypes, experiments, internal tools | Advisory | No |
+| **Standard** | Most real-world projects (default) | Enforced | No |
+| **High-Risk** | Regulated, sensitive data, high-stakes | Enforced | Yes (every stage) |
+
+Set `Tier:` in your project's `CLAUDE.md`. See `guides/14-risk-tier-selection.md`.
+
+---
+
 ## Start Here
 
 New? Start with these four files in order:
@@ -72,7 +100,7 @@ git clone https://github.com/ayuvinc/AK-Cognitive-OS.git ~/AK-Cognitive-OS
 # 2. Install all personas + skills into Claude
 ~/AK-Cognitive-OS/scripts/install-claude-commands.sh --backup
 
-# 3. Bootstrap your project with v2.1.0 native Claude Code files
+# 3. Bootstrap your project with v3.0 native Claude Code files
 ~/AK-Cognitive-OS/scripts/bootstrap-project.sh ~/[your-project]
 
 # 4. Validate the framework repo itself
@@ -82,13 +110,15 @@ bash scripts/validate-framework.sh
 
 Then move into your target project, review `CLAUDE.md`, and open Claude Code.
 
-## What v2.1.0 Adds
+## What v3.0 Adds
 
-- native Claude Code settings at repo root and in the project template
-- enforcement hooks for session state, persona boundaries, push protection, and envelope validation
-- bootstrap and remediation support for `.claude/`, `.claudeignore`, `memory/`, and hook scripts
-- packaging metadata for `npx ak-cognitive-os`
-- expanded framework validation from 9 checks to 14 checks
+- 20 rationalized commands — clean, purposeful, no duplicates (retired sprint-packager, regression-guard, handoff-validator, codex-creator, codex-delta-verify, framework-delta-log)
+- Three-layer enforcement: hooks (runtime), commands (role contracts), governance docs (policy)
+- Operating tier system — MVP / Standard / High-Risk with tier-appropriate gate enforcement
+- Canonical 11-stage delivery lifecycle with formal stage-gate documents
+- Artifact ownership map — every file has an owner; personas blocked from touching what isn't theirs
+- Machine-enforced governance — validators/governance.py auto-discovered by runner.py; governance FAIL blocks push to main
+- Expanded framework validation from 14 checks to 20 structural checks + semantic lint
 
 ---
 
@@ -239,17 +269,28 @@ Two entry paths: **greenfield** (new projects, Guide 11) and **recovery** (mid-b
 
 ## Enforcement Layer
 
-`v2.1.0` adds runtime guardrails through Claude Code hooks:
+v3.0 enforcement runs through three layers. All three must be installed for enforcement to hold:
 
-- `guard-session-state.sh`
-- `guard-persona-boundaries.sh`
-- `guard-git-push.sh`
-- `auto-audit-log.sh`
-- `auto-persona-detect.sh`
-- `session-integrity-check.sh`
-- `validate-envelope.sh`
+**Layer 1 — Hooks** (`settings.json` → `scripts/hooks/`)
+Claude Code runtime executes these before and after tool calls. Claude cannot bypass them.
+Enforces: session state transitions, persona boundaries, push protection, envelope validation, governance gates.
 
-These are intended to reduce drift between documented process and actual session behavior.
+**Layer 2 — Commands** (`.claude/commands/`)
+20 commands loaded by the project. Claude reads and follows WHO YOU ARE / CAN / CANNOT rules.
+Enforces: role boundaries, output contracts, escalation paths.
+
+**Layer 3 — Governance Docs** (`framework/governance/`)
+Referenced by commands and CLAUDE.md. Defines what to enforce and when.
+Enforces: lifecycle stages, stage gates, artifact ownership, operating tiers, change policy.
+
+Hook scripts (wired via `settings.json`):
+- `guard-session-state.sh` — blocks unauthorized SESSION STATE writes
+- `guard-persona-boundaries.sh` — blocks out-of-boundary artifact writes
+- `guard-git-push.sh` — blocks push to main without QA_APPROVED + governance pass
+- `auto-audit-log.sh` — appends audit entries automatically
+- `auto-persona-detect.sh` — detects active persona from context
+- `session-integrity-check.sh` — warns on unclosed sessions + advisory checks
+- `validate-envelope.sh` — validates output envelope on every agent response
 
 ---
 

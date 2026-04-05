@@ -8,8 +8,8 @@ Get a new project running with full Claude + Codex role parity in 15 minutes.
 
 - **6 delivery personas**: Architect, BA, UX, Designer, Junior Dev, QA
 - **2 router personas**: Researcher (5 specialists), Compliance (4 specialists)
-- **12 mechanical skills**: session lifecycle, gating, CI/QA execution, security sweep, sprint packaging
-- **4 advisory/meta skills**: framework health, lessons, delta tracking, Codex scaffolding
+- **20 commands total** — session lifecycle (`/session-open`, `/session-close`, `/compact-session`), quality (`/qa-run`, `/security-sweep`), intelligence (`/teach-me`, `/risk-manager`, `/lessons-extractor`), Codex (`/codex-prep`, `/codex-read`), utility (`/audit-log`, `/check-channel`)
+- **Three enforcement layers**: hooks (runtime guardrails), commands (role contracts), governance docs (policy)
 - Structured output contracts for every agent
 - An audit trail that persists across sessions
 - Optional Codex review integration
@@ -154,7 +154,7 @@ Then open Claude:
 cd ~/[your-project] && claude
 ```
 
-Paste the command block. Architect will read your CLAUDE.md, confirm no blockers, and set SESSION STATE to OPEN.
+Then run `/session-open` — Architect will read your CLAUDE.md, confirm no blockers, and set SESSION STATE to OPEN.
 
 Read `project-template/CLAUDE_START.md` for the full first-run sequence and troubleshooting tips.
 
@@ -183,6 +183,20 @@ Tell the Architect what you're building in plain language. The framework handles
 the rest — BA → UX → Architect → Junior Dev → QA → merge.
 
 See `guides/04-first-sprint.md` for the full walkthrough.
+
+---
+
+## Step 9 — Close Your Session
+
+When you are done for the day, always run `/session-close` before exiting Claude Code:
+
+```
+/session-close
+```
+
+This writes the SESSION_CLOSED audit entry, updates `tasks/next-action.md` with the next persona
+and task, and pushes to the remote branch. Exiting without running `/session-close` leaves
+SESSION STATE as OPEN — the `session-integrity-check.sh` hook will warn you on exit.
 
 ---
 

@@ -306,7 +306,71 @@ else
   fail "project-template/.claude/settings.json not found"
 fi
 
-# 19) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
+# 19) Artifact-map consistency check — all non-CREATED-ON-DEMAND paths exist in project-template/ (STEP-44)
+MISSING_ARTIFACTS="$(ROOT="$ROOT" python3 - <<'PYEOF'
+import sys, os
+root = os.environ.get('ROOT', '.')
+missing = []
+try:
+    with open(os.path.join(root, 'framework/governance/artifact-map.md')) as f:
+        in_inventory = False
+        for line in f:
+            stripped = line.strip()
+            if '## Artifact Inventory' in stripped:
+                in_inventory = True
+                continue
+            if in_inventory and stripped.startswith('##'):
+                break
+            if not in_inventory or not stripped.startswith('|'):
+                continue
+            cols = [c.strip() for c in stripped.split('|')]
+            if len(cols) < 4:
+                continue
+            name = cols[1]
+            path = cols[2]
+            if not name or not path or name.startswith('Artifact') or path.startswith('-') or path.startswith('Path'):
+                continue
+            if 'CREATED-ON-DEMAND' in path or '*' in path:
+                continue
+            check = os.path.join(root, 'project-template', path)
+            if not os.path.exists(check):
+                missing.append(f'{name} (expected: project-template/{path})')
+except Exception as e:
+    print(f'ERROR reading artifact-map.md: {e}', file=sys.stderr)
+for m in missing:
+    print(m)
+PYEOF
+)"
+if [[ -n "$MISSING_ARTIFACTS" ]]; then
+  echo "[FAIL] Artifacts missing from project-template/:"
+  echo "$MISSING_ARTIFACTS" | while IFS= read -r line; do echo "       - ${line}"; done
+  exit 1
+fi
+echo "[OK] All artifact-map.md paths present in project-template/"
+
+# 20) Governance completeness check — governance docs and guides all present (STEP-45)
+GOV_DOCS=("artifact-map.md" "artifact-ownership.md" "change-policy.md" "default-workflows.md" \
+          "delivery-lifecycle.md" "metrics-tracker.md" "operating-tiers.md" "release-policy.md" \
+          "role-design-rules.md" "role-taxonomy.md" "stage-gates.md" "versioning-policy.md")
+GOV_MISSING=""
+for doc in "${GOV_DOCS[@]}"; do
+  [[ -f "${ROOT}/framework/governance/${doc}" ]] || GOV_MISSING="${GOV_MISSING} ${doc}"
+done
+if [[ -n "$GOV_MISSING" ]]; then
+  fail "Governance docs missing from framework/governance/:${GOV_MISSING}"
+fi
+echo "[OK] All 12 governance docs present in framework/governance/"
+
+GUIDE_MISSING=""
+for i in $(seq -w 0 14); do
+  ls "${ROOT}/guides/${i}-"*.md 2>/dev/null | grep -q . || GUIDE_MISSING="${GUIDE_MISSING} ${i}"
+done
+if [[ -n "$GUIDE_MISSING" ]]; then
+  fail "Guides missing from guides/ (numeric prefix):${GUIDE_MISSING}"
+fi
+echo "[OK] All 15 guides present in guides/ (00-14)"
+
+# 21) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
 ROOT="$ROOT" bash "${ROOT}/scripts/validate-contracts.sh"
 
-echo "[PASS] Framework validation complete (18 structural checks + semantic lint)"
+echo "[PASS] Framework validation complete (20 structural checks + semantic lint)"

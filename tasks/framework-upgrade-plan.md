@@ -291,14 +291,14 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 11 — Non-Coder Mode + Docs (v3.0 WS9 + WS12)
 > Deliverable: Framework explains itself; non-coders have an explicit safe path
 
-- [ ] STEP-41  Write guides/13-non-coder-mode.md
+- [x] STEP-41  Write guides/13-non-coder-mode.md
                Content: What non-coders can safely build, minimum workflow,
                when to escalate for technical oversight, which gates apply
                Tier: maps to MVP tier (non-coder projects are always MVP)
                Success: Guide covers decision criteria and safe workflow clearly
                Depends on: STEP-32
 
-- [ ] STEP-42  Update README.md and QUICKSTART.md
+- [x] STEP-42  Update README.md and QUICKSTART.md
                Changes: reflect v3.0 lifecycle, tier system, 20-command set, hook enforcement
                Remove: references to retired commands or old framework version
                Success: A new user reading README can start a v3.0 project correctly
@@ -315,13 +315,13 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: Missing tier or hook is flagged as FAIL
                Depends on: STEP-34, STEP-31
 
-- [ ] STEP-44  Add artifact-map consistency check to validate-framework.sh
+- [x] STEP-44  Add artifact-map consistency check to validate-framework.sh
                Check: all artifacts listed in artifact-map.md exist as paths in project-template or tasks/
                Check: every persona CAN list matches artifact-ownership.md owner entries
                Success: Ownership inconsistencies caught automatically
                Depends on: STEP-25, STEP-26
 
-- [ ] STEP-45  Add governance completeness check to validate-framework.sh
+- [x] STEP-45  Add governance completeness check to validate-framework.sh
                Check: all 8 governance docs exist in framework/governance/
                Check: all 14 guides exist in guides/
                Success: Missing governance artifacts caught before project deployment
@@ -332,7 +332,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 13 — v3.0 Source Sign-off
 > Deliverable: Framework validated at v3.0 standard, version stamped, AK approval to deploy
 
-- [ ] STEP-46  Run validate-framework.sh — must PASS with all v3.0 checks active
+- [x] STEP-46  Run validate-framework.sh — must PASS with all v3.0 checks active
                Command: bash scripts/validate-framework.sh
                Success: Exit 0, no FAIL lines
                Depends on: STEP-45
@@ -535,9 +535,9 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 9 — Operating Tiers | 4 | 4 | 0 |
 | Phase 10 — Taxonomy + Governance | 5 | 5 | 0 |
 | Phase 10.5 — Governance Enforcement | 1 | 1 | 0 |
-| Phase 11 — Non-Coder + Docs | 2 | 0 | 2 |
-| Phase 12 — Validation Hardening | 3 | 1 | 2 |
-| Phase 13 — v3.0 Source Sign-off | 4 | 0 | 4 |
+| Phase 11 — Non-Coder + Docs | 2 | 2 | 0 |
+| Phase 12 — Validation Hardening | 3 | 3 | 0 |
+| Phase 13 — v3.0 Source Sign-off | 4 | 1 | 3 |
 | Phase 14 — Pharma-Base | 4 | 0 | 4 |
 | Phase 15 — forensic-ai | 4 | 0 | 4 |
 | Phase 16 — policybrain | 5 | 0 | 5 |
@@ -545,7 +545,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **77** | **42** | **35** |
+| **TOTAL** | **77** | **47** | **30** |
 
 ---
 

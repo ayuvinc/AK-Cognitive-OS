@@ -163,7 +163,7 @@ RULES:
 
 <!-- TASK-032 -->
 ## [TASK-032] Update bootstrap-project.sh — tier-aware + v3.0 intake
-- Status: PENDING
+- Status: READY_FOR_QA
 - Branch: feature/TASK-032-bootstrap-tier-aware
 - BA sign-off: N/A
 - UX sign-off: N/A

@@ -15,7 +15,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="2.0.0"
+VERSION="3.0.0"
 
 # ---------------------------------------------------------------------------
 # Argument validation
@@ -91,6 +91,7 @@ PROJECT_NAME="[PROJECT_NAME]"
 OWNER_NAME="[OWNER_NAME]"
 PRODUCT_DESC="[One line: what this product does]"
 TECH_STACK="[Framework], [Language], [DB], [Auth], [AI SDK if applicable]"
+PROJECT_TIER="Standard"
 RISK_LEVEL=""
 COMPLIANCE_REQS=""
 AI_FEATURES=""
@@ -122,6 +123,20 @@ if [[ "$INTERACTIVE" == true ]]; then
 
   read -rp "  Tech stack [e.g. React, Node, PostgreSQL]: " input
   [[ -n "$input" ]] && TECH_STACK="$input"
+
+  # Tier selection — determines which enforcement gates are active
+  while true; do
+    read -rp "  Project tier [MVP/Standard/High-Risk]? [default: Standard]: " input
+    if [[ -z "$input" ]]; then
+      PROJECT_TIER="Standard"
+      break
+    elif [[ "$input" =~ ^(MVP|Standard|High-Risk)$ ]]; then
+      PROJECT_TIER="$input"
+      break
+    else
+      echo "  ERROR: Invalid tier '${input}'. Must be MVP, Standard, or High-Risk."
+    fi
+  done
 
   read -rp "  Risk level (low/medium/high/regulated): " input
   [[ -n "$input" ]] && RISK_LEVEL="$input"
@@ -215,6 +230,9 @@ if [[ "$INTERACTIVE" == true && -f "${TARGET_DIR}/CLAUDE.md" ]]; then
   sed -i.bak "s|\[OWNER_NAME\]|${OWNER_NAME}|g" "${TARGET_DIR}/CLAUDE.md"
   sed -i.bak "s|\[OWNER\]|${OWNER_NAME}|g" "${TARGET_DIR}/CLAUDE.md"
   sed -i.bak "s|\[AUDIT_LOG_PATH\]|${AUDIT_LOG_PATH}|g" "${TARGET_DIR}/CLAUDE.md"
+  # Apply tier — replaces the default 'Tier: Standard' from the template with the user-selected value
+  # The tier value is a literal string (never executed), matched at line start to avoid false positives
+  sed -i.bak "s|^Tier: Standard|Tier: ${PROJECT_TIER}|" "${TARGET_DIR}/CLAUDE.md"
   rm -f "${TARGET_DIR}/CLAUDE.md.bak"
 
   # Append intake summary if risk level was provided (idempotent — skip if already present)

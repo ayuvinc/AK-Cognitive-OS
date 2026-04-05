@@ -103,7 +103,7 @@ RULES:
 
 <!-- TASK-029 -->
 ## [TASK-029] Write framework/governance/operating-tiers.md
-- Status: READY_FOR_QA
+- Status: QA_APPROVED
 - Branch: feature/TASK-029-operating-tiers
 - BA sign-off: N/A
 - UX sign-off: N/A
@@ -123,7 +123,7 @@ RULES:
 
 <!-- TASK-030 -->
 ## [TASK-030] Write guides/14-risk-tier-selection.md
-- Status: READY_FOR_QA
+- Status: QA_APPROVED
 - Branch: feature/TASK-030-tier-selection-guide
 - BA sign-off: N/A
 - UX sign-off: N/A
@@ -143,7 +143,7 @@ RULES:
 
 <!-- TASK-031 -->
 ## [TASK-031] Add Tier field to project-template/CLAUDE.md
-- Status: READY_FOR_QA
+- Status: QA_APPROVED
 - Branch: feature/TASK-031-template-tier-field
 - BA sign-off: N/A
 - UX sign-off: N/A
@@ -163,7 +163,7 @@ RULES:
 
 <!-- TASK-032 -->
 ## [TASK-032] Update bootstrap-project.sh — tier-aware + v3.0 intake
-- Status: READY_FOR_QA
+- Status: QA_APPROVED
 - Branch: feature/TASK-032-bootstrap-tier-aware
 - BA sign-off: N/A
 - UX sign-off: N/A

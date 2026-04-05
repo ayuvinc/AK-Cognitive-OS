@@ -1,52 +1,49 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-05T11:01:00Z — Architect (Session 11 — Phase 8 design complete)
+2026-04-05T12:25:00Z — qa-run (Session 12 — Phase 9 QA complete)
 
 ## Current Session
 - Status: SESSION OPEN
-- Session ID: 11
+- Session ID: 12
 - Sprint: v3-delivery
-- Active persona: Architect → dispatching to QA
-- Next task: QA — write AC for TASK-026, TASK-027, TASK-028
+- Active persona: Architect (dispatched for review and merge)
+- Next task: Architect merges TASK-029, TASK-030, TASK-031 to main; holds TASK-032 for AK approval
 
 ## Standup
-- Done: Session 10 Phase 7 complete (artifact-map.md, artifact-ownership.md, design-system.md placeholder, audit-log.md placeholder). 27/76 steps done.
-- Next: Phase 8 — Enforcement Layer. 3 new hook tasks (TASK-026, 027, 028).
-- Blockers: none
+- Done: Phase 9 built and QA_APPROVED — all 32 criteria passed (8/8 per task).
+- Next: Architect merges approved tasks; TASK-032 held for AK gate (STEP-35).
+- Blockers: TASK-032 AK approval gate (must not merge until AK approves bootstrap intake flow)
 
-## Phase 8 Task Plan
+## Phase 9 QA Results
 
-| ID | Title | Status | STEP | Depends On |
+| ID | Title | Status | AC | Result |
 |---|---|---|---|---|
-| TASK-026 | guard-planning-artifacts.sh + settings.json update | PENDING | STEP-28, STEP-31 | — |
-| TASK-027 | guard-git-push.sh security/compliance gate | PENDING | STEP-29 | — |
-| TASK-028 | session-integrity-check.sh full closeout validation | PENDING | STEP-30 | — |
+| TASK-029 | framework/governance/operating-tiers.md | QA_APPROVED | 8/8 | PASS |
+| TASK-030 | guides/14-risk-tier-selection.md | QA_APPROVED | 8/8 | PASS |
+| TASK-031 | project-template/CLAUDE.md — Tier field | QA_APPROVED | 8/8 | PASS |
+| TASK-032 | bootstrap-project.sh — tier-aware + v3.0 | QA_APPROVED | 8/8 | PASS — AK GATE |
 
-## Architecture Constraints
+**Total: 32/32 criteria passed. 0 failures.**
 
-1. All three hook changes are ADDITIVE — no existing logic in any script is modified or removed
-2. TASK-026: scoped to ACTIVE_PERSONA=junior-dev only; Architect + BA must not be blocked
-3. TASK-026: tier check reads `CLAUDE.md` for `Tier:` field; missing Tier defaults to Standard (enforce)
-4. TASK-026: path exclusions prevent blocking writes to tasks/, docs/, framework/, .claude/, scripts/, etc.
-5. TASK-027: new block appended AFTER line 83 of guard-git-push.sh (after codex block, before exit 0)
-6. TASK-027: reads risk-register.md; OPEN + Category: Security → block; MVP tier → skip
-7. TASK-028: all 3 new checks are advisory (exit 0); independent if-blocks so one failure doesn't suppress others
-8. settings.json: guard-planning-artifacts.sh added to PreToolUse Write|Edit block → 3 hooks in that block
-9. No schema changes, no new personas, no governance doc changes in Phase 8
+## QA_APPROVED AC Highlights
 
-## Stage-Gates.md Traceability
+**TASK-029:** All 3 tiers defined with gate tables. MVP exemption explicitly scoped to planning-docs gate + compliance gate only. Session/audit/git-push guards confirmed active at MVP. High-Risk compliance + risk-register per-stage confirmed.
 
-| TASK | Stage-Gate Row | Was | After |
-|---|---|---|---|
-| TASK-026 | Pre-Implementation Gate rows 1-3 | MANUAL [TODO: STEP-28] | MECHANICAL |
-| TASK-027 | Pre-Release Gate rows 4-5 | MANUAL [TODO: STEP-29] | MECHANICAL |
-| TASK-028 | Pre-Closeout Gate rows 4-5 | MANUAL [TODO: STEP-30] | MECHANICAL (advisory) |
+**TASK-030:** 3 decision questions with binary Yes-if criteria. All 4 project-type examples present. AI/RAG correctly shows both Standard + High-Risk paths with data-sensitivity condition. Mid-project change includes both edit-CLAUDE.md + run-remediate steps. AK approval warning for High-Risk downgrade explicit.
+
+**TASK-031:** `Tier: Standard` at line start (line 4), before first `---` (line 6). Hook parse verified: `awk '{print $2}'` returns `Standard`. guard-planning-artifacts.sh in Hooks table, scoped to Standard + High-Risk. Zero deletions of existing content.
+
+**TASK-032:** All 3 valid tier values generate correct Tier field. Empty input defaults to Standard. Invalid input shows error and re-prompts. design-system.md created. All 3 new hooks deployed. `read -r` confirmed. VERSION = 3.0.0.
+
+## AK Approval Gate
+- TASK-032 (bootstrap-project.sh): QA_APPROVED but **NOT ready to merge** — AK must review bootstrap intake flow before merge (STEP-35 explicit gate)
+- Architect will note this in next-action.md
+
+## Deferred Tasks (still in queue)
+- TASK-018, TASK-020, TASK-021, TASK-022
 
 ## Last Agent Run
-- 2026-04-05T11:01:00Z — Architect — Phase 8 design + TASK-026/027/028 written
-
-## Pipeline / Build Queue
-- Status: AWAITING QA — AC needed for TASK-026, TASK-027, TASK-028
+- 2026-04-05T12:25:00Z — qa-run — 32/32 AC passed, all 4 tasks QA_APPROVED, Architect dispatched
 
 ## Open Risks: 0

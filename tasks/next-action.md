@@ -1,30 +1,25 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: architect
-TASK:         v3.0 delivery complete — merge chore/v3-framework-upgrade branches on GitHub
-CONTEXT:      STEP-76 AK approval granted 2026-04-05. 77/77 done.
-              All 5 projects on v3.0.0. validators/runner.py 5/5 PASS.
+TASK:         Resume project work — v3.0 delivery complete
+CONTEXT:      Session 17 closed. 77/77 steps done. All 5 projects on v3.0.0.
+              GitHub artifacts updated (README, SECURITY, CONTRIBUTING, CHANGELOG,
+              issue templates, PR template, CI workflow).
+              All branches merged to main on GitHub.
 
-              Remaining manual actions (not tracked as steps):
-                1. Merge chore/v3-framework-upgrade → main on GitHub for:
-                   - ayuvinc/Pharma-Base
-                   - ayuvinc/forensic-ai
-                   - ayuvinc/policybrain
-                   - ayuvinc/Transplant-workflow
-                   (mission-control is local only — no remote merge needed)
+              Next priorities (in order):
+                1. Transplant-workflow — next active sprint
+                   Open remaining tasks (TASK-297+ area), continue feature build
+                2. Pharma-Base — Session 4
+                   Fix channel.md format (still using v2 session: field format internally)
+                   Continue TASK-003 data ingestion pipeline
+                3. AK-Cognitive-OS source — push chore/v2.2-framework-foundation to main
+                   (already done this session)
 
-                2. Transplant-workflow Session N:
-                   - Confirm planning docs are now flagged correctly (done this session)
-                   - Add remaining tasks to traceability-matrix.md
-                   - Continue TASK-296 onwards
+              No open AK gates. No blocked steps. No open risks.
 
-                3. framework-improvements.md source fix already applied:
-                   - remediate-project.sh Step 6 now deploys framework-improvements.md
-                   - governance.py path bug fixed
-                   - Both fixes are in source on chore/v2.2-framework-foundation branch
-
-COMMAND:      none — delivery complete
+COMMAND:      /session-open (in target project)
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Merge branches on GitHub, then resume project work
+NEXT_FOCUS:    Resume project delivery
 BLOCKERS:      none
 PLAN_FILE:     tasks/framework-upgrade-plan.md (77/77 COMPLETE)

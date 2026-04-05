@@ -27,8 +27,8 @@ if ! echo "$COMMAND" | grep -qE '^\s*git\s+push'; then
   exit 0
 fi
 
-# Block force push always
-if echo "$COMMAND" | grep -qE '\-\-force|\-f'; then
+# Block force push always (match flag -f or --force, not substrings like -framework)
+if echo "$COMMAND" | grep -qE '(^|\s)--force(\s|$)|(^|\s)-f(\s|$)'; then
   echo "BLOCKED: Force push is not allowed. Use regular push only." >&2
   exit 2
 fi

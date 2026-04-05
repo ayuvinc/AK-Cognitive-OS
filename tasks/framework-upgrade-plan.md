@@ -274,6 +274,20 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 
 ---
 
+## PHASE 10.5 — Governance Enforcement (unplanned, delivered Session 14)
+> Deliverable: Phase 10 governance rules are machine-enforced at push time and session close
+
+- [x] STEP-40.5  Wire governance validator + hook enforcement
+                  Deliverables:
+                    validators/governance.py — 8 checks (doc presence, version stamp, placeholder scan)
+                    scripts/hooks/guard-git-push.sh — governance FAIL blocks main push (exit 2)
+                    scripts/hooks/session-integrity-check.sh — Advisory check 4 (governance WARN/FAIL)
+                  Success: governance.py auto-discovered by runner.py; push to main blocked on FAIL;
+                           session exit warns on WARN or FAIL (advisory only)
+                  Depends on: STEP-36..40 (governance docs must exist for checks to pass)
+
+---
+
 ## PHASE 11 — Non-Coder Mode + Docs (v3.0 WS9 + WS12)
 > Deliverable: Framework explains itself; non-coders have an explicit safe path
 
@@ -520,6 +534,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 8 — Enforcement Completion | 4 | 4 | 0 |
 | Phase 9 — Operating Tiers | 4 | 4 | 0 |
 | Phase 10 — Taxonomy + Governance | 5 | 5 | 0 |
+| Phase 10.5 — Governance Enforcement | 1 | 1 | 0 |
 | Phase 11 — Non-Coder + Docs | 2 | 0 | 2 |
 | Phase 12 — Validation Hardening | 3 | 1 | 2 |
 | Phase 13 — v3.0 Source Sign-off | 4 | 0 | 4 |
@@ -530,7 +545,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **41** | **35** |
+| **TOTAL** | **77** | **42** | **35** |
 
 ---
 

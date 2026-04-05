@@ -119,6 +119,34 @@ except Exception:
       echo "WARNING: tasks/risk-register.md not found — security risk gate skipped." >&2
     fi
   fi
+
+  # Governance gate — checks Phase 10 governance docs and version stamp.
+  # FAIL blocks push (exit 2); WARN allows push with a warning message.
+  # Runs only inside this targets_main block (non-main pushes are unaffected).
+  GOVERNANCE_OUTPUT="$(python3 -m validators.runner . --only governance --format json 2>/dev/null || echo "")"
+  GOVERNANCE_STATUS="$(echo "$GOVERNANCE_OUTPUT" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    results = data.get('results', [])
+    for r in results:
+        if r.get('name') == 'governance':
+            print(r.get('status', ''))
+            break
+except Exception:
+    pass
+" 2>/dev/null || echo "")"
+
+  if [[ "$GOVERNANCE_STATUS" == "FAIL" ]]; then
+    echo "BLOCKED: governance validator returned FAIL. Resolve governance issues before pushing to main." >&2
+    echo "         Run: python3 validators/runner.py . --only governance" >&2
+    exit 2
+  fi
+
+  if [[ "$GOVERNANCE_STATUS" == "WARN" ]]; then
+    echo "WARNING: governance validator returned WARN. Review governance issues before release." >&2
+    echo "         Run: python3 validators/runner.py . --only governance" >&2
+  fi
 fi
 
 exit 0

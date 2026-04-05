@@ -136,4 +136,32 @@ except Exception:
   fi
 fi
 
+# Advisory check 4: Governance
+# Warns if the governance validator returns WARN or FAIL.
+# Advisory only — never exits with non-zero code.
+GOVERNANCE_STATUS="$(python3 -m validators.runner . --only governance --format json 2>/dev/null | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+    results = data.get('results', [])
+    for r in results:
+        if r.get('name') == 'governance':
+            print(r.get('status', ''))
+            break
+except Exception:
+    pass
+" 2>/dev/null || echo "")"
+
+if [[ "$GOVERNANCE_STATUS" == "WARN" || "$GOVERNANCE_STATUS" == "FAIL" ]]; then
+  echo "" >&2
+  echo "================================================================" >&2
+  echo "  WARNING: Governance validator returned ${GOVERNANCE_STATUS}!" >&2
+  echo "================================================================" >&2
+  echo "" >&2
+  echo "  One or more governance checks did not pass." >&2
+  echo "  Run: python3 validators/runner.py . --only governance" >&2
+  echo "  Resolve before next release push to main." >&2
+  echo "================================================================" >&2
+fi
+
 exit 0

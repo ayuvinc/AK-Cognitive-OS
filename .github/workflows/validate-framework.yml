@@ -17,5 +17,21 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run framework validation
-        run: scripts/validate-framework.sh
+      - name: Run framework structural validation
+        run: bash scripts/validate-framework.sh
+
+      - name: Run Python validator suite (source)
+        run: python3 validators/runner.py .
+
+      - name: Smoke test — bootstrap fresh project
+        run: |
+          bash scripts/bootstrap-project.sh /tmp/ak-cogos-smoke --non-interactive
+          echo "Bootstrap exit: $?"
+
+      - name: Smoke test — dry-run remediation
+        run: |
+          bash scripts/remediate-project.sh /tmp/ak-cogos-smoke --dry-run
+          echo "Dry-run exit: $?"
+
+      - name: Run Python validator suite (bootstrapped project)
+        run: python3 validators/runner.py /tmp/ak-cogos-smoke

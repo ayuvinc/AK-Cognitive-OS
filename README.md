@@ -22,7 +22,7 @@ Both Claude and Codex are supported. The framework runs in three modes: `COMBINE
 
 ## The Team
 
-Personas and skills are defined in `personas/` and `skills/`. Every artifact belongs to one of five classes — see [`docs/role-taxonomy.md`](docs/role-taxonomy.md) for the full classification table and routing logic.
+Personas and skills are defined in `personas/` and `skills/`. Every artifact belongs to one of five classes — see [`framework/governance/role-taxonomy.md`](framework/governance/role-taxonomy.md) for the full classification table and routing logic.
 
 **Delivery personas** — own named roles in the delivery chain:
 | Command | Persona | Job |
@@ -34,13 +34,13 @@ Personas and skills are defined in `personas/` and `skills/`. Every artifact bel
 | `/junior-dev` | Junior Developer | Implementation, exact scope only |
 | `/qa` | QA Engineer | Acceptance criteria design, quality intent gate |
 
-**Router personas** — default entry points that delegate to specialists:
-| Command | Delegates to |
-|---|---|
-| `/researcher` | researcher-business, researcher-legal, researcher-news, researcher-policy, researcher-technical |
-| `/compliance` | compliance-data-privacy, compliance-data-security, compliance-phi-handler, compliance-pii-handler |
+**Router personas** — broad-scope personas that handle multi-domain requests internally:
+| Command | Persona | Job |
+|---|---|---|
+| `/researcher` | Researcher | Business, legal, news, policy, and technical research — unified |
+| `/compliance` | Compliance | Data privacy, security, PHI, and PII review — unified |
 
-**Skills** — mechanical (session lifecycle, gating, CI checks) and advisory/meta (framework health). Full list: [`docs/role-taxonomy.md`](docs/role-taxonomy.md).
+**Skills** — mechanical (session lifecycle, gating, CI checks) and advisory/meta (framework health). Full list: [`framework/governance/role-taxonomy.md`](framework/governance/role-taxonomy.md).
 
 ---
 
@@ -164,23 +164,20 @@ AK-Cognitive-OS/
 │   ├── researcher/                    ← + 5 sub-personas (legal, business, policy, news, technical)
 │   └── compliance/                    ← + 4 sub-personas + 4 jurisdiction docs
 │
-├── skills/                            ← 15 workflow skills (session lifecycle, sprint, QA, audit)
+├── skills/                            ← 14 workflow skills (session lifecycle, codex, QA, audit, intelligence)
 │   ├── _template/
-│   ├── session-open/
-│   ├── session-close/
-│   ├── sprint-packager/
-│   ├── review-packet/
-│   ├── codex-intake-check/
-│   ├── audit-log/
-│   ├── lessons-extractor/
-│   ├── framework-delta-log/
-│   ├── regression-guard/
-│   ├── security-sweep/
-│   ├── handoff-validator/
-│   ├── qa-run/
-│   ├── check-channel/
-│   ├── codex-creator/
-│   └── codex-delta-verify/
+│   ├── session-open/                  ← Opens session, writes SESSION STATE, standup
+│   ├── session-close/                 ← Closes session, archives tasks, audit entry
+│   ├── compact-session/               ← Context window compression without losing state
+│   ├── codex-prep/                    ← Pre-flight gate + sprint package for Codex review
+│   ├── codex-read/                    ← Routes Codex output: PASS → READY_FOR_QA, FAIL → REVISION
+│   ├── teach-me/                      ← Auto-triggered plain-language brief on task start
+│   ├── lessons-extractor/             ← Distills session corrections into lessons.md
+│   ├── risk-manager/                  ← Structured S0/S1/S2 risk tracking
+│   ├── security-sweep/                ← Security review at release gate
+│   ├── qa-run/                        ← Acceptance criteria verification
+│   ├── audit-log/                     ← Append-only audit entry writer
+│   └── check-channel/                 ← Reads channel.md and reports current sprint state
 │
 ├── schemas/
 │   ├── output-envelope.md             ← Universal 10-field contract
@@ -286,9 +283,14 @@ Enforces: lifecycle stages, stage gates, artifact ownership, operating tiers, ch
 Hook scripts (wired via `settings.json`):
 - `guard-session-state.sh` — blocks unauthorized SESSION STATE writes
 - `guard-persona-boundaries.sh` — blocks out-of-boundary artifact writes
+- `guard-planning-artifacts.sh` — blocks code writes when planning docs absent (Standard/High-Risk)
 - `guard-git-push.sh` — blocks push to main without QA_APPROVED + governance pass
 - `auto-audit-log.sh` — appends audit entries automatically
 - `auto-persona-detect.sh` — detects active persona from context
+- `auto-teach.sh` — triggers `/teach-me` when task goes IN_PROGRESS
+- `auto-codex-prep.sh` — triggers `/codex-prep` when task goes READY_FOR_REVIEW
+- `auto-codex-read.sh` — triggers `/codex-read` when Codex verdict is written
+- `set-teach-me-flag.sh` / `set-codex-prep-flag.sh` — PostToolUse flag setters for auto-hooks
 - `session-integrity-check.sh` — warns on unclosed sessions + advisory checks
 - `validate-envelope.sh` — validates output envelope on every agent response
 
@@ -340,6 +342,7 @@ the persona emits a **BOUNDARY_FLAG** and stops — it does not comply or refuse
 - Contribution guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Code of conduct: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 - Security policy: [SECURITY.md](SECURITY.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 - License: [LICENSE](LICENSE)
 
 ---

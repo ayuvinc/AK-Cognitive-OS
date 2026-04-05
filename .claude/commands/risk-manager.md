@@ -72,4 +72,5 @@ artifacts_written:
 next_action: "<next step based on risk severity>"
 manual_action: "Review S0 and S1 risks in tasks/risk-register.md — accept, mitigate, or escalate before proceeding"
 override: "NOT_OVERRIDABLE for S0 risks. S1/S2: /risk-manager accept RISK-[NNN] reason='<reason>' — logged to audit"
+extra_fields: none
 ```

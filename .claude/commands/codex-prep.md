@@ -94,4 +94,5 @@ artifacts_written:
 next_action: "AK invokes Codex on tasks/codex-review.md manually"
 manual_action: "Open Codex on tasks/codex-review.md — paste Codex response back into the file under the Respond with section"
 override: "NOT_OVERRIDABLE — Codex review is a hard gate before QA"
+extra_fields: none
 ```

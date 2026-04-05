@@ -77,4 +77,5 @@ artifacts_written:
 next_action: "auto — task routed to READY_FOR_QA or REVISION_NEEDED"
 manual_action: "NONE if PASS. If FAIL — review findings in channel.md before Junior Dev starts fixes"
 override: "Architect can override FAIL with: /codex-read override TASK-[NNN] reason='<reason>' — logged to audit with full Codex findings preserved"
+extra_fields: none
 ```

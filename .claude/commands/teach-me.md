@@ -69,4 +69,5 @@ artifacts_written:
 next_action: "auto — task build continues"
 manual_action: "NONE — read memory/teaching-log.md if you want the brief before reviewing"
 override: "Run /teach-me skip to bypass for this task only — logged to audit"
+extra_fields: none
 ```

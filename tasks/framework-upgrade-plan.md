@@ -221,7 +221,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: project-template/CLAUDE.md has Tier: Standard field with instructions
                Depends on: STEP-32
 
-- [ ] STEP-35  Update bootstrap-project.sh — tier-aware + v3.0 intake
+- [x] STEP-35  Update bootstrap-project.sh — tier-aware + v3.0 intake
                Changes:
                  - Ask project tier during intake (MVP/Standard/High-Risk)
                  - Prefill Tier field in CLAUDE.md
@@ -230,14 +230,14 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                  - Update VERSION to 3.0.0
                Success: Bootstrap creates a v3.0-ready project with correct tier on first run
                Depends on: STEP-34
-               AK APPROVAL REQUIRED: Review bootstrap intake flow before enabling
+               AK APPROVED: 2026-04-05 Session 13
 
 ---
 
 ## PHASE 10 — Role Taxonomy + Governance Policies (v3.0 WS2 + WS10)
 > Deliverable: Self-governing framework — rules for how it evolves
 
-- [ ] STEP-36  Write framework/governance/role-taxonomy.md
+- [x] STEP-36  Write framework/governance/role-taxonomy.md
                Classify all 20 commands:
                  delivery persona: architect, ba, junior-dev, qa, ux
                  router persona: researcher, compliance
@@ -248,25 +248,25 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: All 20 commands classified with rationale
                Depends on: nothing
 
-- [ ] STEP-37  Write framework/governance/role-design-rules.md
+- [x] STEP-37  Write framework/governance/role-design-rules.md
                Content: When to add a new persona vs skill, router vs specialist pattern rules,
                maximum command set size, deprecation rules
                Success: New additions can be evaluated against explicit criteria
                Depends on: STEP-36
 
-- [ ] STEP-38  Write framework/governance/change-policy.md
+- [x] STEP-38  Write framework/governance/change-policy.md
                Content: How the framework changes — proposal format, review process,
                how repeated failures become framework changes (framework-delta-log pattern)
                Success: Framework evolution has a documented process
                Depends on: STEP-37
 
-- [ ] STEP-39  Write framework/governance/versioning-policy.md
+- [x] STEP-39  Write framework/governance/versioning-policy.md
                Content: What constitutes a major/minor/patch version,
                version stamp locations (.ak-cogos-version), compatibility guarantees
                Success: Version bumps follow documented rules
                Depends on: STEP-38
 
-- [ ] STEP-40  Write framework/governance/release-policy.md
+- [x] STEP-40  Write framework/governance/release-policy.md
                Content: How framework releases are packaged, tested, and deployed to projects
                Ties to remediation modes (--audit-only / --safe-remediate / --full-remediate)
                Success: Release process is documented end-to-end
@@ -295,7 +295,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 12 — Validation Hardening (v3.0 WS7 completion)
 > Deliverable: validate-framework.sh catches structural inconsistencies across the full v3.0 surface
 
-- [ ] STEP-43  Add tier consistency check to validate-framework.sh
+- [x] STEP-43  Add tier consistency check to validate-framework.sh
                Check: project-template/CLAUDE.md has Tier: field
                Check: settings.json has guard-planning-artifacts.sh in PreToolUse block
                Success: Missing tier or hook is flagged as FAIL
@@ -518,10 +518,10 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 6 — Operating Model | 3 | 3 | 0 |
 | Phase 7 — Artifact System | 3 | 3 | 0 |
 | Phase 8 — Enforcement Completion | 4 | 4 | 0 |
-| Phase 9 — Operating Tiers | 4 | 3 | 1 |
-| Phase 10 — Taxonomy + Governance | 5 | 0 | 5 |
+| Phase 9 — Operating Tiers | 4 | 4 | 0 |
+| Phase 10 — Taxonomy + Governance | 5 | 5 | 0 |
 | Phase 11 — Non-Coder + Docs | 2 | 0 | 2 |
-| Phase 12 — Validation Hardening | 3 | 0 | 3 |
+| Phase 12 — Validation Hardening | 3 | 1 | 2 |
 | Phase 13 — v3.0 Source Sign-off | 4 | 0 | 4 |
 | Phase 14 — Pharma-Base | 4 | 0 | 4 |
 | Phase 15 — forensic-ai | 4 | 0 | 4 |
@@ -530,7 +530,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **34** | **42** |
+| **TOTAL** | **76** | **41** | **35** |
 
 ---
 

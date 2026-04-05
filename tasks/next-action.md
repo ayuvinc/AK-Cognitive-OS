@@ -1,30 +1,32 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: architect
-TASK:         STEP-49 — Manual v3.0 source audit (AK approval gate)
-CONTEXT:      Session 16 closed. 49/77 plan steps done.
-              Phase 13 STEP-47 + STEP-48 delivered:
-                .ak-cogos-version = 3.0.0
-                remediate-project.sh = v3.0 (Step 13 + Step 1b + --audit-only + pipefail fix)
+TASK:         STEP-50 — Pre-check Pharma-Base before remediation
+CONTEXT:      STEP-49 AK approval granted 2026-04-05. Source audit PASS. 50/77 done.
+              Phase 13 COMPLETE. Phase 14 — Pharma-Base remediation now UNBLOCKED.
 
-              STEP-49 is an AK approval gate — not a Junior Dev task.
-              Architect presents the v3.0 source audit to AK for explicit sign-off.
-
-              Audit checklist (Architect reads, AK approves):
-                [ ] All 12 governance docs present in framework/governance/
-                [ ] All enforcement hooks wired in project-template/.claude/settings.json
-                [ ] validate-framework.sh PASS (20 structural checks + semantic lint)
-                [ ] .ak-cogos-version = 3.0.0
-                [ ] bootstrap-project.sh VERSION = 3.0.0
-                [ ] remediate-project.sh VERSION = 3.0.0 + v3.0 additions
-                [ ] All 20 commands in .claude/commands/ (run: ls .claude/commands/ | wc -l)
-
-              Once AK says "approved", STEP-49 is done.
-              Phase 14 starts: Pharma-Base remediation (STEP-50 pre-check).
+              Phase 14 sequence:
+                STEP-50: Pre-check Pharma-Base
+                  - Confirm SESSION STATE is CLOSED in Pharma-Base/tasks/todo.md
+                  - Note any active tasks
+                  - Confirm target path exists: /Users/akaushal011/Pharma-Base
+                STEP-51: Dry run
+                  Command: bash scripts/remediate-project.sh /Users/akaushal011/Pharma-Base --dry-run --force
+                  Review output — note what will change
+                STEP-52: Live run
+                  Command: bash scripts/remediate-project.sh /Users/akaushal011/Pharma-Base --force
+                  Success: exit 0, version stamp = 3.0.0
+                STEP-53: Verify
+                  - .claude/commands/ = exactly 20
+                  - scripts/hooks/ has guard-planning-artifacts.sh
+                  - .claude/settings.json has 14 hook entries
+                  - framework/governance/ has all 12 governance docs
+                  - tasks/design-system.md placeholder exists
+                  - .ak-cogos-version = 3.0.0
+                  - python3 validators/runner.py /Users/akaushal011/Pharma-Base (baseline)
 
 COMMAND:      /architect
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Session 17 — STEP-49 AK gate + Phase 14 start (Pharma-Base)
-BLOCKERS:      STEP-49 requires AK explicit approval — no work can proceed on project remediations
-               until this gate clears
+NEXT_FOCUS:    Session 17 — Phase 14 Pharma-Base (STEP-50 → 53)
+BLOCKERS:      none — AK gate cleared
 PLAN_FILE:     tasks/framework-upgrade-plan.md

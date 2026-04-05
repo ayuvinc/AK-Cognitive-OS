@@ -352,7 +352,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: Dry run against any project shows correct v3.0 additions
                Depends on: STEP-47
 
-- [ ] STEP-49  Manual v3.0 source audit (AK approval gate)
+- [x] STEP-49  Manual v3.0 source audit (AK approval gate)
                Check: all governance docs written (STEP-22–27, 32–40)
                Check: all enforcement hooks present and wired (STEP-28–31)
                Check: bootstrap and remediate scripts at v3.0
@@ -537,7 +537,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 10.5 — Governance Enforcement | 1 | 1 | 0 |
 | Phase 11 — Non-Coder + Docs | 2 | 2 | 0 |
 | Phase 12 — Validation Hardening | 3 | 3 | 0 |
-| Phase 13 — v3.0 Source Sign-off | 4 | 3 | 1 |
+| Phase 13 — v3.0 Source Sign-off | 4 | 4 | 0 |
 | Phase 14 — Pharma-Base | 4 | 0 | 4 |
 | Phase 15 — forensic-ai | 4 | 0 | 4 |
 | Phase 16 — policybrain | 5 | 0 | 5 |
@@ -545,7 +545,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **77** | **49** | **28** |
+| **TOTAL** | **77** | **50** | **27** |
 
 ---
 

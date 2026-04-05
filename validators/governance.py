@@ -22,7 +22,7 @@ from validators.base import ValidatorResult, has_placeholder_markers
 
 
 _GOVERNANCE_DOCS = [
-    "docs/role-taxonomy.md",
+    "framework/governance/role-taxonomy.md",
     "framework/governance/role-design-rules.md",
     "framework/governance/change-policy.md",
     "framework/governance/versioning-policy.md",

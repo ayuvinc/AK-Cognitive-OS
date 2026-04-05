@@ -16,7 +16,7 @@ set -euo pipefail
 #   3.  Removes 17 retired command files from .claude/commands/ (if present)
 #   4.  Creates framework/ directory with contracts, templates, schemas
 #   5.  Creates docs/ directory with planning doc templates
-#   6.  Installs Claude Code native integration (settings, hooks, ignore, memory)
+#   6.  Installs Claude Code native integration (settings, hooks, ignore, memory, channel)
 #   7.  Installs enforcement hook scripts
 #   8.  Installs MCP servers
 #   9.  Creates tasks/codex-review.md placeholder (if missing)
@@ -476,6 +476,16 @@ if [[ -f "$ANTI_SRC" ]]; then
   safe_copy "$ANTI_SRC" "${TARGET_DIR}/ANTI-SYCOPHANCY.md"
 fi
 
+CHANNEL_SRC="${TEMPLATE_DIR}/channel.md"
+if [[ -f "$CHANNEL_SRC" ]]; then
+  safe_copy "$CHANNEL_SRC" "${TARGET_DIR}/channel.md"
+fi
+
+FW_IMPROVEMENTS_SRC="${TEMPLATE_DIR}/framework-improvements.md"
+if [[ -f "$FW_IMPROVEMENTS_SRC" ]]; then
+  safe_copy_project "$FW_IMPROVEMENTS_SRC" "${TARGET_DIR}/framework-improvements.md"
+fi
+
 echo ""
 
 # ---------------------------------------------------------------------------
@@ -729,6 +739,7 @@ echo "  $([ -f "${TARGET_DIR}/.claudeignore" ] && echo '[x]' || echo '[ ]') .cla
 echo "  $([ -f "${TARGET_DIR}/memory/MEMORY.md" ] && echo '[x]' || echo '[ ]') memory/MEMORY.md — persistent project memory"
 echo "  $([ -d "${TARGET_DIR}/scripts/hooks" ] && echo '[x]' || echo '[ ]') scripts/hooks/ — enforcement hook scripts"
 echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]') ANTI-SYCOPHANCY.md — standing instruction"
+echo "  $([ -f "${TARGET_DIR}/channel.md" ] && echo '[x]' || echo '[ ]') channel.md — agent communication channel (v3.0 format)"
 echo "  $([ -d "${TARGET_DIR}/mcp-servers" ] && echo '[x]' || echo '[ ]') mcp-servers/ — state machine + audit log MCP servers"
 echo "  $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo '[x]' || echo '[ ]') tasks/codex-review.md — Codex review file"
 echo "  $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo '[x]' || echo '[ ]') memory/teaching-log.md — teaching log"

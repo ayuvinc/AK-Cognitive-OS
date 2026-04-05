@@ -1,9 +1,9 @@
 ## SESSION STATE
-Status:         CLOSED
-Active task:    none
-Active persona: none
+Status:         OPEN
+Active task:    junior-dev-10
+Active persona: junior-dev
 Blocking issue: none
-Last updated:   2026-04-05T00:07:00Z — Session 9 close (PLANNING_SESSION — 5 tasks deferred: TASK-018, TASK-019, TASK-020, TASK-021, TASK-022)
+Last updated:   2026-04-05T10:00:00Z — Session 10 opened
 
 ---
 
@@ -72,26 +72,6 @@ Phase 11 (global cleanup) → Phase 12 (verification)
   - [ ] AC-8: File passes `validate-framework.sh` without adding new FAIL lines
 - QA Notes:
 <!-- /TASK-018 -->
-
-<!-- TASK-019 -->
-## [TASK-019] Write framework/governance/artifact-map.md and artifact-ownership.md
-- Status: PENDING
-- Branch: feature/TASK-019-artifact-map
-- BA sign-off: N/A
-- UX sign-off: N/A
-- Spec: Create two files. (1) `framework/governance/artifact-map.md` — canonical inventory of all required project artifacts: name, path, format, lifecycle stage it belongs to, whether required or recommended, and which tier (MVP/Standard/High-Risk) requires it. (2) `framework/governance/artifact-ownership.md` — ownership matrix: artifact name, owner persona (who creates), reader personas (who reads), writer personas (who may update), gate persona (who signs off), downstream artifacts that depend on it.
-- Architect Notes: Source artifact list from the v3-roadmap.md Workstream 5 list plus project-template contents. Tier column can use placeholder values (MVP/Standard/High-Risk TBD) since TASK-016/017 must settle tier definitions first — mark as [TIER-TBD] if needed. This doc becomes the source of truth for `--audit-only` gap detection in TASK-020.
-- Acceptance Criteria:
-  - [ ] AC-1: Both files exist: `framework/governance/artifact-map.md` and `framework/governance/artifact-ownership.md`
-  - [ ] AC-2: `artifact-map.md` contains every artifact named in the v3-roadmap.md Workstream 5 list — no omissions
-  - [ ] AC-3: Every row in `artifact-map.md` has all 6 columns populated: name, path, format, lifecycle stage, required/recommended, tier — [TIER-TBD] is acceptable for tier column
-  - [ ] AC-4: All artifact paths in `artifact-map.md` match actual paths used in `project-template/` — no invented paths
-  - [ ] AC-5: `artifact-ownership.md` contains an entry for every artifact listed in `artifact-map.md` — count must match
-  - [ ] AC-6: Every row in `artifact-ownership.md` has all 5 columns populated: artifact name, owner persona, reader personas, writer personas, gate persona — "none" is acceptable where applicable
-  - [ ] AC-7: All persona names in `artifact-ownership.md` match existing commands in `.claude/commands/` — no invented personas
-  - [ ] AC-8: Both files pass `validate-framework.sh` without adding new FAIL lines
-- QA Notes:
-<!-- /TASK-019 -->
 
 <!-- TASK-020 -->
 ## [TASK-020] Add --audit-only flag to remediate-project.sh

@@ -1,50 +1,53 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-05T00:01:00Z — Architect (Session 9 — Phase 6 design complete)
+2026-04-05T10:01:00Z — Architect (Session 10 — Phase 7 design complete)
 
 ## Current Session
 - Status: SESSION OPEN
-- Session ID: 9
+- Session ID: 10
 - Sprint: v3-delivery
 - Active persona: Architect → dispatching to QA
-- Next task: Architect code review + merge TASK-016, TASK-017, TASK-024 (all QA_APPROVED)
+- Next task: QA — update TASK-019 AC-4 + write TASK-025 AC
 
 ## Standup
-- Done: Phase 6 design complete. TASK-024 (default-workflows.md) created and added to todo.md. TASK-016 + TASK-017 confirmed AC-ready.
-- Next: QA → TASK-024 AC → Junior Dev → TASK-016 → TASK-017 → TASK-024 (in dependency order)
+- Done: Session 9 Phase 6 complete (delivery-lifecycle.md, stage-gates.md, default-workflows.md, PLANNING_SESSION mode). 24/76 plan steps done.
+- Next: Phase 7 — artifact-map.md + artifact-ownership.md (TASK-019) + design-system.md placeholder (TASK-025)
 - Blockers: none
 
-## Phase 6 Task Plan
+## Phase 7 Task Plan
 
-| ID | Title | Status | Depends On |
-|---|---|---|---|
-| TASK-016 | framework/governance/delivery-lifecycle.md | QA_APPROVED | — |
-| TASK-017 | framework/governance/stage-gates.md | QA_APPROVED | TASK-016 |
-| TASK-024 | framework/governance/default-workflows.md | QA_APPROVED | TASK-016, TASK-017 |
-
-## Other Open Tasks (deferred to later phases)
-
-| ID | Title | Status |
-|---|---|---|
-| TASK-018 | role-design-rules.md | PENDING |
-| TASK-019 | artifact-map.md + artifact-ownership.md | PENDING |
-| TASK-020 | remediate-project.sh --audit-only | PENDING |
-| TASK-021 | guides/15 + guides/16 | PENDING |
-| TASK-022 | validate-framework.sh v3.0 hardening | PENDING |
-| TASK-023 | session-close PLANNING_SESSION mode | PENDING |
+| ID | Title | Status | Depends On | STEP |
+|---|---|---|---|---|
+| TASK-025 | project-template/tasks/design-system.md placeholder | PENDING | — | STEP-27 |
+| TASK-019 | framework/governance/artifact-map.md + artifact-ownership.md | PENDING | TASK-025 (path check) | STEP-25, STEP-26 |
 
 ## Architecture Constraints
 
-1. TASK-017 cannot be built before TASK-016 merges — gate names must reference lifecycle stage names exactly
-2. TASK-024 cannot be built before TASK-017 merges — stage maps reference both lifecycle stages and gate names
-3. All three files land in `framework/governance/` — no new directories needed
-4. No hook changes, no schema changes, no script changes in Phase 6
+1. TASK-025 must be built BEFORE TASK-019 — artifact-map.md references `tasks/design-system.md`; TASK-019 AC-4 (project-template path check) will fail if TASK-025 hasn't landed yet
+2. Authoritative artifact list for artifact-map.md: STEP-25 of framework-upgrade-plan.md (16 named artifacts)
+3. `tasks/codex-review.md` and `tasks/teaching-log.md` are CREATED-ON-DEMAND — mark in path column, exclude from AC-4 check
+4. Lifecycle stage names in artifact-map.md stage column must match delivery-lifecycle.md exactly (11 stages)
+5. Persona names in artifact-ownership.md must match the 20 commands in .claude/commands/ — no invented personas
+6. Tier column: [TIER-TBD] acceptable until operating-tiers.md (STEP-32) is written
+7. No hook, schema, or script changes in Phase 7 — doc creation only
+
+## AC-4 Amendment (TASK-019)
+QA updated AC-4 this session to: "All artifact paths match project-template/ — EXCEPT tasks/codex-review.md and tasks/teaching-log.md (CREATED-ON-DEMAND, explicitly excluded)"
+
+## Other Open Tasks (deferred to later phases)
+
+| ID | Title | Status | Phase |
+|---|---|---|---|
+| TASK-018 | role-design-rules.md | PENDING | Phase 10 |
+| TASK-020 | remediate-project.sh --audit-only | PENDING | Phase 13 |
+| TASK-021 | guides/15 + guides/16 | PENDING | Phase 11 |
+| TASK-022 | validate-framework.sh v3.0 hardening | PENDING | Phase 12 |
 
 ## Last Agent Run
-- 2026-04-05T00:01:00Z — Architect — Phase 6 design + TASK-024 created
+- 2026-04-05T10:01:00Z — Architect — Phase 7 design + TASK-025 created, TASK-019 AC-4 amended
 
 ## Pipeline / Build Queue
-- Status: AWAITING QA — TASK-024 needs AC
+- Status: AWAITING QA — TASK-025 needs AC; TASK-019 AC-4 updated
 
 ## Open Risks: 0

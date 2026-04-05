@@ -143,7 +143,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 7 — Artifact System (v3.0 WS5)
 > Deliverable: Every artifact has a formal owner, downstream dependencies, and a gate rule
 
-- [ ] STEP-25  Write framework/governance/artifact-map.md
+- [x] STEP-25  Write framework/governance/artifact-map.md
                Content: All framework artifacts — path, what it contains, who creates it, who consumes it
                Must include: problem-definition.md, scope-brief.md, hld.md, lld/*.md, todo.md,
                              ba-logic.md, ux-specs.md, design-system.md, risk-register.md,
@@ -152,13 +152,13 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: All 16+ artifacts mapped with owner and consumers
                Depends on: STEP-22
 
-- [ ] STEP-26  Write framework/governance/artifact-ownership.md
+- [x] STEP-26  Write framework/governance/artifact-ownership.md
                Content: Ownership rules — which persona CAN write, which can read-only, which are blocked
                Format: artifact → owner → readers → blocked personas
                Success: Matches and formalises existing CAN/CANNOT rules in persona commands
                Depends on: STEP-25
 
-- [ ] STEP-27  Add tasks/design-system.md to project-template
+- [x] STEP-27  Add tasks/design-system.md to project-template
                Content: Placeholder for design tokens, component naming, visual rules (UX/designer artifact)
                Success: project-template/tasks/design-system.md exists with correct header and section stubs
                Depends on: STEP-26
@@ -516,7 +516,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 4 — Schema + Infrastructure | 5 | 5 | 0 |
 | Phase 5 — Source Validation | 3 | 3 | 0 |
 | Phase 6 — Operating Model | 3 | 3 | 0 |
-| Phase 7 — Artifact System | 3 | 0 | 3 |
+| Phase 7 — Artifact System | 3 | 3 | 0 |
 | Phase 8 — Enforcement Completion | 4 | 0 | 4 |
 | Phase 9 — Operating Tiers | 4 | 0 | 4 |
 | Phase 10 — Taxonomy + Governance | 5 | 0 | 5 |
@@ -530,7 +530,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **24** | **52** |
+| **TOTAL** | **76** | **27** | **49** |
 
 ---
 

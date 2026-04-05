@@ -288,7 +288,25 @@ for f in persona_cards:
 print(f"[OK] Context Budget sections present in all {len(persona_cards)} persona cards")
 PY
 
-# 17) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
+# 17) Tier field present in project-template/CLAUDE.md (STEP-43)
+TEMPLATE_CLAUDE="${ROOT}/project-template/CLAUDE.md"
+if [[ -f "$TEMPLATE_CLAUDE" ]]; then
+  grep -qE '^Tier:' "$TEMPLATE_CLAUDE" || fail "project-template/CLAUDE.md is missing Tier: field — add 'Tier: Standard' (see framework/governance/operating-tiers.md)"
+  echo "[OK] project-template/CLAUDE.md has Tier: field"
+else
+  fail "project-template/CLAUDE.md not found"
+fi
+
+# 18) guard-planning-artifacts.sh wired in project-template/.claude/settings.json (STEP-43)
+TEMPLATE_SETTINGS="${ROOT}/project-template/.claude/settings.json"
+if [[ -f "$TEMPLATE_SETTINGS" ]]; then
+  grep -q 'guard-planning-artifacts.sh' "$TEMPLATE_SETTINGS" || fail "project-template/.claude/settings.json does not reference guard-planning-artifacts.sh — hook is missing from PreToolUse block (see STEP-31)"
+  echo "[OK] guard-planning-artifacts.sh wired in project-template/.claude/settings.json"
+else
+  fail "project-template/.claude/settings.json not found"
+fi
+
+# 19) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
 ROOT="$ROOT" bash "${ROOT}/scripts/validate-contracts.sh"
 
-echo "[PASS] Framework validation complete (16 structural checks + semantic lint)"
+echo "[PASS] Framework validation complete (18 structural checks + semantic lint)"

@@ -37,6 +37,15 @@
   Tier assignments: Regulated App → High-Risk, Internal Tool → MVP,
   Greenfield SaaS + AI/RAG → Standard.
 
+### [TASK-023] Add PLANNING_SESSION mode to session-close contract
+- Status: QA_APPROVED → ARCHIVED
+- Branch: feature/TASK-023-planning-session-close (merged)
+- File: `.claude/commands/session-close.md`
+- Spec: PLANNING_SESSION: true allows PENDING tasks at close; blocks on IN_PROGRESS; records deferred IDs
+- AC passed: 6/6
+- Notes: Built during session-close execution to unblock the close itself. Single-file contract
+  change, no hook or schema changes. Normal close behaviour unchanged.
+
 ---
 
 ## Plan Progress

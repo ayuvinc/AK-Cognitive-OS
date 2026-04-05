@@ -133,24 +133,6 @@ Phase 11 (global cleanup) → Phase 12 (verification)
 - QA Notes:
 <!-- /TASK-021 -->
 
-<!-- TASK-023 -->
-## [TASK-023] Add PLANNING_SESSION mode to session-close contract
-- Status: QA_APPROVED
-- Branch: feature/TASK-023-planning-session-close
-- BA sign-off: N/A
-- UX sign-off: N/A
-- Spec: Edit `.claude/commands/session-close.md` to add `PLANNING_SESSION` as a valid mode. When `PLANNING_SESSION: true`: (1) allow PENDING tasks — do not emit PENDING_TASKS_EXIST violation, (2) block on any IN_PROGRESS tasks — nothing mid-flight is allowed, (3) record deferred task IDs in the session summary line, (4) emit a WARNING (not FAIL) noting tasks are deferred to next session. Update the BLOCKED logic accordingly. Also update the session-open dispatch options to mention PLANNING_SESSION as a valid close mode.
-- Architect Notes: Single-file contract change — `.claude/commands/session-close.md` only. No hook changes, no schema changes. The key invariant: PLANNING_SESSION allows PENDING (planned, not started) but never IN_PROGRESS (mid-flight work abandoned). Deferred task IDs must appear in the session summary for audit traceability.
-- Acceptance Criteria:
-  - [ ] AC-1: `/session-close` with `PLANNING_SESSION: true` and 7 PENDING tasks exits PASS (not BLOCKED)
-  - [ ] AC-2: `/session-close` with `PLANNING_SESSION: true` and any IN_PROGRESS task exits BLOCKED with IN_PROGRESS_TASKS_EXIST
-  - [ ] AC-3: Session summary line includes deferred task IDs when PLANNING_SESSION mode is used
-  - [ ] AC-4: A WARNING entry is emitted listing the count and IDs of deferred PENDING tasks
-  - [ ] AC-5: Normal close (PLANNING_SESSION absent) still blocks on PENDING tasks — existing behaviour unchanged
-  - [ ] AC-6: Contract change does not break existing session-close hook or audit-log integration
-- QA Notes:
-<!-- /TASK-023 -->
-
 <!-- TASK-022 -->
 ## [TASK-022] Harden validate-framework.sh for v3.0 Alpha governance files
 - Status: PENDING

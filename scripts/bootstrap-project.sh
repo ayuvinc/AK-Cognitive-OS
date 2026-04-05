@@ -46,9 +46,8 @@ done
 # ---------------------------------------------------------------------------
 
 if [[ ! -d "$TARGET_DIR" ]]; then
-  echo "ERROR: Target directory does not exist: $TARGET_DIR"
-  echo "Create the directory first, then re-run this script."
-  exit 1
+  mkdir -p "$TARGET_DIR" || { echo "ERROR: Could not create target directory: $TARGET_DIR"; exit 1; }
+  echo "[ok] Created target directory: $TARGET_DIR"
 fi
 
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"

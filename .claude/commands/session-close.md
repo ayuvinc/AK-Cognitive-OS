@@ -38,7 +38,13 @@ Checks/Actions (run in order, BLOCKED on first failure):
    Exclude the Active task ID from all PENDING/IN_PROGRESS checks (it is the close task itself — self-referential).
    If RETROSPECTIVE_MODE: true → only check tasks matching the sprint prefix are not PENDING/IN_PROGRESS (excluding Active task).
    Tasks with other sprint prefixes are intentionally deferred — do NOT block on them.
-   If RETROSPECTIVE_MODE: false or absent → verify zero PENDING or IN_PROGRESS tasks globally (excluding Active task).
+   If PLANNING_SESSION: true →
+     - Collect all PENDING task IDs (these are planned but not started — allowed).
+     - BLOCKED with `IN_PROGRESS_TASKS_EXIST` if any task has Status: IN_PROGRESS (mid-flight work is never allowed at close).
+     - Record deferred task IDs in the session summary line.
+     - Emit a WARNING entry: "PLANNING_SESSION close — N tasks deferred to next session: [task IDs]"
+     - Do NOT emit PENDING_TASKS_EXIST — this is the permitted deferred-backlog close mode.
+   If RETROSPECTIVE_MODE: false, PLANNING_SESSION: false or absent → verify zero PENDING or IN_PROGRESS tasks globally (excluding Active task).
 2. tasks/ba-logic.md — verify empty or all entries INCORPORATED.
 3. tasks/ux-specs.md — verify empty or all entries APPROVED.
 4. tasks/risk-register.md — verify no unreviewed OPEN entries.

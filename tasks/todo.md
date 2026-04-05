@@ -135,7 +135,7 @@ Phase 11 (global cleanup) → Phase 12 (verification)
 
 <!-- TASK-023 -->
 ## [TASK-023] Add PLANNING_SESSION mode to session-close contract
-- Status: PENDING
+- Status: QA_APPROVED
 - Branch: feature/TASK-023-planning-session-close
 - BA sign-off: N/A
 - UX sign-off: N/A

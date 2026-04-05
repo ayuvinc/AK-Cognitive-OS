@@ -117,21 +117,21 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 6 — Operating Model (v3.0 WS1)
 > Deliverable: Canonical 11-stage lifecycle + stage-gate rules Claude can reference at runtime
 
-- [ ] STEP-22  Write framework/governance/delivery-lifecycle.md
+- [x] STEP-22  Write framework/governance/delivery-lifecycle.md
                Content: 11 stages — intake → discovery → scope → architecture → design →
                         implementation → QA → security/compliance → release → lessons → framework-improvement
                Each stage: definition, entry conditions, exit conditions, persona responsible, artifacts produced
                Success: File exists, covers all 11 stages with entry/exit conditions
                Depends on: nothing
 
-- [ ] STEP-23  Write framework/governance/stage-gates.md
+- [x] STEP-23  Write framework/governance/stage-gates.md
                Content: For each stage transition, the exact conditions that must be true before progressing.
                Machine-readable format: stage, gate condition, artifact required, persona that owns the gate,
                what happens on failure (BLOCK / WARN / ESCALATE)
                Success: Every stage transition has an explicit gate entry
                Depends on: STEP-22
 
-- [ ] STEP-24  Write framework/governance/default-workflows.md
+- [x] STEP-24  Write framework/governance/default-workflows.md
                Content: Standard execution paths per project type
                Include: greenfield SaaS, AI/RAG, regulated app, internal tool
                Each path: which stages are required vs optional, which gates are hard vs soft
@@ -515,7 +515,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 3 — Upgrade v2-partial | 5 | 5 | 0 |
 | Phase 4 — Schema + Infrastructure | 5 | 5 | 0 |
 | Phase 5 — Source Validation | 3 | 3 | 0 |
-| Phase 6 — Operating Model | 3 | 0 | 3 |
+| Phase 6 — Operating Model | 3 | 3 | 0 |
 | Phase 7 — Artifact System | 3 | 0 | 3 |
 | Phase 8 — Enforcement Completion | 4 | 0 | 4 |
 | Phase 9 — Operating Tiers | 4 | 0 | 4 |
@@ -530,7 +530,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **21** | **55** |
+| **TOTAL** | **76** | **24** | **52** |
 
 ---
 

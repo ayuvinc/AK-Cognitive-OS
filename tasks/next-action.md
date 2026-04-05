@@ -1,23 +1,28 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: Architect
-TASK:         Code review + merge TASK-016, TASK-017, TASK-024 (all QA_APPROVED)
-CONTEXT:      Session 9 — QA approved all three Phase 6 governance docs.
-              23/23 acceptance criteria passed across all three tasks.
+TASK:         v3.0 Delivery Plan — Phase 7 (Artifact System)
+CONTEXT:      Session 9 complete. Phase 6 merged and archived (STEP-22, 23, 24 done).
+              24/76 plan steps complete.
 
-              Files to review and merge:
-                framework/governance/delivery-lifecycle.md  (TASK-016 — 6 AC passed)
-                framework/governance/stage-gates.md         (TASK-017 — 7 AC passed)
-                framework/governance/default-workflows.md   (TASK-024 — 10 AC passed)
+              Next work is Phase 7 — writing the artifact ownership system:
+                STEP-25: framework/governance/artifact-map.md (canonical artifact inventory)
+                STEP-26: framework/governance/artifact-ownership.md (ownership matrix)
+                STEP-27: project-template/tasks/design-system.md placeholder
 
-              After merge:
-                - Archive each task to releases/session-9.md (Definition of Done requirement)
-                - Update framework-upgrade-plan.md — mark STEP-22, STEP-23, STEP-24 as [x] DONE
-                - Update Progress Tracker in framework-upgrade-plan.md (Phase 6: 3/3 done)
-                - Update next-action.md to dispatch next phase
+              TASK-019 in todo.md covers STEP-25 + STEP-26 (artifact-map + artifact-ownership).
+              STEP-27 needs a new task (design-system.md placeholder in project-template).
+
+              Dependency notes:
+                STEP-25/26 (TASK-019): TASK-016 lifecycle stages are now available as reference.
+                  Tier column in artifact-map.md may use [TIER-TBD] — operating-tiers.md (STEP-32) not yet written.
+                STEP-27: depends on STEP-26 (artifact-ownership.md defines who owns design-system.md).
+
+              Full plan: tasks/framework-upgrade-plan.md
+              24 steps done. 52 remaining.
 
 COMMAND:      /architect
 SESSION_STATUS: OPEN
-NEXT_FOCUS:    Review + merge Phase 6 → archive tasks → update plan → close or continue
+NEXT_FOCUS:    Session 10 — Phase 7: Artifact System (STEP-25, 26, 27)
 BLOCKERS:      none
 PLAN_FILE:     tasks/framework-upgrade-plan.md

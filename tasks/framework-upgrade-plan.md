@@ -201,7 +201,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 ## PHASE 9 — Operating Tiers (v3.0 WS8)
 > Deliverable: MVP / Standard / High-Risk tier system — each tier has different gate requirements
 
-- [ ] STEP-32  Write framework/governance/operating-tiers.md
+- [x] STEP-32  Write framework/governance/operating-tiers.md
                Tiers:
                  MVP: minimal gates — no planning docs required, QA optional, no compliance gate
                  Standard: planning docs required, Codex gate, QA required, security-sweep on release
@@ -210,12 +210,12 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
                Success: 3 tiers defined with explicit gate tables
                Depends on: STEP-23, STEP-25
 
-- [ ] STEP-33  Write guides/14-risk-tier-selection.md
+- [x] STEP-33  Write guides/14-risk-tier-selection.md
                Content: How to choose a tier, worked examples per project type, how to change tier mid-project
                Success: Guide covers all 3 tiers with decision criteria
                Depends on: STEP-32
 
-- [ ] STEP-34  Add project tier to project-template/CLAUDE.md
+- [x] STEP-34  Add project tier to project-template/CLAUDE.md
                Add a Tier field near top of CLAUDE.md template (defaults to Standard)
                Hooks and commands read this field to determine which gates are active
                Success: project-template/CLAUDE.md has Tier: Standard field with instructions
@@ -518,7 +518,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 6 — Operating Model | 3 | 3 | 0 |
 | Phase 7 — Artifact System | 3 | 3 | 0 |
 | Phase 8 — Enforcement Completion | 4 | 4 | 0 |
-| Phase 9 — Operating Tiers | 4 | 0 | 4 |
+| Phase 9 — Operating Tiers | 4 | 3 | 1 |
 | Phase 10 — Taxonomy + Governance | 5 | 0 | 5 |
 | Phase 11 — Non-Coder + Docs | 2 | 0 | 2 |
 | Phase 12 — Validation Hardening | 3 | 0 | 3 |
@@ -530,7 +530,7 @@ Phases 1–13 build the source. Phases 14–18 deploy it to all 5 projects.
 | Phase 18 — Transplant-workflow | 4 | 0 | 4 |
 | Phase 19 — Global Cleanup | 3 | 0 | 3 |
 | Phase 20 — Verification | 3 | 0 | 3 |
-| **TOTAL** | **76** | **31** | **45** |
+| **TOTAL** | **76** | **34** | **42** |
 
 ---
 

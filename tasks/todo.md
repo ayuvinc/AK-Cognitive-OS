@@ -101,65 +101,8 @@ RULES:
 - QA Notes:
 <!-- /TASK-022 -->
 
-<!-- TASK-029 -->
-## [TASK-029] Write framework/governance/operating-tiers.md
-- Status: READY_FOR_QA
-- Branch: feature/TASK-029-operating-tiers
-- BA sign-off: N/A
-- UX sign-off: N/A
-- Spec: Create `framework/governance/operating-tiers.md` defining the three-tier system (MVP / Standard / High-Risk). Each tier must document: required artifacts, required gates, allowed shortcuts, and release constraints. Gate tables must be consistent with `guard-planning-artifacts.sh` behavior: MVP is exempt from planning docs gate and compliance gate; Standard enforces planning docs + Codex + QA + security-sweep; High-Risk enforces all Standard gates plus compliance gate plus risk-register required at every stage. MVP exemption is SCOPED — session lifecycle, audit log, and git push guard remain active at all tiers. Tier field syntax must be defined as: `Tier: MVP | Standard | High-Risk` (matches grep pattern `^Tier:` used by hooks). Gate table format should mirror `stage-gates.md` column structure for consistency.
-- Architect Notes: Governance doc #8. guard-planning-artifacts.sh (STEP-28) already reads `^Tier:` from CLAUDE.md — this doc formalises what each tier means. Depends on stage-gates.md (STEP-23 ✓) and artifact-map.md (STEP-25 ✓) — both merged. Do NOT expand MVP exemption to cover session state, audit log, or git push. Validate gate tables don't contradict existing hook behavior.
-- Acceptance Criteria:
-  - [ ] AC-1: File exists at `framework/governance/operating-tiers.md`
-  - [ ] AC-2: All 3 tiers present by name — file contains headings or sections for MVP, Standard, and High-Risk
-  - [ ] AC-3: Each tier documents all 4 required sections: required artifacts, required gates, allowed shortcuts, release constraints — verified by checking section headings or table rows for each tier
-  - [ ] AC-4: MVP exemption is explicitly scoped — file states (in these words or equivalent) that session lifecycle, audit log, and git push guard remain enforced at MVP tier; only planning docs gate and compliance gate are exempt
-  - [ ] AC-5: Tier field syntax is defined in the file — documents `Tier: MVP`, `Tier: Standard`, `Tier: High-Risk` as the exact values with a note that hooks read the `^Tier:` pattern from CLAUDE.md
-  - [ ] AC-6: Gate table entries are consistent with `guard-planning-artifacts.sh` behavior — MVP row shows planning docs NOT required; Standard and High-Risk rows show planning docs REQUIRED (problem-definition.md, scope-brief.md, hld.md)
-  - [ ] AC-7: High-Risk tier explicitly requires compliance gate AND risk-register at every stage — not only at release; stated as a per-stage requirement, not a release-only constraint
-  - [ ] AC-8: `bash scripts/validate-framework.sh` exits 0 after this file is added — no new FAIL lines introduced
-- QA Notes:
-<!-- /TASK-029 -->
 
-<!-- TASK-030 -->
-## [TASK-030] Write guides/14-risk-tier-selection.md
-- Status: READY_FOR_QA
-- Branch: feature/TASK-030-tier-selection-guide
-- BA sign-off: N/A
-- UX sign-off: N/A
-- Spec: Create `guides/14-risk-tier-selection.md` — a decision guide for selecting a project tier. Must include: (1) three decision questions with yes/no criteria to determine tier; (2) worked examples mapping to all 4 project types from `framework/governance/default-workflows.md` — greenfield SaaS → Standard, AI/RAG → Standard or High-Risk, regulated app → High-Risk, internal tool → MVP or Standard; (3) how to change tier mid-project (edit `Tier:` field in CLAUDE.md, run remediate-project.sh); (4) explicit warning that downgrading from High-Risk to Standard requires AK explicit approval. Guide format: `#` title, `##` sections, numbered steps — no JSON/envelope blocks.
-- Architect Notes: Depends on TASK-029. Cross-reference default-workflows.md for the 4 project types. Guide 13 is reserved for Phase 11 (non-coder-mode); guide 14 is this task.
-- Acceptance Criteria:
-  - [ ] AC-1: File exists at `guides/14-risk-tier-selection.md` — filename and numbering correct (guide 13 is reserved for non-coder-mode)
-  - [ ] AC-2: File contains exactly 3 decision questions for tier selection — each question has explicit binary (yes/no) criteria leading to a tier recommendation
-  - [ ] AC-3: All 4 worked examples present — greenfield SaaS → Standard, AI/RAG → (Standard or High-Risk), regulated app → High-Risk, internal tool → (MVP or Standard) — each example names the recommended tier explicitly
-  - [ ] AC-4: AI/RAG example explicitly shows BOTH Standard AND High-Risk as valid outcomes with a stated condition differentiating them (e.g., "depends on data sensitivity" or similar) — a single answer is a FAIL
-  - [ ] AC-5: Mid-project tier change section present — instructions include BOTH steps: (a) edit `Tier:` field in CLAUDE.md AND (b) run remediate-project.sh to update hooks; missing either step is a FAIL
-  - [ ] AC-6: Downgrade warning explicitly states that changing from High-Risk to Standard requires AK explicit approval — a generic caution ("consider carefully") is insufficient and fails this criterion
-  - [ ] AC-7: Guide format compliant — file uses `#` for title, `##` for sections, numbered steps for procedures; contains no raw JSON blocks, no output envelope blocks; matches style of existing guides/00–12
-  - [ ] AC-8: `bash scripts/validate-framework.sh` exits 0 after this file is added — no new FAIL lines introduced
-- QA Notes:
-<!-- /TASK-030 -->
 
-<!-- TASK-031 -->
-## [TASK-031] Add Tier field to project-template/CLAUDE.md
-- Status: READY_FOR_QA
-- Branch: feature/TASK-031-template-tier-field
-- BA sign-off: N/A
-- UX sign-off: N/A
-- Spec: Edit `project-template/CLAUDE.md` — add `Tier: Standard` field after the Stack line (line 3), before the first `---` separator. Add inline comment: `# MVP | Standard | High-Risk — controls which gates are active (see framework/governance/operating-tiers.md)`. Also add `guard-planning-artifacts.sh` row to the Hooks section table with description: "Blocks Junior Dev from writing source code when planning docs missing (Standard + High-Risk tiers only)".
-- Architect Notes: CRITICAL — field must be exactly `Tier: Standard` at line start, no leading spaces. guard-planning-artifacts.sh reads: `grep -E '^Tier:' CLAUDE.md | head -1 | awk '{print $2}'`. Any deviation silently breaks tier detection. Depends on TASK-029. Can be built in parallel with TASK-030.
-- Acceptance Criteria:
-  - [ ] AC-1: `grep -E '^Tier:' project-template/CLAUDE.md` returns exactly one matching line and that line is `Tier: Standard` — no leading whitespace, no trailing text after the value
-  - [ ] AC-2: `grep -E '^Tier:' project-template/CLAUDE.md | head -1 | awk '{print $2}'` outputs `Standard` with no extra characters — this is the exact parse guard-planning-artifacts.sh performs; any deviation fails this criterion
-  - [ ] AC-3: Tier field appears before the first `---` separator in the file — verified by line number; field must be in the header block, not buried in a section
-  - [ ] AC-4: Tier field line has an inline comment containing `MVP | Standard | High-Risk` and a reference to `framework/governance/operating-tiers.md` — comment may be on the same line or the following line
-  - [ ] AC-5: `guard-planning-artifacts.sh` appears as a row in the Hooks section table of `project-template/CLAUDE.md`
-  - [ ] AC-6: The guard-planning-artifacts.sh hook description in the table states enforcement is scoped to Standard and High-Risk tiers — wording must make clear MVP is exempt; a generic description with no tier scoping fails
-  - [ ] AC-7: No existing content in `project-template/CLAUDE.md` is removed or modified — `git diff` for this file shows only additions; any deletion of pre-existing lines is a FAIL
-  - [ ] AC-8: `bash scripts/validate-framework.sh` exits 0 after this edit — no new FAIL lines introduced
-- QA Notes:
-<!-- /TASK-031 -->
 
 <!-- TASK-032 -->
 ## [TASK-032] Update bootstrap-project.sh — tier-aware + v3.0 intake

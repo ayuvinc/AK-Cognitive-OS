@@ -53,8 +53,21 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
-10. Call `mcp__ak-state-machine__transition_session(to_state="CLOSED")`. If `result.success` is false, emit BLOCKED with `SESSION_STATE_VIOLATION` and `result.error`. The MCP server updates Last updated automatically on transition.
-11. Call `mcp__ak-state-machine__get_session_state()` and verify `status == "CLOSED"` — BLOCKED with `SESSION_STATE_VIOLATION` if not.
+10. Call `mcp__ak-state-machine__transition_session(to_state="CLOSED")`. Handle result:
+    - If `result.success` is true: continue to verification step (primary path).
+    - If `result.error` contains `INVALID_TRANSITION`: emit BLOCKED with `SESSION_STATE_VIOLATION: session already closed` and stop. Do NOT fall back.
+    - If MCP is unavailable OR result.success is false for any other reason:
+      **FALLBACK PATH** — emit WARN: "MCP unavailable — falling back to direct file write":
+      1. Use Bash: `echo "session-close" > tasks/.session-transition-lock`
+      2. Use Bash with python3 to update SESSION STATE fields in tasks/todo.md:
+         - Status: CLOSED
+         - Active task: none
+         - Active persona: none
+         - Last updated: [ISO-8601 timestamp] — Session N close by session-close (fallback)
+      3. Use Bash: `rm -f tasks/.session-transition-lock`
+      4. Add WARN entry to audit log: "MCP unavailable — fell back to direct file write"
+      Note: wrap steps 1-3 in bash with trap: `trap 'rm -f tasks/.session-transition-lock' ERR EXIT`
+11. Call `mcp__ak-state-machine__get_session_state()` and verify `status == "CLOSED"` (primary path only). BLOCKED with `SESSION_STATE_VIOLATION` if not. On fallback path: read tasks/todo.md directly and verify Status field reads CLOSED.
 
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`

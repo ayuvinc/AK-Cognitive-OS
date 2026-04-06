@@ -27,3 +27,6 @@ venv/
 coverage/
 dist/
 build/
+
+# Session lock files (created and deleted by session-open/session-close fallback path)
+tasks/.session-transition-lock

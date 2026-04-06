@@ -36,11 +36,23 @@ Checks/Actions:
 - Read SESSION STATE block from tasks/todo.md.
 - BLOCKED immediately if SESSION STATE block is missing. Include `MISSING_SESSION_STATE` in failures[].
 - BLOCKED immediately if SESSION STATE Status ≠ CLOSED. A non-CLOSED status means a session is already running or state is invalid. Include current status in failures[] with `SESSION_STATE_VIOLATION`.
-- Call `mcp__ak-state-machine__transition_session(to_state="OPEN")`. If `result.success` is false:
-  - If `result.error` contains `INVALID_TRANSITION`: emit BLOCKED with `SESSION_STATE_VIOLATION: session already open` and stop.
-  - Otherwise: emit BLOCKED with `SESSION_STATE_WRITE_FAILED` and `result.error`.
-- Call `mcp__ak-state-machine__set_active_persona(persona=<expected_persona_from_next_action>)`. If `result.success` is false, emit BLOCKED with `SESSION_STATE_WRITE_FAILED`.
-- Call `mcp__ak-state-machine__get_session_state()` and verify `status == "OPEN"` — BLOCKED with `SESSION_STATE_WRITE_FAILED` if not.
+- Call `mcp__ak-state-machine__transition_session(to_state="OPEN")`. Handle result:
+  - If `result.success` is true: continue to set_active_persona via MCP (primary path).
+  - If `result.error` contains `INVALID_TRANSITION`: emit BLOCKED with `SESSION_STATE_VIOLATION: session already open` and stop. Do NOT fall back.
+  - If MCP is unavailable (tool not found, server not running, import error) OR result.success is false for any other reason:
+    **FALLBACK PATH** — emit WARN: "MCP unavailable — falling back to direct file write":
+    1. Use Bash to run: `echo "session-open" > tasks/.session-transition-lock`
+    2. Use Bash with python3 to update SESSION STATE fields directly in tasks/todo.md:
+       - Status: OPEN
+       - Active task: [TASK from next-action.md]
+       - Active persona: [expected_persona_from_next_action]
+       - Last updated: [ISO-8601 timestamp] — Session N open by session-open (fallback)
+    3. Use Bash to run: `rm -f tasks/.session-transition-lock`
+    4. Add WARN entry to audit log: "MCP unavailable — fell back to direct file write"
+    Note: The bash trap in steps 1-3 ensures lock cleanup even on error. If using Bash tool,
+    wrap as: `trap 'rm -f tasks/.session-transition-lock' ERR EXIT; <write commands>`
+- Call `mcp__ak-state-machine__set_active_persona(persona=<expected_persona_from_next_action>)` (primary path only — skip if fallback was used). If `result.success` is false, emit BLOCKED with `SESSION_STATE_WRITE_FAILED`.
+- Call `mcp__ak-state-machine__get_session_state()` and verify `status == "OPEN"` (primary path only). BLOCKED with `SESSION_STATE_WRITE_FAILED` if not. On fallback path: read tasks/todo.md directly and verify Status field reads OPEN.
 - Read tasks/lessons.md — last 10 entries only.
 - Read tasks/next-action.md — NEXT_PERSONA, TASK, CONTEXT fields.
 - Read tasks/risk-register.md — any OPEN entries.

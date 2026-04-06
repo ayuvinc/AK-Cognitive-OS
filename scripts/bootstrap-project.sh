@@ -557,6 +557,69 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
+# Install MCP server scripts and dependencies
+# ---------------------------------------------------------------------------
+
+echo "Installing MCP servers..."
+MCP_SRC="${FRAMEWORK_DIR}/mcp-servers"
+mkdir -p "${TARGET_DIR}/mcp-servers"
+
+if [[ -d "$MCP_SRC" ]]; then
+  for mcp_file in "${MCP_SRC}"/*.py "${MCP_SRC}/requirements.txt"; do
+    [[ -f "$mcp_file" ]] || continue
+    copy_file "$mcp_file" "${TARGET_DIR}/mcp-servers/$(basename "$mcp_file")"
+  done
+  echo "  [ok] mcp-servers/ installed"
+else
+  echo "  [warn] mcp-servers/ not found in framework source -- skipping"
+fi
+
+# Install MCP Python dependency (mcp package required for state_machine_server.py and audit_log_server.py)
+# Non-fatal: some environments use conda/venv with different pip paths.
+if [[ -f "${TARGET_DIR}/mcp-servers/requirements.txt" ]]; then
+  echo "  [*] Installing MCP server dependencies (pip3 install mcp>=1.0.0)..."
+  if pip3 install -r "${TARGET_DIR}/mcp-servers/requirements.txt" --quiet 2>/dev/null; then
+    echo "  [ok] MCP dependencies installed"
+  else
+    echo ""
+    echo "  ============================================================"
+    echo "  WARN: pip3 install failed for mcp-servers/requirements.txt"
+    echo "  MCP servers will not work until the package is installed."
+    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  ============================================================"
+    echo ""
+  fi
+
+  # Verify the mcp package is importable regardless of whether pip succeeded above
+  if python3 -c "import mcp" 2>/dev/null; then
+    echo "  [ok] mcp package verified importable"
+  else
+    echo ""
+    echo "  ============================================================"
+    echo "  WARN: mcp package is not importable after install attempt."
+    echo "  session-open and session-close will use the file-write fallback"
+    echo "  path until MCP is available."
+    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  ============================================================"
+    echo ""
+  fi
+fi
+
+echo ""
+
+# Add session lock file to .gitignore (created by session-open/close fallback path)
+if [[ -f "${TARGET_DIR}/.gitignore" ]]; then
+  if ! grep -q 'session-transition-lock' "${TARGET_DIR}/.gitignore" 2>/dev/null; then
+    echo "" >> "${TARGET_DIR}/.gitignore"
+    echo "# Session lock files (session-open/session-close fallback path)" >> "${TARGET_DIR}/.gitignore"
+    echo "tasks/.session-transition-lock" >> "${TARGET_DIR}/.gitignore"
+    echo "  [update]    .gitignore — added session lock file exclusion"
+  fi
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # Install sub-persona commands (researcher-*, compliance-*)
 # ---------------------------------------------------------------------------
 

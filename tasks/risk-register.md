@@ -49,7 +49,7 @@ FORMAT:
 - Resolution: Closed — design change eliminates the risk. Architect check pass 2026-04-06.
 
 ### RISK-003 — pip install step in bootstrap fails silently in restricted environments
-- Status:     OPEN
+- Status:     ACCEPTED
 - Severity:   S1
 - Task:       TASK-FIX-003
 - Identified: 2026-04-06

@@ -8,7 +8,7 @@ Last updated:   2026-04-06T00:10:00Z — Session 19, Architect check pass + desi
 ---
 
 ## TASK-FIX-001 — Fix guard-session-state.sh + session-open/close fallback path
-- Status: READY_FOR_REVIEW
+- Status: QA_APPROVED
 - Owner: Junior Dev
 - Priority: P0 — blocks all session-open/close in every bootstrapped project when MCP is down
 - Description: Three-part fix:
@@ -68,7 +68,7 @@ Last updated:   2026-04-06T00:10:00Z — Session 19, Architect check pass + desi
     Audit: lock create/delete + fallback activation logged to tasks/audit-log.md
 
 ## TASK-FIX-002 — Fix guard-git-push.sh: read Active persona from SESSION STATE in tasks/todo.md
-- Status: READY_FOR_REVIEW
+- Status: QA_APPROVED
 - Owner: Junior Dev
 - Priority: P0 — blocks all git push to main in every bootstrapped project
 - Description: guard-git-push.sh checks ACTIVE_PERSONA env var that Claude Code never sets.
@@ -107,7 +107,7 @@ Last updated:   2026-04-06T00:10:00Z — Session 19, Architect check pass + desi
     Audit: no new audit requirement — persona is already logged at session-open
 
 ## TASK-FIX-003 — Fix bootstrap: copy requirements.txt + pip install MCP
-- Status: READY_FOR_REVIEW
+- Status: QA_APPROVED
 - Owner: Junior Dev
 - Priority: P0 — every new bootstrap produces a project with broken MCP servers
 - Description: mcp-servers/requirements.txt exists in source but is NOT copied to project-template
@@ -144,7 +144,7 @@ Last updated:   2026-04-06T00:10:00Z — Session 19, Architect check pass + desi
 - Security model: no auth/PII/PHI; no unpinned deps
 
 ## TASK-FIX-004 — Normalize SESSION STATE format: remove code fences from project-template
-- Status: READY_FOR_REVIEW
+- Status: QA_APPROVED
 - Owner: Junior Dev
 - Priority: P1 — format inconsistency across all bootstrapped projects
 - Description: project-template/tasks/todo.md wraps SESSION STATE in markdown code fences.
@@ -169,7 +169,7 @@ Last updated:   2026-04-06T00:10:00Z — Session 19, Architect check pass + desi
 - [ ] AK-Cognitive-OS/tasks/todo.md is NOT touched by this task (production file, not template)
 
 ## TASK-FIX-005 — Sync hook fixes to all downstream projects
-- Status: READY_FOR_REVIEW
+- Status: QA_APPROVED
 - Owner: Junior Dev
 - Priority: P1 — downstream projects carry broken hooks until synced
 - Description: After source fixes complete, copy updated hooks + requirements.txt to all

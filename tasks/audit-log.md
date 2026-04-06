@@ -78,3 +78,5 @@
 | 2026-04-06T00:30:00Z | junior-dev-19-hook-mcp-fix-20260406T003000Z | junior-dev | PASS | TASK-FIX-001 through TASK-FIX-005 implemented. 13 files changed in source. 4 downstream projects synced and committed. All tasks READY_FOR_REVIEW. |
 | 2026-04-06T00:35:00Z | codex-prep-19-TASK-FIX-001-002-20260406T003500Z | codex-prep | PASS | Codex review file prepared for TASK-FIX-001+002. 5 questions, diff scoped to 2 hook files. |
 | 2026-04-06T00:40:00Z | codex-read-19-TASK-FIX-001-002-20260406T004000Z | codex-read | FAIL | Codex FAIL for TASK-FIX-001+002. 4 real bugs found (path injection, bypass, false-positive grep, first-match regex). CRITICAL: SESSION STATE detection is heuristic. All tasks routed to REVISION_NEEDED. |
+| 2026-04-06T00:45:00Z | junior-dev-19-codex-fixes-20260406T004500Z | junior-dev | PASS | Codex FAIL fixes applied. CRITICAL bypass closed (file-position detection). Q1/Q2/Q3/Q4 all fixed. 4 downstream projects re-synced. All tasks READY_FOR_REVIEW. |
+| 2026-04-06T01:10:00Z | QA | QA_APPROVED | qa-19-hook-mcp-fix-20260406T010000Z | TASK-FIX-001 through TASK-FIX-005 QA_APPROVED — 45/46 PASS, 1 pre-existing condition documented |

@@ -81,3 +81,4 @@
 | 2026-04-06T00:45:00Z | junior-dev-19-codex-fixes-20260406T004500Z | junior-dev | PASS | Codex FAIL fixes applied. CRITICAL bypass closed (file-position detection). Q1/Q2/Q3/Q4 all fixed. 4 downstream projects re-synced. All tasks READY_FOR_REVIEW. |
 | 2026-04-06T01:10:00Z | QA | QA_APPROVED | qa-19-hook-mcp-fix-20260406T010000Z | TASK-FIX-001 through TASK-FIX-005 QA_APPROVED — 45/46 PASS, 1 pre-existing condition documented |
 | 2026-04-06T01:20:00Z | Architect | COMPLETE | architect-19-hook-mcp-fix-close-20260406T012000Z | Session 19 sprint closed. Merged feature/TASK-FIX-001-005-hook-mcp-fix to main. Tasks archived to releases/session-19.md. next-action.md updated for transplant-workflow sprint. |
+| 2026-04-06T01:30:00Z | Architect | COMPLETE | architect-19-tw-contract-fix-20260406T013000Z | Transplant-workflow session-open/close contracts merged: fallback path + PLANNING_SESSION added; S-012  + HANDOFF fields preserved. RISK-004 MITIGATED. |

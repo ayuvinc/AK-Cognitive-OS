@@ -66,7 +66,7 @@ FORMAT:
 - Resolution:
 
 ### RISK-004 — Hook sync to downstream projects overwrites project-specific customizations
-- Status:     OPEN
+- Status:     MITIGATED
 - Severity:   S1
 - Task:       TASK-FIX-005
 - Identified: 2026-04-06
@@ -81,7 +81,9 @@ FORMAT:
               (those are not in scope for TASK-FIX-005 — only the hook .sh files are copied).
               Transplant-workflow already has mcp installed and contracts updated — verify those
               are not regressed by hook sync.
-- Resolution:
+- Resolution: Session-19 — Transplant-workflow session contracts merged (not overwritten).
+              Fallback path + PLANNING_SESSION handling added; S-012 customizations preserved.
+              Committed to Transplant-workflow main (986fee9). 2026-04-06.
 
 ### RISK-005 — forensic-ai SESSION STATE code-fence format deferred — risk of future MCP parsing failure
 - Status:     ACCEPTED

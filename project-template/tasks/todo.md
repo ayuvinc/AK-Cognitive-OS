@@ -1,14 +1,11 @@
 # tasks/todo.md
 
 ## SESSION STATE
-
-```
 Status:         CLOSED
 Active task:    none
 Active persona: none
 Blocking issue: none
 Last updated:   —
-```
 
 ---
 

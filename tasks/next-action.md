@@ -1,32 +1,44 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: architect
-TASK:         Begin transplant-workflow sprint
-CONTEXT:      Session 18 closed. Framework source v3.0 fully clean:
-              - validate-framework.sh: PASS (0 warnings)
-              - validators/runner.py source: WARN→no FAILs (planning docs created)
-              - CI: all steps passing including bootstrap smoke test
-              - bootstrap-project.sh: auto-creates target directory
+NEXT_PERSONA: junior-dev
+TASK:         Build TASK-FIX-001, TASK-FIX-002, TASK-FIX-003, TASK-FIX-004 in parallel; TASK-FIX-005 last
+CONTEXT:      All risks reviewed and accepted by AK. Build is unblocked.
 
-              Work delivered this session:
-                1. Fixed extra_fields missing in 4 persona HANDOFF blocks
-                   (codex-prep, codex-read, risk-manager, teach-me)
-                2. Created docs/problem-definition.md + docs/scope-brief.md
-                   (Status: confirmed — framework-level content)
-                3. Fixed bootstrap-project.sh — auto-creates target dir
-                   (was failing CI smoke-test step)
-                4. All fixes committed and pushed to main
+              Execution order:
+                PARALLEL: TASK-FIX-001, TASK-FIX-002, TASK-FIX-003, TASK-FIX-004
+                (no dependencies between them — build all four before starting TASK-FIX-005)
+                LAST: TASK-FIX-005 (blocked on 001+002+003 completing)
 
-              Decisions logged:
-                - GUI deferred (no real user need identified)
-                - Sample/showcase projects deferred to post-completion
-                - v3.0 is good to go — learnings from real delivery feed v3.1+
+              Key constraints per task:
+                TASK-FIX-001:
+                  - guard-session-state.sh: lock file check with 30-min stale expiry
+                  - session-open.md: add fallback path (MCP fail -> WARN -> lock -> edit -> unlock)
+                  - session-close.md: same fallback at step 10-11
+                  - bash trap ERR EXIT in both skills to delete lock file on any exit
+                  - Lock file NOT committed (.gitignore tasks/.session-transition-lock)
 
-              Next priorities:
-                1. Transplant-workflow — clean repo, continue sprint
-                2. Pharma-Base — Session 4 (channel.md format + TASK-003)
+                TASK-FIX-002:
+                  - guard-git-push.sh only — read Active persona from tasks/todo.md SESSION STATE
+                  - Use python3 same regex as state_machine_server.py
+                  - Active persona = "none" -> BLOCK with "no active session"
+                  - No changes to session-open.md or session-close.md
 
-COMMAND:      /session-open (in transplant-workflow repo)
-SESSION_STATUS: CLOSED
-NEXT_FOCUS:    Transplant-workflow delivery
-BLOCKERS:      none
+                TASK-FIX-003:
+                  - Create project-template/mcp-servers/requirements.txt (mcp>=1.0.0)
+                  - bootstrap-project.sh: add pip3 install step (non-fatal) + import verification
+                  - WARN block on failure must include exact command: pip3 install mcp>=1.0.0
+
+                TASK-FIX-004:
+                  - project-template/tasks/todo.md only — remove backtick fences, no value changes
+                  - Do NOT touch forensic-ai or Transplant-workflow
+
+                TASK-FIX-005:
+                  - Diff before copy on every file — stop and flag to AK if meaningful divergence
+                  - Do NOT touch forensic-ai/tasks/todo.md
+                  - Transplant-workflow session contracts: diff first, flag to AK before overwriting
+                  - Commit in each project after sync
+
+COMMAND:      /junior-dev
+SESSION_STATUS: OPEN
+NEXT_FOCUS:    Hook env-var fix — build phase
+BLOCKERS:      none (RISK-001 accepted by AK)

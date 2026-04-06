@@ -1,23 +1,22 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: architect
-TASK:         Begin transplant-workflow sprint — open session in Transplant-workflow project
-CONTEXT:      Session 19 hook/MCP fix sprint complete. All downstream projects have working hooks
-              and MCP servers. Transplant-workflow is ready to receive a session.
+NEXT_PERSONA: AK (owner action)
+TASK:         Open Transplant-workflow sprint when ready
+CONTEXT:      Session 20 closed. Deliverables:
+                - S-012 contract customizations reviewed + AK-approved
+                - Transplant-workflow CLAUDE.md updated with 3 project-specific overrides
+                  (do-not-overwrite markers for $ARGUMENTS parser, releases/audit-log.md,
+                  and HANDOFF extra fields)
+                - RISK-005 CLOSED — forensic-ai SESSION STATE code fences removed
+                - All downstream projects clean; no open risks
 
-              Before opening Transplant-workflow session:
-                1. Review Transplant-workflow/tasks/next-action.md for expected persona + task
-                2. Confirm Transplant-workflow session-open.md / session-close.md contract — these
-                   diverge from AK-Cognitive-OS source (S-012 customizations). Do NOT overwrite
-                   without AK approval (see RISK-004 in tasks/risk-register.md).
-                3. Open session in Transplant-workflow using /session-open
-
-              Open items to carry forward:
-                - forensic-ai SESSION STATE still has code fences (session 010 OPEN — defer to close)
-                - Transplant-workflow session contracts need AK review before any overwrite (RISK-004)
-                - RISK-003 and RISK-004 still OPEN in tasks/risk-register.md
+              When ready to start Transplant-workflow sprint:
+                1. Open Transplant-workflow in Claude Code
+                2. Run /session-open (optionally: session_id=<N> sprint_id=<S>)
+                3. Activate Junior Dev or Architect per next-action in that project
+                4. Scope tasks TASK-318–321 are AK's to prioritise
 
 COMMAND:      /session-open (in Transplant-workflow project)
-SESSION_STATUS: OPEN (AK-Cognitive-OS session 19 — close when transplant-workflow work begins)
+SESSION_STATUS: CLOSED
 NEXT_FOCUS:    Transplant-workflow sprint delivery
 BLOCKERS:      none

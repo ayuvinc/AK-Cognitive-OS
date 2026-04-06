@@ -86,7 +86,7 @@ FORMAT:
               Committed to Transplant-workflow main (986fee9). 2026-04-06.
 
 ### RISK-005 — forensic-ai SESSION STATE code-fence format deferred — risk of future MCP parsing failure
-- Status:     ACCEPTED
+- Status:     CLOSED
 - Severity:   S2
 - Task:       TASK-FIX-004
 - Identified: 2026-04-06
@@ -99,4 +99,5 @@ FORMAT:
               Risk is low until a stricter validator is added.
 - Mitigation: Fix is queued for forensic-ai's next session-close. Architect to add reminder
               to forensic-ai/tasks/next-action.md when this session closes.
-- Resolution: Accepted by Architect pending forensic-ai session close.
+- Resolution: Fixed 2026-04-06 — Session 20. forensic-ai SESSION STATE code fences removed
+              via lock-file-guarded Bash+python3 fix. Plain-text format confirmed. RISK-005 CLOSED.

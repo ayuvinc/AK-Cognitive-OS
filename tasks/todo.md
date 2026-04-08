@@ -14,7 +14,7 @@ Last updated:   2026-04-08T14:31:46Z — Session 22 open by session-open (fallba
 
 <!-- AK-DIRECTIVE-2026-04-08 -->
 ### TASK-AK-001 — Upstream Hook Deadlock + MCP Path Hardening
-Status: IN_PROGRESS
+Status: READY_FOR_REVIEW
 Owner: Architect
 Priority: High
 Source: AK DIRECTIVE (captured from Transplant-workflow remediation on 2026-04-08)

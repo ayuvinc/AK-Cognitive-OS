@@ -451,6 +451,16 @@ if [[ -f "$SETTINGS_SRC" ]]; then
     mkdir -p "${TARGET_DIR}/.claude"
   fi
   safe_copy "$SETTINGS_SRC" "${TARGET_DIR}/.claude/settings.json"
+  # Fix MCP server paths: resolve to absolute so startup is not cwd-dependent
+  if [[ "$DRY_RUN" == false && -f "${TARGET_DIR}/.claude/settings.json" ]]; then
+    sed -i.bak \
+      -e "s|\"mcp-servers/state_machine_server.py\"|\"${TARGET_DIR}/mcp-servers/state_machine_server.py\"|g" \
+      -e "s|\"mcp-servers/audit_log_server.py\"|\"${TARGET_DIR}/mcp-servers/audit_log_server.py\"|g" \
+      -e "s|\"PROJECT_ROOT\": \".\"|\"PROJECT_ROOT\": \"${TARGET_DIR}\"|g" \
+      "${TARGET_DIR}/.claude/settings.json"
+    rm -f "${TARGET_DIR}/.claude/settings.json.bak"
+    echo "  [ok] MCP server paths resolved to absolute paths"
+  fi
 fi
 
 SETTINGS_LOCAL_SRC="${TEMPLATE_DIR}/.claude/settings.local.json.example"

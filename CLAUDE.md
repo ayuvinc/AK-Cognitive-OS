@@ -9,6 +9,7 @@
 Ask: "I've read the CLAUDE.md. What role am I playing — Architect, Junior Developer, Business Analyst, UI/UX Designer, or QA?"
 
 Read your **Role Card** (`.claude/commands/<role>.md`) and state it aloud before touching any task.
+Also check `tasks/todo.md` for any explicit AK directives or framework follow-up tasks before starting execution.
 
 ---
 

@@ -2,6 +2,8 @@
 
 | Timestamp (UTC) | Run ID | Agent | Status | Summary |
 |---|---|---|---|---|
+| 2026-04-08T19:30:00Z | architect-ak-directive-hook-mcp-20260408T193000Z | architect | PENDING | AK directive captured from Transplant-workflow remediation. Upstream framework task queued to eliminate self-blocking gate hooks and harden MCP config against cwd-dependent startup. CLAUDE.md updated to check tasks/todo.md for AK directives before execution. |
+| 2026-04-08T00:02:00Z | session-close-s21-20260408T000200Z | session-close | PASS | Session 21 closed (ad-hoc maintenance). Hook deadlock fixed. Transplant-workflow TASK-320 rev2 processed. Lesson written. next-action.md updated. Committed b0b6a6e. |
 | 2026-04-08T00:00:00Z | codex-read-s21-hook-fix-20260408T000000Z | codex-read | PASS | Permanent fix: auto-codex-read.sh rewritten to flag-file pattern (no stdin parsing — deadlock impossible). set-codex-read-flag.sh created. Both wired in AK-Cognitive-OS + project-template settings.json. Fix propagated to all 5 bootstrapped projects. Transplant-workflow TASK-320 rev2 VERDICT:FAIL processed → REVISION_NEEDED. Fix: ACCENT_CLASSES Record<string,...> → Record<StatCardProps['accentColor'],...> in DashboardPage.tsx. |
 | 2026-04-05T16:00:00Z | session-open-17-v3-delivery-20260405T160000Z | session-open | PASS | Session 17 opened. SESSION STATE → OPEN. Architect dispatched to STEP-50 (Phase 14 Pharma-Base pre-check). No open risks. |
 | 2026-04-05T16:10:00Z | architect-17-v3-delivery-20260405T161000Z | architect | PASS | STEP-50 pre-check PASS. Pharma-Base: SESSION STATE CLOSED, 33 commands (→20), 5 hook entries (→12), version 2.0.0 (→3.0.0), 2 governance docs (→8+). STEP-51 dry run queued. |
@@ -88,3 +90,4 @@
 | 2026-04-06T01:20:00Z | Architect | COMPLETE | architect-19-hook-mcp-fix-close-20260406T012000Z | Session 19 sprint closed. Merged feature/TASK-FIX-001-005-hook-mcp-fix to main. Tasks archived to releases/session-19.md. next-action.md updated for transplant-workflow sprint. |
 | 2026-04-06T01:30:00Z | Architect | COMPLETE | architect-19-tw-contract-fix-20260406T013000Z | Transplant-workflow session-open/close contracts merged: fallback path + PLANNING_SESSION added; S-012  + HANDOFF fields preserved. RISK-004 MITIGATED. |
 | 2026-04-06T17:37:53Z | session-close | PASS | session-close-19-hook-mcp-fix-20260406T173753Z | Session 19 closed. MCP fallback path used. RISK-003 accepted. All tasks archived. SESSION STATE: CLOSED. |
+| 2026-04-08T14:33:17Z | session-open-22-main-2026-04-08T14:33:17Z | session-open | PASS | Session 22 opened via fallback path (MCP unavailable). SESSION STATE transitioned CLOSED→OPEN. Active persona: Junior Dev (Transplant-workflow). Active task: TASK-320. WARN: MCP unavailable — fell back to direct file write. |

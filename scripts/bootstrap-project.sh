@@ -501,6 +501,18 @@ echo "Installing Claude Code native integration..."
 SETTINGS_SRC="${TEMPLATE_DIR}/.claude/settings.json"
 if [[ -f "$SETTINGS_SRC" ]]; then
   copy_file "$SETTINGS_SRC" "${TARGET_DIR}/.claude/settings.json"
+  # Fix MCP server paths: template uses relative placeholders; resolve to absolute at bootstrap time
+  # so MCP startup is not dependent on the cwd from which Claude Code is launched.
+  # LOCK_FILE is passed as sys.argv[1] — safe even if TARGET_DIR contains special characters.
+  if [[ -f "${TARGET_DIR}/.claude/settings.json" ]]; then
+    sed -i.bak \
+      -e "s|\"mcp-servers/state_machine_server.py\"|\"${TARGET_DIR}/mcp-servers/state_machine_server.py\"|g" \
+      -e "s|\"mcp-servers/audit_log_server.py\"|\"${TARGET_DIR}/mcp-servers/audit_log_server.py\"|g" \
+      -e "s|\"PROJECT_ROOT\": \".\"|\"PROJECT_ROOT\": \"${TARGET_DIR}\"|g" \
+      "${TARGET_DIR}/.claude/settings.json"
+    rm -f "${TARGET_DIR}/.claude/settings.json.bak"
+    echo "  [ok] MCP server paths resolved to absolute paths"
+  fi
 fi
 
 # .claude/settings.local.json.example

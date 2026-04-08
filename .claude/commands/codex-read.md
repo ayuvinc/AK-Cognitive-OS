@@ -37,7 +37,8 @@ Can also be run manually: /codex-read
    - Write FAIL findings to channel.md — Junior Dev reads this to know what to fix.
    - List each finding explicitly — no vague summaries.
 5. Update tasks/codex-review.md Status field to PROCESSED.
-6. Emit HANDOFF envelope.
+6. Gate auto-clears: auto-codex-read.sh detects "Status: PROCESSED" in codex-review.md (written in step 5) and removes .codex-read-required. No additional action needed.
+7. Emit HANDOFF envelope.
 
 ## CHANNEL.MD FORMAT
 

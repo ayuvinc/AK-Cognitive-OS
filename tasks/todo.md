@@ -3,7 +3,7 @@ Status:         CLOSED
 Active task:    none
 Active persona: none
 Blocking issue: none
-Last updated:   2026-04-06T17:53:09Z — Session 20 close by session-close (fallback)
+Last updated:   2026-04-08T00:00:00Z — Session 21 close (ad-hoc maintenance — hook fix + Transplant-workflow TASK-320 rev2 processed)
 
 
 ---

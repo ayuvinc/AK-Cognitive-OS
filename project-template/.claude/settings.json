@@ -71,6 +71,10 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/set-codex-prep-flag.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/set-codex-read-flag.sh"
           }
         ]
       },

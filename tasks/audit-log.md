@@ -2,6 +2,7 @@
 
 | Timestamp (UTC) | Run ID | Agent | Status | Summary |
 |---|---|---|---|---|
+| 2026-04-08T00:00:00Z | codex-read-s21-hook-fix-20260408T000000Z | codex-read | PASS | Permanent fix: auto-codex-read.sh rewritten to flag-file pattern (no stdin parsing — deadlock impossible). set-codex-read-flag.sh created. Both wired in AK-Cognitive-OS + project-template settings.json. Fix propagated to all 5 bootstrapped projects. Transplant-workflow TASK-320 rev2 VERDICT:FAIL processed → REVISION_NEEDED. Fix: ACCENT_CLASSES Record<string,...> → Record<StatCardProps['accentColor'],...> in DashboardPage.tsx. |
 | 2026-04-05T16:00:00Z | session-open-17-v3-delivery-20260405T160000Z | session-open | PASS | Session 17 opened. SESSION STATE → OPEN. Architect dispatched to STEP-50 (Phase 14 Pharma-Base pre-check). No open risks. |
 | 2026-04-05T16:10:00Z | architect-17-v3-delivery-20260405T161000Z | architect | PASS | STEP-50 pre-check PASS. Pharma-Base: SESSION STATE CLOSED, 33 commands (→20), 5 hook entries (→12), version 2.0.0 (→3.0.0), 2 governance docs (→8+). STEP-51 dry run queued. |
 | 2026-04-05T16:20:00Z | architect-17-v3-delivery-20260405T162000Z | architect | PASS | Phase 14 COMPLETE. Pharma-Base remediated to v3.0.0. STEP-50..53 all PASS. 54/77 done. 2 pre-existing baseline issues noted (not regressions). Phase 15 forensic-ai unblocked. |

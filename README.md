@@ -2,7 +2,7 @@
 
 A portable, file-based multi-persona development framework for building software with Claude Code and Codex.
 
-Status: **v3.0** — 20 rationalized commands, three-layer enforcement (hooks + commands + governance docs), operating tier awareness (MVP / Standard / High-Risk), canonical 11-stage lifecycle, and machine-enforced governance.
+Status: **v3.1** — adds Guide 15 (microservices architecture assessment for greenfield, pharma, and forensic AI projects), validated against Transplant-workflow production HLD. All v3.0 capabilities retained.
 
 ---
 
@@ -44,7 +44,7 @@ Personas and skills are defined in `personas/` and `skills/`. Every artifact bel
 
 ---
 
-## The 20 Commands (v3.0)
+## The 20 Commands (v3.1)
 
 ```
 Session:      /session-open  /session-close  /compact-session
@@ -110,7 +110,11 @@ bash scripts/validate-framework.sh
 
 Then move into your target project, review `CLAUDE.md`, and open Claude Code.
 
-## What v3.0 Adds
+## What v3.1 Adds
+
+- **Guide 15 — Microservices Architecture Assessment** (`guides/15-microservices-assessment.md`): decision framework for when to use microservices vs monolith, validated core patterns from Transplant-workflow production HLD, and domain-specific architecture overlays for greenfield, pharma-based, and forensic AI projects
+
+## What v3.0 Added
 
 - 20 rationalized commands — clean, purposeful, no duplicates (retired sprint-packager, regression-guard, handoff-validator, codex-creator, codex-delta-verify, framework-delta-log)
 - Three-layer enforcement: hooks (runtime), commands (role contracts), governance docs (policy)
@@ -148,7 +152,10 @@ AK-Cognitive-OS/
 │   ├── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
 │   ├── 10-plugins.md                  ← Adding domain-specific personas and skills
 │   ├── 11-conversation-first-planning.md ← Discovery conversation → planning artifacts
-│   └── 12-mid-build-recovery.md       ← Retrofit fundamentals into active projects
+│   ├── 12-mid-build-recovery.md       ← Retrofit fundamentals into active projects
+│   ├── 13-non-coder-mode.md           ← Running the framework without engineering background
+│   ├── 14-risk-tier-selection.md      ← MVP / Standard / High-Risk tier selection
+│   └── 15-microservices-assessment.md ← When/how to use microservices (greenfield, pharma, forensic AI)
 │
 ├── examples/
 │   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)

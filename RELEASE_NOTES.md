@@ -5,6 +5,47 @@ For definitions of any term used here, see glossary.md.
 
 ---
 
+## v3.1.0 -- Microservices Architecture Assessment
+
+**Date:** 2026-04-11
+**Type:** Minor Enhancement
+
+Adds a validated microservices architecture guide derived from the Transplant-workflow
+production HLD (Session 23). The guide provides a decision framework for when to use
+microservices vs a modular monolith, validates seven core patterns for cross-project
+adoption, and provides domain-specific architecture overlays for three project types.
+
+### Added
+
+- **`guides/15-microservices-assessment.md`** — Microservices architecture assessment guide:
+  - Decision framework: service count emerges from domain complexity, not upfront choice
+  - Seven validated core patterns (strangler-fig, adapter, partition key, schema isolation,
+    CQRS read models, audit-by-consumption, correlation ID propagation)
+  - Mandatory pre-production checklist for all project types
+  - **Greenfield architecture**: starting point rules, service count guidelines by entity count,
+    modular monolith as Phase A framing
+  - **Pharma-based architecture**: 21 CFR Part 11 overlay, ALCOA+ data integrity at the
+    schema layer, GxP validation documentation mapping, 9-service pharma service map,
+    PHI pseudonymisation contract
+  - **Forensic AI architecture**: chain-of-custody as a dedicated service, cryptographic
+    integrity at ingest, read logging (not just write logging), AI advisory-only constraint
+    with human review gate, 9-service forensic service map
+  - Cross-type comparison table (partition key, audit scope, soft-delete policy, AI autonomy,
+    retention requirements)
+  - Anti-patterns list and architecture review checklist before first service extract
+
+### Changed
+
+- `README.md` bumped to v3.1. Guide 15 added to guides directory listing.
+- `README.md` "What vX Adds" section updated.
+
+### Source
+
+Validated against: Transplant-workflow HLD (`docs/hld.md`), Pharma-Base README + repo structure,
+GoodWork Forensic AI HLD (`forensic-ai/docs/hld.md`). Assessed: AK Cognitive OS Session 23.
+
+---
+
 ## v2.0.0 -- Conversation-First, Artifact-Driven Development
 
 **Date:** 2026-04-03

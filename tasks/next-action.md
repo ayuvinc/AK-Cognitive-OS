@@ -2,17 +2,24 @@
 
 NEXT_PERSONA: Architect (or AK directive)
 TASK:         none — tasks/todo.md is empty
-CONTEXT:      Session 22 complete:
-                - TASK-AK-001 fully resolved: hook deadlock fixed (session 21),
-                  MCP path hardening shipped (session 22), propagated to all 5 projects
-                - All 4 AK-DIRECTIVE success criteria met and QA_APPROVED
-                - Branch merged to main, task archived to releases/session-22.md
+CONTEXT:      Session 23 complete:
+                - Architecture assessment of Transplant-workflow microservice HLD
+                - Microservices adoption verdict for all active repos:
+                    Transplant-workflow: patterns validated (gaps G-01–G-04 documented)
+                    Pharma-Base: YES adopt directly (independent service, same patterns)
+                    Forensic-AI: NOT applicable (local CLI, correct architecture for its class)
+                - AK Cognitive OS bumped to v3.1
+                - guides/15-microservices-assessment.md added (repo-specific assessments)
+                - Pharma-Base HLD written (docs/hld.md) — all decisions confirmed
+                - Schema + documentation architecture planned for Transplant-workflow
+                - Transplant-workflow session brief written for separate terminal
+
+              Active parallel sessions (separate terminals):
+                - Transplant-workflow: gaps G-01–G-04 + schema work + documentation track
+                - Pharma-Base: HLD confirmed, Sprint 1 TASK-003→TASK-011 ready to build
 
               AK-Cognitive-OS has no pending tasks.
-              Next session focus is at AK's discretion:
-                Option A: Framework improvement (BA→UX→Architect→Dev→QA workflow)
-                Option B: Open a Transplant-workflow session (/junior-dev TASK-231 revision)
-                Option C: New AK directive
+              Next session focus is at AK's discretion.
 
 COMMAND:      /session-open (when ready for next session)
 SESSION_STATUS: CLOSED (set by /session-close)

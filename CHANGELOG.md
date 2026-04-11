@@ -6,6 +6,24 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [3.1.0] — 2026-04-11
+
+### Added
+- `guides/15-microservices-assessment.md` — microservices decision framework validated against
+  Transplant-workflow production HLD. Covers: seven core patterns for cross-project adoption,
+  greenfield architecture (service count rules, modular monolith as Phase A),
+  Pharma-Base repo assessment (YES — direct Transplant-workflow pattern adoption,
+  same Dhara ecosystem, single service, request-response + event tail architecture),
+  GoodWork Forensic-AI repo assessment (NOT APPLICABLE — local CLI single-user tool,
+  correct architecture for its class, microservices only relevant if scope changes to
+  multi-user SaaS). Includes repo comparison table and pre-production checklist.
+
+### Changed
+- `README.md` — version bumped to v3.1. Guide 15 added to directory listing and guides index.
+  "What vX Adds" section updated.
+
+---
+
 ## [3.0.0] — 2026-04-05
 
 ### Added

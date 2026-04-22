@@ -145,5 +145,6 @@
         "AUDIT_LOG_PATH": "tasks/audit-log.md"
       }
     }
-  }
+  },
+  "enableAllProjectMcpServers": true
 }

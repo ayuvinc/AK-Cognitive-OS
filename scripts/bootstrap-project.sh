@@ -509,18 +509,42 @@ if [[ -f "$SETTINGS_SRC" ]]; then
   # so MCP startup is not dependent on the cwd from which Claude Code is launched.
   # LOCK_FILE is passed as sys.argv[1] — safe even if TARGET_DIR contains special characters.
   if [[ -f "${TARGET_DIR}/.claude/settings.json" ]]; then
-    # Resolve python3 to its full binary path — Claude Code's MCP launcher does not
-    # inherit the shell PATH, so bare "python3" fails even when the script path is absolute.
-    PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
-    sed -i.bak \
-      -e "s|\"command\": \"python3\"|\"command\": \"${PYTHON3_BIN}\"|g" \
-      -e "s|\"mcp-servers/state_machine_server.py\"|\"${TARGET_DIR}/mcp-servers/state_machine_server.py\"|g" \
-      -e "s|\"mcp-servers/audit_log_server.py\"|\"${TARGET_DIR}/mcp-servers/audit_log_server.py\"|g" \
-      -e "s|\"PROJECT_ROOT\": \".\"|\"PROJECT_ROOT\": \"${TARGET_DIR}\"|g" \
-      "${TARGET_DIR}/.claude/settings.json"
-    rm -f "${TARGET_DIR}/.claude/settings.json.bak"
-    echo "  [ok] MCP server paths resolved to absolute paths (python3: ${PYTHON3_BIN})"
+    # Add enableAllProjectMcpServers: true so Claude Code auto-connects .mcp.json servers
+    # without prompting the user on every session start.
+    python3 -c "
+import json, sys
+path = sys.argv[1]
+with open(path) as f:
+    d = json.load(f)
+d['enableAllProjectMcpServers'] = True
+with open(path, 'w') as f:
+    json.dump(d, f, indent=2)
+" "${TARGET_DIR}/.claude/settings.json"
+    echo "  [ok] enableAllProjectMcpServers set to true"
   fi
+
+  # Generate .mcp.json — Claude Code reads MCP server definitions from here, not settings.json.
+  # Absolute paths stamped at bootstrap time so startup is not cwd-dependent.
+  PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
+  cat > "${TARGET_DIR}/.mcp.json" <<MCPEOF
+{
+  "mcpServers": {
+    "ak-state-machine": {
+      "type": "stdio",
+      "command": "${PYTHON3_BIN}",
+      "args": ["${TARGET_DIR}/mcp-servers/state_machine_server.py"],
+      "env": {"PROJECT_ROOT": "${TARGET_DIR}"}
+    },
+    "ak-audit-log": {
+      "type": "stdio",
+      "command": "${PYTHON3_BIN}",
+      "args": ["${TARGET_DIR}/mcp-servers/audit_log_server.py"],
+      "env": {"PROJECT_ROOT": "${TARGET_DIR}", "AUDIT_LOG_PATH": "tasks/audit-log.md"}
+    }
+  }
+}
+MCPEOF
+  echo "  [ok] .mcp.json created (python3: ${PYTHON3_BIN})"
 fi
 
 # .claude/settings.local.json.example

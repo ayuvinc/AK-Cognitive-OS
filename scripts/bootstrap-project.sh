@@ -509,13 +509,17 @@ if [[ -f "$SETTINGS_SRC" ]]; then
   # so MCP startup is not dependent on the cwd from which Claude Code is launched.
   # LOCK_FILE is passed as sys.argv[1] — safe even if TARGET_DIR contains special characters.
   if [[ -f "${TARGET_DIR}/.claude/settings.json" ]]; then
+    # Resolve python3 to its full binary path — Claude Code's MCP launcher does not
+    # inherit the shell PATH, so bare "python3" fails even when the script path is absolute.
+    PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
     sed -i.bak \
+      -e "s|\"command\": \"python3\"|\"command\": \"${PYTHON3_BIN}\"|g" \
       -e "s|\"mcp-servers/state_machine_server.py\"|\"${TARGET_DIR}/mcp-servers/state_machine_server.py\"|g" \
       -e "s|\"mcp-servers/audit_log_server.py\"|\"${TARGET_DIR}/mcp-servers/audit_log_server.py\"|g" \
       -e "s|\"PROJECT_ROOT\": \".\"|\"PROJECT_ROOT\": \"${TARGET_DIR}\"|g" \
       "${TARGET_DIR}/.claude/settings.json"
     rm -f "${TARGET_DIR}/.claude/settings.json.bak"
-    echo "  [ok] MCP server paths resolved to absolute paths"
+    echo "  [ok] MCP server paths resolved to absolute paths (python3: ${PYTHON3_BIN})"
   fi
 fi
 

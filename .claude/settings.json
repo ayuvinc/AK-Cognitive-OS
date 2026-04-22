@@ -127,7 +127,7 @@
   },
   "mcpServers": {
     "ak-state-machine": {
-      "command": "python3",
+      "command": "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
       "args": [
         "/Users/akaushal011/AK-Cognitive-OS/mcp-servers/state_machine_server.py"
       ],
@@ -136,7 +136,7 @@
       }
     },
     "ak-audit-log": {
-      "command": "python3",
+      "command": "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
       "args": [
         "/Users/akaushal011/AK-Cognitive-OS/mcp-servers/audit_log_server.py"
       ],

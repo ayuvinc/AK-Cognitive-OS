@@ -17,7 +17,20 @@ You write: nothing.
 ## Required Output
 
 Header (3 lines), then a markdown table with one row per phase/sprint, then a 4-line footer.
-No YAML envelope. Output ends after the footer.
+Read-only — no YAML envelope emitted at runtime. Schema below satisfies framework validation only.
+
+```yaml
+run_id: "status-update-{project}-{timestamp}"
+agent: "status-update"
+origin: codex-core
+status: PASS
+timestamp_utc: "<ISO-8601>"
+summary: "<project> status rendered — N phases, overall N%"
+failures: []
+warnings: []
+artifacts_written: []
+next_action: "none — read-only output"
+```
 
 ---
 

@@ -1,45 +1,152 @@
 {
   "name": "ak-cognitive-os",
-  "description": "Multi-persona AI development framework — Architect, BA, QA, UX, Junior Dev, Researcher, Compliance + 15 workflow skills for structured software delivery.",
-  "version": "2.1.0",
+  "description": "Multi-persona AI development framework \u2014 Architect, BA, QA, UX, Junior Dev, Researcher, Compliance + 15 workflow skills for structured software delivery.",
+  "version": "3.1.0",
   "author": {
     "name": "AK",
     "email": ""
   },
   "settings": ".claude/settings.json",
   "commands": [
-    { "name": "architect", "file": "personas/architect/claude-command.md" },
-    { "name": "junior-dev", "file": "personas/junior-dev/claude-command.md" },
-    { "name": "qa", "file": "personas/qa/claude-command.md" },
-    { "name": "ba", "file": "personas/ba/claude-command.md" },
-    { "name": "ux", "file": "personas/ux/claude-command.md" },
-    { "name": "researcher", "file": "personas/researcher/claude-command.md" },
-    { "name": "researcher-technical", "file": "personas/researcher-technical/claude-command.md" },
-    { "name": "researcher-business", "file": "personas/researcher-business/claude-command.md" },
-    { "name": "researcher-legal", "file": "personas/researcher-legal/claude-command.md" },
-    { "name": "researcher-policy", "file": "personas/researcher-policy/claude-command.md" },
-    { "name": "researcher-news", "file": "personas/researcher-news/claude-command.md" },
-    { "name": "compliance", "file": "personas/compliance/claude-command.md" },
-    { "name": "compliance-pii-handler", "file": "personas/compliance-pii-handler/claude-command.md" },
-    { "name": "compliance-phi-handler", "file": "personas/compliance-phi-handler/claude-command.md" },
-    { "name": "compliance-data-privacy", "file": "personas/compliance-data-privacy/claude-command.md" },
-    { "name": "compliance-data-security", "file": "personas/compliance-data-security/claude-command.md" },
-    { "name": "designer", "file": "personas/designer/claude-command.md" },
-    { "name": "session-open", "file": "skills/session-open/claude-command.md" },
-    { "name": "session-close", "file": "skills/session-close/claude-command.md" },
-    { "name": "audit-log", "file": "skills/audit-log/claude-command.md" },
-    { "name": "qa-run", "file": "skills/qa-run/claude-command.md" },
-    { "name": "lessons-extractor", "file": "skills/lessons-extractor/claude-command.md" },
-    { "name": "codex-creator", "file": "skills/codex-creator/claude-command.md" },
-    { "name": "codex-intake-check", "file": "skills/codex-intake-check/claude-command.md" },
-    { "name": "codex-delta-verify", "file": "skills/codex-delta-verify/claude-command.md" },
-    { "name": "check-channel", "file": "skills/check-channel/claude-command.md" },
-    { "name": "compact-session", "file": "skills/compact-session/claude-command.md" },
-    { "name": "sprint-packager", "file": "skills/sprint-packager/claude-command.md" },
-    { "name": "review-packet", "file": "skills/review-packet/claude-command.md" },
-    { "name": "security-sweep", "file": "skills/security-sweep/claude-command.md" },
-    { "name": "handoff-validator", "file": "skills/handoff-validator/claude-command.md" },
-    { "name": "framework-delta-log", "file": "skills/framework-delta-log/claude-command.md" },
-    { "name": "regression-guard", "file": "skills/regression-guard/claude-command.md" }
+    {
+      "name": "architect",
+      "file": "personas/architect/claude-command.md"
+    },
+    {
+      "name": "junior-dev",
+      "file": "personas/junior-dev/claude-command.md"
+    },
+    {
+      "name": "qa",
+      "file": "personas/qa/claude-command.md"
+    },
+    {
+      "name": "ba",
+      "file": "personas/ba/claude-command.md"
+    },
+    {
+      "name": "ux",
+      "file": "personas/ux/claude-command.md"
+    },
+    {
+      "name": "researcher",
+      "file": "personas/researcher/claude-command.md"
+    },
+    {
+      "name": "researcher-technical",
+      "file": "personas/researcher-technical/claude-command.md"
+    },
+    {
+      "name": "researcher-business",
+      "file": "personas/researcher-business/claude-command.md"
+    },
+    {
+      "name": "researcher-legal",
+      "file": "personas/researcher-legal/claude-command.md"
+    },
+    {
+      "name": "researcher-policy",
+      "file": "personas/researcher-policy/claude-command.md"
+    },
+    {
+      "name": "researcher-news",
+      "file": "personas/researcher-news/claude-command.md"
+    },
+    {
+      "name": "compliance",
+      "file": "personas/compliance/claude-command.md"
+    },
+    {
+      "name": "compliance-pii-handler",
+      "file": "personas/compliance-pii-handler/claude-command.md"
+    },
+    {
+      "name": "compliance-phi-handler",
+      "file": "personas/compliance-phi-handler/claude-command.md"
+    },
+    {
+      "name": "compliance-data-privacy",
+      "file": "personas/compliance-data-privacy/claude-command.md"
+    },
+    {
+      "name": "compliance-data-security",
+      "file": "personas/compliance-data-security/claude-command.md"
+    },
+    {
+      "name": "designer",
+      "file": "personas/designer/claude-command.md"
+    },
+    {
+      "name": "session-open",
+      "file": "skills/session-open/claude-command.md"
+    },
+    {
+      "name": "session-close",
+      "file": "skills/session-close/claude-command.md"
+    },
+    {
+      "name": "audit-log",
+      "file": "skills/audit-log/claude-command.md"
+    },
+    {
+      "name": "qa-run",
+      "file": "skills/qa-run/claude-command.md"
+    },
+    {
+      "name": "lessons-extractor",
+      "file": "skills/lessons-extractor/claude-command.md"
+    },
+    {
+      "name": "codex-creator",
+      "file": "skills/optional/codex-creator/claude-command.md"
+    },
+    {
+      "name": "codex-intake-check",
+      "file": "skills/optional/codex-intake-check/claude-command.md"
+    },
+    {
+      "name": "codex-delta-verify",
+      "file": "skills/optional/codex-delta-verify/claude-command.md"
+    },
+    {
+      "name": "check-channel",
+      "file": "skills/check-channel/claude-command.md"
+    },
+    {
+      "name": "compact-session",
+      "file": "skills/compact-session/claude-command.md"
+    },
+    {
+      "name": "sprint-packager",
+      "file": "skills/optional/sprint-packager/claude-command.md"
+    },
+    {
+      "name": "review-packet",
+      "file": "skills/optional/review-packet/claude-command.md"
+    },
+    {
+      "name": "security-sweep",
+      "file": "skills/security-sweep/claude-command.md"
+    },
+    {
+      "name": "handoff-validator",
+      "file": "skills/optional/handoff-validator/claude-command.md"
+    },
+    {
+      "name": "framework-delta-log",
+      "file": "skills/optional/framework-delta-log/claude-command.md"
+    },
+    {
+      "name": "regression-guard",
+      "file": "skills/optional/regression-guard/claude-command.md"
+    },
+    {
+      "name": "smoke-test",
+      "file": "skills/smoke-test/claude-command.md"
+    },
+    {
+      "name": "status-update",
+      "file": "skills/status-update/claude-command.md"
+    }
   ]
 }

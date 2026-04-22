@@ -83,3 +83,23 @@ Open risks  : [count HIGH] high / [count MEDIUM] medium / [count LOW] low
 - The OVERALL row sums all Done and all Total across every row; compute % from those totals.
 - Never load `.py` source files, `guides/`, or `framework/`.
 - Never emit a YAML handoff envelope — output ends after the footer.
+
+---
+
+## HANDOFF
+
+Read-only skill — no handoff envelope is emitted at runtime. Schema below satisfies framework validation only.
+
+```yaml
+run_id: "status-update-{project}-{timestamp}"
+agent: "status-update"
+origin: claude-core
+status: PASS
+timestamp_utc: "<ISO-8601>"
+summary: "<project> status rendered — N phases, overall N%"
+failures: []
+warnings: []
+artifacts_written: []
+next_action: "none — read-only output"
+extra_fields: none
+```

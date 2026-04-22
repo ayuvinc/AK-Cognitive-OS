@@ -15,7 +15,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="3.0.0"
+VERSION="3.1.0"
 
 # ---------------------------------------------------------------------------
 # Argument validation
@@ -367,6 +367,8 @@ if [[ -d "$PERSONAS_DIR" ]]; then
   for persona_dir in "${PERSONAS_DIR}"/*/; do
     persona_name="$(basename "$persona_dir")"
     [[ "$persona_name" == "_template" ]] && continue
+    # Skip sub-persona directories — installed separately as optional add-ons
+    [[ "$persona_name" =~ ^(researcher|compliance)- ]] && continue
 
     src_file="${persona_dir}claude-command.md"
     dst_file="${TARGET_DIR}/.claude/commands/${persona_name}.md"
@@ -392,6 +394,8 @@ if [[ -d "$SKILLS_DIR" ]]; then
   for skill_dir in "${SKILLS_DIR}"/*/; do
     skill_name="$(basename "$skill_dir")"
     [[ "$skill_name" == "_template" ]] && continue
+    # Skip optional skills — use --optional flag to include them
+    [[ "$skill_name" == "optional" ]] && continue
 
     src_file="${skill_dir}claude-command.md"
     dst_file="${TARGET_DIR}/.claude/commands/${skill_name}.md"
@@ -633,38 +637,13 @@ echo ""
 
 # ---------------------------------------------------------------------------
 # Install sub-persona commands (researcher-*, compliance-*)
+# Skipped by default — these are domain-specific add-ons, not part of the core 22.
+# To install sub-personas: copy from personas/researcher/sub-personas/ or
+# personas/compliance/sub-personas/ manually after bootstrap.
 # ---------------------------------------------------------------------------
 
 SUB_COUNT=0
-
-# Researcher sub-personas
-RESEARCHER_SUBS="${FRAMEWORK_DIR}/personas/researcher/sub-personas"
-if [[ -d "$RESEARCHER_SUBS" ]]; then
-  echo "Installing sub-persona commands..."
-  for sub_file in "${RESEARCHER_SUBS}"/*.md; do
-    [[ -f "$sub_file" ]] || continue
-    sub_name="researcher-$(basename "$sub_file" .md)"
-    dst_file="${TARGET_DIR}/.claude/commands/${sub_name}.md"
-    copy_file "$sub_file" "$dst_file"
-    SUB_COUNT=$((SUB_COUNT + 1))
-  done
-fi
-
-# Compliance sub-personas
-COMPLIANCE_SUBS="${FRAMEWORK_DIR}/personas/compliance/sub-personas"
-if [[ -d "$COMPLIANCE_SUBS" ]]; then
-  for sub_file in "${COMPLIANCE_SUBS}"/*.md; do
-    [[ -f "$sub_file" ]] || continue
-    # Skip jurisdictions directory files
-    [[ -d "$sub_file" ]] && continue
-    sub_name="compliance-$(basename "$sub_file" .md)"
-    dst_file="${TARGET_DIR}/.claude/commands/${sub_name}.md"
-    copy_file "$sub_file" "$dst_file"
-    SUB_COUNT=$((SUB_COUNT + 1))
-  done
-fi
-
-echo "  [ok] ${SUB_COUNT} sub-persona command(s)"
+echo "  [skip] sub-persona commands (researcher-*, compliance-*) — domain-specific, install manually if needed"
 echo ""
 
 # ---------------------------------------------------------------------------

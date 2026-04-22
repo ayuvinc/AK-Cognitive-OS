@@ -1,11 +1,9 @@
 ## SESSION STATE
-Status:         CLOSED
-Active task:    none
-Active persona: none
+Status:         OPEN
+Active task:    v3.1.0 release — update AK Cognitive OS to v3.1.0
+Active persona: Architect
 Blocking issue: none
-Last updated:   2026-04-11T00:00:00Z — Session 23 close by session-close (fallback)
-
-
+Last updated:   2026-04-22T00:00:00Z — Session 24 open by session-open (fallback)
 ---
 
 ## Active Tasks

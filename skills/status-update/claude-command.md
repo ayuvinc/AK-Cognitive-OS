@@ -69,6 +69,12 @@ Open risks  : [count HIGH] high / [count MEDIUM] medium / [count LOW] low
 
 ---
 
+## BOUNDARY_FLAG
+- Never write to any file.
+- Never call MCP tools.
+- Never emit a YAML handoff envelope.
+- If tracking files are missing, state which and render with available data only.
+
 ## RULES
 
 - Derive all numbers by counting `[x]` and `[ ]` in the files. Do not guess or recall.

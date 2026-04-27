@@ -1,9 +1,9 @@
 ## SESSION STATE
-Status:         CLOSED
-Active task:    none
-Active persona: none
+Status:         OPEN
+Active task:    v4-architecture-design
+Active persona: architect
 Blocking issue: none
-Last updated:   2026-04-22T16:00:00Z — Session 24 close by session-close (fallback)
+Last updated:   2026-04-27T00:00:00Z — Session 25 open by Architect (v4 Cognitive Layer design)
 ---
 
 ## Active Tasks

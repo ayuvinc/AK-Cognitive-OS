@@ -154,7 +154,7 @@ AC:
 Dependencies: TASK-003 (flag file written by session-open)
 
 ### TASK-006 — memory.py validator + runner.py update
-Status:       PENDING
+Status:       READY_FOR_REVIEW
 Owner:        Junior Dev
 Priority:     Medium
 Description:  Create validators/memory.py. Checks:

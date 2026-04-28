@@ -544,6 +544,129 @@ fi
 echo ""
 
 # ---------------------------------------------------------------------------
+# 8a. Generate .mcp.json with absolute paths
+# ---------------------------------------------------------------------------
+# bootstrap-project.sh generates this at bootstrap time; remediation was missing it.
+# .mcp.json tells Claude Code which MCP servers to start and how (absolute paths required
+# so startup is not cwd-dependent regardless of how Claude Code is launched).
+
+echo "--- Step 8a: .mcp.json ---"
+
+MCP_JSON="${TARGET_DIR}/.mcp.json"
+
+if [[ -f "$MCP_JSON" ]]; then
+  echo "  [ok] .mcp.json already exists — skipping"
+  WARNINGS+=(".mcp.json already exists — verify it has absolute python3 and server paths")
+else
+  PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  [would create] .mcp.json (python3: ${PYTHON3_BIN})"
+  else
+    cat > "$MCP_JSON" <<MCPEOF
+{
+  "mcpServers": {
+    "ak-state-machine": {
+      "type": "stdio",
+      "command": "${PYTHON3_BIN}",
+      "args": ["${TARGET_DIR}/mcp-servers/state_machine_server.py"],
+      "env": {"PROJECT_ROOT": "${TARGET_DIR}"}
+    },
+    "ak-audit-log": {
+      "type": "stdio",
+      "command": "${PYTHON3_BIN}",
+      "args": ["${TARGET_DIR}/mcp-servers/audit_log_server.py"],
+      "env": {"PROJECT_ROOT": "${TARGET_DIR}", "AUDIT_LOG_PATH": "tasks/audit-log.md"}
+    }
+  }
+}
+MCPEOF
+    echo "  [create] .mcp.json (python3: ${PYTHON3_BIN})"
+    CHANGES=$((CHANGES + 1))
+  fi
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 8b. Set enableAllProjectMcpServers: true in .claude/settings.json
+# ---------------------------------------------------------------------------
+# Claude Code reads this flag to auto-connect MCP servers defined in .mcp.json
+# without prompting the user on every session start.
+
+echo "--- Step 8b: enableAllProjectMcpServers flag ---"
+
+SETTINGS_JSON="${TARGET_DIR}/.claude/settings.json"
+
+if [[ ! -f "$SETTINGS_JSON" ]]; then
+  echo "  [warn] .claude/settings.json not found — cannot set enableAllProjectMcpServers"
+  WARNINGS+=(".claude/settings.json missing — run remediation again after settings.json is installed")
+elif python3 -c "import json; d=json.load(open('${SETTINGS_JSON}')); exit(0 if d.get('enableAllProjectMcpServers') else 1)" 2>/dev/null; then
+  echo "  [ok] enableAllProjectMcpServers already set to true"
+else
+  if [[ "$DRY_RUN" == true ]]; then
+    echo "  [would set] enableAllProjectMcpServers: true in .claude/settings.json"
+  else
+    python3 -c "
+import json, sys
+path = sys.argv[1]
+with open(path) as f:
+    d = json.load(f)
+d['enableAllProjectMcpServers'] = True
+with open(path, 'w') as f:
+    json.dump(d, f, indent=2)
+" "$SETTINGS_JSON"
+    echo "  [set] enableAllProjectMcpServers: true"
+    CHANGES=$((CHANGES + 1))
+  fi
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# 8c. Install and verify MCP Python dependency
+# ---------------------------------------------------------------------------
+# pip3 install alone is not sufficient — the package must be importable from the
+# same python3 binary used to run the MCP servers. Fail loudly if not.
+
+echo "--- Step 8c: MCP Python dependency (mcp>=1.0.0) ---"
+
+REQUIREMENTS="${TARGET_DIR}/mcp-servers/requirements.txt"
+
+if [[ ! -f "$REQUIREMENTS" ]]; then
+  echo "  [skip] mcp-servers/requirements.txt not found — skipping dependency check"
+else
+  echo "  [*] Installing MCP server dependencies..."
+  if pip3 install -r "$REQUIREMENTS" --quiet 2>/dev/null; then
+    echo "  [ok] pip3 install succeeded"
+  else
+    echo ""
+    echo "  ============================================================"
+    echo "  WARN: pip3 install failed for mcp-servers/requirements.txt"
+    echo "  MCP servers will not work until the package is installed."
+    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  ============================================================"
+    echo ""
+    WARNINGS+=("pip3 install mcp failed — MCP servers will not function until fixed. Run: pip3 install mcp>=1.0.0")
+  fi
+
+  if python3 -c "import mcp" 2>/dev/null; then
+    echo "  [ok] mcp package verified importable"
+  else
+    echo ""
+    echo "  ============================================================"
+    echo "  ERROR: mcp package is not importable after install attempt."
+    echo "  MCP servers (ak-state-machine, ak-audit-log) will fail to start."
+    echo "  session-open and session-close will use the file-write fallback."
+    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  ============================================================"
+    echo ""
+    WARNINGS+=("mcp not importable — MCP servers broken. Run: pip3 install mcp>=1.0.0")
+  fi
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
 # 9. Create tasks/codex-review.md placeholder
 # ---------------------------------------------------------------------------
 
@@ -751,6 +874,9 @@ echo "  $([ -d "${TARGET_DIR}/scripts/hooks" ] && echo '[x]' || echo '[ ]') scri
 echo "  $([ -f "${TARGET_DIR}/ANTI-SYCOPHANCY.md" ] && echo '[x]' || echo '[ ]') ANTI-SYCOPHANCY.md — standing instruction"
 echo "  $([ -f "${TARGET_DIR}/channel.md" ] && echo '[x]' || echo '[ ]') channel.md — agent communication channel (v3.0 format)"
 echo "  $([ -d "${TARGET_DIR}/mcp-servers" ] && echo '[x]' || echo '[ ]') mcp-servers/ — state machine + audit log MCP servers"
+echo "  $([ -f "${TARGET_DIR}/.mcp.json" ] && echo '[x]' || echo '[ ]') .mcp.json — MCP server definitions (absolute paths)"
+MCP_FLAG_OK=$(python3 -c "import json; d=json.load(open('${TARGET_DIR}/.claude/settings.json')); print('[x]' if d.get('enableAllProjectMcpServers') else '[ ]')" 2>/dev/null || echo '[ ]')
+echo "  ${MCP_FLAG_OK} enableAllProjectMcpServers: true — auto-connect MCP on launch"
 echo "  $([ -f "${TARGET_DIR}/tasks/codex-review.md" ] && echo '[x]' || echo '[ ]') tasks/codex-review.md — Codex review file"
 echo "  $([ -f "${TARGET_DIR}/memory/teaching-log.md" ] && echo '[x]' || echo '[ ]') memory/teaching-log.md — teaching log"
 echo "  $([ -f "${TARGET_DIR}/tasks/design-system.md" ] && echo '[x]' || echo '[ ]') tasks/design-system.md — design system placeholder"

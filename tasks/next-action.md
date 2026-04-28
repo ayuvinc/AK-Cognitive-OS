@@ -1,30 +1,30 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Architect (or AK directive)
-TASK:         none — tasks/todo.md is empty
-CONTEXT:      Session 24 complete (v3.1.0 release):
-                - status-update and smoke-test skills generalized from forensic-ai,
-                  applied to all active projects (Transplant-workflow, Pharma-Base, Project-Dig)
-                - MCP config fixed: .mcp.json format at project root, full python3 binary path,
-                  enableAllProjectMcpServers: true — propagated to all active projects
-                - bootstrap-project.sh v3.1.0: produces 22-skill core set (non-core → skills/optional/)
-                - .claude-plugin/plugin.json v3.1.0: paths fixed, smoke-test + status-update added
-                - GitHub CI green: 20/20 structural checks + semantic lint PASS (commit bb77fe1)
-                - Project-Dig: AI Submission Layer insight captured in docs/decision-log.md
-                  and tasks/ba-logic.md (BA-007)
+NEXT_PERSONA: QA
+TASK:         Fill AC for TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006
+CONTEXT:      Session 25 — Architect decomposed v4 Phase 1 (Memory Foundation):
+                - TASK-001: remediate-project.sh MCP fix (pre-existing, ships first)
+                - TASK-002: ak-memory MCP server + memory/ scaffold
+                - TASK-003: session-open/close contract updates (call ak-memory)
+                - TASK-004: PostToolUse compaction re-injection hook
+                - TASK-005: PreToolUse enforcement hook (memory-loaded gate)
+                - TASK-006: memory.py validator + runner.py update
 
-              Pending items for next session (AK to direct):
-                - Project-Dig has no GitHub remote yet — 3 local commits pending push
-                  (INSIGHT-001, bootstrap fix, MCP fix)
-                - .mcp.json command field in Transplant-workflow, Pharma-Base, forensic-ai
-                  still uses bare 'python3' (not full path) — may need fixing if MCP fails
-                - .claude/commands/medical-researcher.md untracked — AK to decide disposition
-                - BL-001 in ba-logic.md (INCORPORATED but not yet deleted) — carry forward
+              Architecture decisions (AK approved 2026-04-28):
+                - Hand-rolled JSON/Markdown storage — no Dolt/beads
+                - Per-project memory scope
+                - Per session-close compaction (automatic)
+                - ak-memory MCP server: 3 tools (write/query/summary)
+                - All new hooks advisory (exit 0) in v4.0
 
-              AK-Cognitive-OS has no pending tasks.
-              Next session focus is at AK's discretion.
+              After QA fills AC:
+                - TASK-001 → Junior Dev (ships first, independent of v4)
+                - TASK-002 → Junior Dev (v4 start, no dependencies)
+                - TASK-003–006 → Junior Dev (in dependency order)
 
-COMMAND:      /session-open (when ready for next session)
-SESSION_STATUS: CLOSED (set by /session-close)
-NEXT_FOCUS:    AK to direct
-BLOCKERS:      none
+              BA must log BL-002 (v4 business logic) before Phase 2 decomposition.
+
+COMMAND:      /qa to fill acceptance criteria for all 6 tasks
+SESSION_STATUS: OPEN
+NEXT_FOCUS:   QA → Junior Dev → back to Architect for Phase 2 planning
+BLOCKERS:     none

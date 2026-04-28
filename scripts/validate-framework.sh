@@ -264,10 +264,45 @@ done
 
 echo "[OK] MCP server files present (state_machine_server.py, audit_log_server.py, requirements.txt)"
 
-# 15b) v4 memory structure check (advisory — WARN only in v4.0)
-if [[ -f "${ROOT}/validators/memory.py" ]]; then
-  python3 "${ROOT}/validators/memory.py" "${ROOT}" | sed 's/^\[WARN\]/[WARN] (v4-advisory)/'
-fi
+# 15b) v4 cognitive layer checks (advisory — all WARN only, script always exits 0)
+V4_CHECKS=0
+V4_WARNS=0
+
+# v4 required-file checklist
+for v4_req in \
+  "project-template/signals/active.json" \
+  "validators/feedback.py" \
+  "validators/signal_engine.py" \
+  "validators/base.py"; do
+  if [[ -f "${ROOT}/${v4_req}" ]]; then
+    echo "[OK] (v4) ${v4_req}"
+  else
+    echo "[WARN] (v4) MISSING: ${v4_req}"
+    V4_WARNS=$((V4_WARNS + 1))
+  fi
+  V4_CHECKS=$((V4_CHECKS + 1))
+done
+
+# Run memory.py, feedback.py, signal_engine.py in validate mode against ROOT
+for v4_validator in "memory.py" "feedback.py" "signal_engine.py"; do
+  if [[ -f "${ROOT}/validators/${v4_validator}" ]]; then
+    python3 "${ROOT}/validators/${v4_validator}" "${ROOT}" 2>&1 | \
+      sed 's/^\[WARN\]/[WARN] (v4-advisory)/' || true
+    V4_CHECKS=$((V4_CHECKS + 1))
+  fi
+done
+
+# 15c) Bootstrap completeness check — grep bootstrap-project.sh for v4 scaffold steps
+BOOTSTRAP_SH="${ROOT}/scripts/bootstrap-project.sh"
+for scaffold_kw in "signals/" "feedback/"; do
+  if grep -q "$scaffold_kw" "$BOOTSTRAP_SH" 2>/dev/null; then
+    echo "[OK] (v4) bootstrap-project.sh contains '${scaffold_kw}'"
+  else
+    echo "[WARN] (v4) bootstrap-project.sh missing '${scaffold_kw}' scaffold step"
+    V4_WARNS=$((V4_WARNS + 1))
+  fi
+  V4_CHECKS=$((V4_CHECKS + 1))
+done
 
 # 16) Context budgets: every persona card must have ## Context Budget + 3 subsections
 ROOT="$ROOT" python3 - <<'PY'
@@ -378,4 +413,4 @@ echo "[OK] All 15 guides present in guides/ (00-14)"
 # 21) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
 ROOT="$ROOT" bash "${ROOT}/scripts/validate-contracts.sh"
 
-echo "[PASS] Framework validation complete (20 structural checks + semantic lint)"
+echo "[PASS] Framework validation complete (20 structural checks + semantic lint); v4 checks: ${V4_CHECKS}"

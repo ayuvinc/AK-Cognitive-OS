@@ -1,25 +1,22 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: Junior Dev
-TASK:         TASK-014 — remediate-project.sh --v4-upgrade flag
-CONTEXT:      TASK-013 QA_APPROVED and merged to main (2026-04-28).
-
-              TASK-014 is now IN_PROGRESS. Implement --v4-upgrade flag in
-              scripts/remediate-project.sh. AC is written in tasks/todo.md
-              (15 AC covering happy path, idempotency, error states, security).
+TASK:         TASK-015 — validate-framework.sh v4 checks
+CONTEXT:      TASK-014 QA_APPROVED and merged to main (2026-04-28).
+              TASK-015 is now the active task. AC is in tasks/todo.md.
 
               Key constraints from Architect:
-                - safe_copy semantics throughout (never overwrite existing files)
-                - JSON merge for .mcp.json via json.load() + dict merge only
-                  (no string concat, no eval)
-                - Idempotent: running twice must produce identical state
-                - Malformed .mcp.json or settings.json → ERROR + skip that step,
-                  do not crash, continue remaining steps, exit 0
-                - mcp not importable → WARN + remediation command, exit 0
+                - All new v4 checks are advisory WARN only — validate-framework.sh
+                  must still exit 0 in all cases (no v4 check causes non-zero exit)
+                - Required-file checklist additions: 4 files
+                - Step 15b extension: run feedback.py + signal_engine.py in validate mode
+                  with "[WARN] (v4-advisory)" prefix on output
+                - Step 15c: grep-based bootstrap completeness check
+                - Summary section must report v4 check count separately
+                - Existing checks (steps 1–15a) must be regression-free
 
-              Branch to create: feature/TASK-014-remediate-v4-upgrade
-              Source files to copy validators from: validators/ (framework root)
-              Source scaffold to reference: project-template/signals/, project-template/memory/
+              Branch to create: feature/TASK-015-validate-framework-v4-checks
+              Target file: scripts/validate-framework.sh
 
 COMMAND:      /junior-dev
 BLOCKERS:     none

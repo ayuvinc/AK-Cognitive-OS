@@ -806,6 +806,8 @@ done
 # Count commands installed
 CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
 
+echo "  [ok] v4 cognitive layer verified: signals/active.json, feedback/summary.json, validators/signal_engine.py"
+
 if [[ "$VALIDATION_PASS" == true ]]; then
   echo "  [PASS] All critical files present"
 else

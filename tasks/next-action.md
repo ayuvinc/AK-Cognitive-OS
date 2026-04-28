@@ -1,25 +1,26 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: QA
-TASK:         QA sign-off for TASK-001 through TASK-006 (all READY_FOR_REVIEW)
-CONTEXT:      Session 25 closed — all 6 v4 Phase 1 tasks implemented, marked READY_FOR_REVIEW.
-              Feature branches:
-                - feature/TASK-001-remediate-mcp-fix      (2699e62)
-                - feature/TASK-002-ak-memory-mcp-server   (3d3b13d)
-                - feature/TASK-003-session-memory-contracts (a8155ef — also covers TASK-004, TASK-005)
-                - feature/TASK-006-memory-validator        (ea59c11)
+NEXT_PERSONA: Architect
+TASK:         v4 Phase 2 — Feedback Loop decomposition
+CONTEXT:      Session 25 complete. v4 Phase 1 (Memory Foundation) merged to main.
+              All 6 tasks QA_APPROVED. releases/session-25.md written.
 
-              Codex review: AK has the Codex prompt (provided end of Session 25).
-              Run Codex on all 4 branches before QA review.
-              Any CRITICAL Codex finding blocks QA_APPROVED.
+              Phase 2 scope (BACKLOG-001):
+                - Feedback schemas: define feedback entry structure (task_id, type,
+                  signal, severity, source_persona, session, timestamp)
+                - qa-run write: after each QA verdict, write feedback entry via
+                  mcp__ak-memory__write(type="outcome", ...)
+                - risk-manager write: after risk assessment, write to memory
+                - feedback.py validator: validate feedback entries in index.json
+                  (auto-discovered by runner.py, same pattern as memory.py)
 
-              NOTE: ak-memory MCP server (TASK-002) is newly wired in .mcp.json.
-              On next session-open, memory summary call will attempt for the first time.
-              If it fails: fallback path (read memory/MEMORY.md directly) is the expected
-              first-run behavior — not a bug.
+              Before Phase 2 decomposition:
+                - Verify Phase 1 is working in production: open a session and confirm
+                  ak-memory MCP server starts, mcp__ak-memory__summary loads on session-open
+                - Check memory/index.json has first real entry after a session-close
+                - Confirm guard-memory-loaded.sh flag file is written on session-open
 
-COMMAND:      /qa to review Codex findings against AC and issue QA_APPROVED or QA_REJECTED
-              Then /architect to merge all QA_APPROVED branches to main.
+COMMAND:      /session-open → /architect for Phase 2 decomposition
 SESSION_STATUS: CLOSED
-NEXT_FOCUS:   QA → Architect merge → Phase 2 planning (Feedback Loop)
-BLOCKERS:     Codex review must run first. AK holds the prompt.
+NEXT_FOCUS:   Validate Phase 1 in production, then decompose Phase 2
+BLOCKERS:     none — Phase 1 fully merged and validated

@@ -1,5 +1,24 @@
 # Channel — AK Cognitive OS
 
+## qa-run Verdict — TASK-015 — 2026-04-28T18:15:00Z
+Status: PASS — 10/10 AC PASS
+
+AC results:
+- [PASS] AC-1:  [OK] (v4) project-template/signals/active.json present in required-file checklist
+- [PASS] AC-2:  [OK] (v4) validators/feedback.py, signal_engine.py, base.py in checklist
+- [PASS] AC-3:  validators/feedback.py ran in validate mode — output surfaced with [WARN] (v4-advisory) prefix
+- [PASS] AC-4:  validators/signal_engine.py ran in validate mode — same prefix
+- [PASS] AC-5:  script exits 0 — validator non-zero exit handled via `|| true` (advisory only)
+- [PASS] AC-6:  [OK] (v4) bootstrap-project.sh contains 'signals/'
+- [PASS] AC-7:  [OK] (v4) bootstrap-project.sh contains 'feedback/'
+- [PASS] AC-8:  Final summary: "[PASS] Framework validation complete (20 structural checks + semantic lint); v4 checks: 9"
+- [PASS] AC-9:  0 [FAIL] lines in output — no regression in existing checks 1–15a
+- [PASS] AC-10: exit 0 confirmed
+
+Skipped: codex review (waived by AK), mobile layout (no UI changes)
+
+---
+
 ## QA Verdict — TASK-014 — 2026-04-28T17:55:00Z
 
 **QA_APPROVED**

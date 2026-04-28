@@ -2,7 +2,7 @@
 
 A portable, file-based multi-persona development framework for building software with Claude Code and Codex.
 
-Status: **v3.1** — adds Guide 15 (microservices architecture assessment for greenfield, pharma, and forensic AI projects), validated against Transplant-workflow production HLD. All v3.0 capabilities retained.
+Status: **v4.0.0** — adds the v4 Cognitive Layer (Memory Layer, Feedback Loop, Signal Engine), --v4-upgrade flag for existing projects, repository restructure, and v4 advisory checks in validate-framework.sh. All v3.x capabilities retained.
 
 ---
 
@@ -44,7 +44,7 @@ Personas and skills are defined in `personas/` and `skills/`. Every artifact bel
 
 ---
 
-## The 20 Commands (v3.1)
+## The 20 Commands (v4.0.0)
 
 ```
 Session:      /session-open  /session-close  /compact-session
@@ -68,7 +68,7 @@ Every project runs at one of three tiers. The tier controls which gates are enfo
 | **Standard** | Most real-world projects (default) | Enforced | No |
 | **High-Risk** | Regulated, sensitive data, high-stakes | Enforced | Yes (every stage) |
 
-Set `Tier:` in your project's `CLAUDE.md`. See `guides/14-risk-tier-selection.md`.
+Set `Tier:` in your project's `CLAUDE.md`. See `docs/guides/14-risk-tier-selection.md`.
 
 ---
 
@@ -78,12 +78,12 @@ New? Start with these four files in order:
 
 | Step | File | What it does |
 |---|---|---|
-| 1 | `guides/00-project-intake.md` | Answer questions about your product before touching code |
-| 2 | `DECISION_MATRIX.md` | Choose your stack based on intake answers |
+| 1 | `docs/guides/00-project-intake.md` | Answer questions about your product before touching code |
+| 2 | `docs/reference/DECISION_MATRIX.md` | Choose your stack based on intake answers |
 | 3 | `QUICKSTART.md` | Full setup walkthrough with scripts |
 | 4 | `project-template/CLAUDE_START.md` | First-run sequence once Claude is open |
 
-Not sure about a term? See `glossary.md`. Stuck? See `guides/07-common-failures.md` or `FAQ.md`.
+Not sure about a term? See `docs/reference/glossary.md`. Stuck? See `docs/guides/07-common-failures.md` or `docs/reference/FAQ.md`.
 
 ---
 
@@ -110,9 +110,21 @@ bash scripts/validate-framework.sh
 
 Then move into your target project, review `CLAUDE.md`, and open Claude Code.
 
+## What v4.0 Adds
+
+- **v4 Cognitive Layer** — three new subsystems scaffolded into every project:
+  - **Memory Layer** (`mcp-servers/memory_server.py`, `memory/`) — persistent cross-session context via ak-memory MCP server; stores decisions, outcomes, session summaries with queryable index
+  - **Feedback Loop** (`validators/feedback.py`, `feedback/`) — structured QA/risk/velocity/codex feedback capture per session
+  - **Signal Engine** (`validators/signal_engine.py`, `signals/`) — active signal tracking (LESSON_RECURRENCE, BUILD_STABILITY, etc.) with history log
+- **`remediate-project.sh --v4-upgrade`** — upgrades any existing v3 project to v4 in one command; safe_copy semantics (never overwrites); applied to all 6 downstream projects
+- **`bootstrap-project.sh`** — now scaffolds signals/, feedback/, validators/ v4 files, and ak-memory in .mcp.json on every new project
+- **`validate-framework.sh` v4 checks** — advisory WARN-only checks: v4 required-file checklist, validator health runs, bootstrap completeness grep; v4 check count in summary
+- **Repository restructure** — `guides/` → `docs/guides/`, `examples/` → `docs/examples/`, `harnesses/` → `docs/harnesses/`, reference docs → `docs/reference/`
+- **`.ak-cogos-version`** bumped to `4.0.0`
+
 ## What v3.1 Adds
 
-- **Guide 15 — Microservices Architecture Assessment** (`guides/15-microservices-assessment.md`): decision framework for when to use microservices vs monolith, validated core patterns from Transplant-workflow production HLD, and domain-specific architecture overlays for greenfield, pharma-based, and forensic AI projects
+- **Guide 15 — Microservices Architecture Assessment** (`docs/guides/15-microservices-assessment.md`): decision framework for when to use microservices vs monolith, validated core patterns from Transplant-workflow production HLD, and domain-specific architecture overlays for greenfield, pharma-based, and forensic AI projects
 
 ## What v3.0 Added
 
@@ -132,34 +144,50 @@ Then move into your target project, review `CLAUDE.md`, and open Claude Code.
 AK-Cognitive-OS/
 ├── README.md
 ├── QUICKSTART.md                      ← Full setup walkthrough
-├── glossary.md                        ← 35 terms in plain language
-├── FAQ.md                             ← 22 common questions answered
-├── DECISION_MATRIX.md                 ← Stack selection tables
-├── RELEASE_NOTES.md                   ← Changelog
+├── RELEASE_NOTES.md                   ← Release history
+├── CHANGELOG.md                       ← Version changelog
 ├── .claude/                           ← Repo-level Claude Code settings + bundled commands
 ├── .claude-plugin/                    ← Plugin manifest
 │
-├── guides/
-│   ├── 00-project-intake.md           ← Answer before writing code
-│   ├── 01-elements-reference.md       ← What every element is and how they connect
-│   ├── 02-session-flow.md             ← Opening, running, and closing sessions
-│   ├── 03-review-modes.md             ← SOLO_CLAUDE vs COMBINED vs SOLO_CODEX
-│   ├── 04-first-sprint.md             ← Full first sprint walkthrough
-│   ├── 05-adding-personas.md          ← Extending the framework with new roles
-│   ├── 06-tooling-baseline.md         ← Recommended tools for every stack layer
-│   ├── 07-common-failures.md          ← Top 15 failure cases with fixes
-│   ├── 08-mode-selection-cheatsheet.md ← Mode decision table + anti-patterns
-│   ├── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
-│   ├── 10-plugins.md                  ← Adding domain-specific personas and skills
-│   ├── 11-conversation-first-planning.md ← Discovery conversation → planning artifacts
-│   ├── 12-mid-build-recovery.md       ← Retrofit fundamentals into active projects
-│   ├── 13-non-coder-mode.md           ← Running the framework without engineering background
-│   ├── 14-risk-tier-selection.md      ← MVP / Standard / High-Risk tier selection
-│   └── 15-microservices-assessment.md ← When/how to use microservices (greenfield, pharma, forensic AI)
-│
-├── examples/
-│   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)
-│   └── rag-minimal/                   ← Worked example: document Q&A with RAG
+├── docs/
+│   ├── guides/
+│   │   ├── 00-project-intake.md           ← Answer before writing code
+│   │   ├── 01-elements-reference.md       ← What every element is and how they connect
+│   │   ├── 02-session-flow.md             ← Opening, running, and closing sessions
+│   │   ├── 03-review-modes.md             ← SOLO_CLAUDE vs COMBINED vs SOLO_CODEX
+│   │   ├── 04-first-sprint.md             ← Full first sprint walkthrough
+│   │   ├── 05-adding-personas.md          ← Extending the framework with new roles
+│   │   ├── 06-tooling-baseline.md         ← Recommended tools for every stack layer
+│   │   ├── 07-common-failures.md          ← Top 15 failure cases with fixes
+│   │   ├── 08-mode-selection-cheatsheet.md ← Mode decision table + anti-patterns
+│   │   ├── 09-rag-playbook.md             ← RAG ingestion, chunking, retrieval, eval
+│   │   ├── 10-plugins.md                  ← Adding domain-specific personas and skills
+│   │   ├── 11-conversation-first-planning.md ← Discovery conversation → planning artifacts
+│   │   ├── 12-mid-build-recovery.md       ← Retrofit fundamentals into active projects
+│   │   ├── 13-non-coder-mode.md           ← Running the framework without engineering background
+│   │   ├── 14-risk-tier-selection.md      ← MVP / Standard / High-Risk tier selection
+│   │   └── 15-microservices-assessment.md ← When/how to use microservices
+│   │
+│   ├── examples/
+│   │   ├── saas-minimal/                  ← Worked example: B2B SaaS (auth + CRUD)
+│   │   └── rag-minimal/                   ← Worked example: document Q&A with RAG
+│   │
+│   ├── harnesses/
+│   │   ├── _template/                     ← Copy to create a new harness
+│   │   ├── architect-harness.md
+│   │   ├── compliance-harness.md
+│   │   ├── session-close-harness.md
+│   │   └── audit-chain-harness.md
+│   │
+│   ├── reference/
+│   │   ├── glossary.md                    ← 35 terms in plain language
+│   │   ├── FAQ.md                         ← 22 common questions answered
+│   │   ├── DECISION_MATRIX.md             ← Stack selection tables
+│   │   ├── FRAMEWORK_FLOW.md              ← End-to-end framework flow diagram
+│   │   └── FRAMEWORK_GAP_ANALYSIS.md      ← Gap analysis for cross-project adoption
+│   │
+│   └── architecture/
+│       └── v4-architecture.md             ← v4 Cognitive Layer design (Memory, Feedback, Signal)
 │
 ├── personas/
 │   ├── _template/                     ← Copy to create a new persona
@@ -193,13 +221,6 @@ AK-Cognitive-OS/
 │   ├── skill-schema.md                ← Required structure for any skill
 │   └── finding-schema.md             ← S0/S1/S2 finding format
 │
-├── harnesses/
-│   ├── _template/                     ← Copy to create a new harness
-│   ├── architect-harness.md
-│   ├── compliance-harness.md
-│   ├── session-close-harness.md
-│   └── audit-chain-harness.md
-│
 ├── framework/
 │   ├── dual-stack-architecture.md     ← Full Claude + Codex architecture spec
 │   ├── interop/                       ← interop contract, combined-mode runbook, failover policy
@@ -208,20 +229,26 @@ AK-Cognitive-OS/
 │   └── templates/                    ← sprint summary, sprint review, audit entry, task, next-action
 │
 ├── scripts/
-│   ├── bootstrap-project.sh           ← Bootstrap a new project with native Claude Code assets
-│   ├── remediate-project.sh           ← Retrofit an active project to the current framework standard
+│   ├── bootstrap-project.sh           ← Bootstrap a new project (v4 scaffold)
+│   ├── remediate-project.sh           ← Retrofit an active project; --v4-upgrade flag
 │   ├── install-claude-commands.sh     ← Install personas + skills to ~/.claude/commands/
 │   ├── cli.sh                         ← `ak-cognitive-os` / `ak-cogos` entry point
 │   ├── hooks/                         ← Claude Code enforcement hooks
-│   └── validate-framework.sh          ← Framework validation suite
+│   └── validate-framework.sh          ← Framework validation suite (v4 checks included)
 │
 ├── validators/                        ← Python ground-truth verification suite
 │   ├── base.py                        ← Shared utilities (metadata parser, task parser)
 │   ├── runner.py                      ← CLI entry point
 │   ├── planning_docs.py               ← Verify planning docs exist + are honest
 │   ├── task_traceability.py           ← Tasks trace to design artifacts
-│   ├── release_truth.py              ← "Real" claims backed by actual code
-│   └── session_state.py              ← Session consistency across files
+│   ├── release_truth.py               ← "Real" claims backed by actual code
+│   ├── session_state.py               ← Session consistency across files
+│   ├── governance.py                  ← Governance checks (doc presence, version stamp)
+│   ├── feedback.py                    ← v4: Feedback loop validator
+│   └── signal_engine.py               ← v4: Signal engine validator
+│
+├── mcp-servers/                       ← MCP server implementations
+│   └── memory_server.py               ← ak-memory MCP server (v4 Memory Layer)
 │
 └── project-template/                  ← Bootstrap source for new projects
     ├── CLAUDE.md
@@ -229,7 +256,9 @@ AK-Cognitive-OS/
     ├── CODEX_START.md                 ← Paste protocol + startup checklist for Codex
     ├── .claude/
     ├── .claudeignore
-    ├── memory/
+    ├── memory/                        ← v4 Memory Layer (index.json, sessions/, decisions/, outcomes/)
+    ├── signals/                       ← v4 Signal Engine (active.json, history/)
+    ├── feedback/                      ← v4 Feedback Loop (summary.json, qa/, risk/, velocity/, codex/)
     ├── channel.md
     ├── framework-improvements.md
     ├── docs/                          ← Planning artifact templates

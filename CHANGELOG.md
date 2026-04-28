@@ -6,6 +6,30 @@ Versions follow [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [4.0.0] — 2026-04-28
+
+### Added
+- **v4 Cognitive Layer** — three new subsystems deployed to every project via bootstrap and --v4-upgrade:
+  - **Memory Layer** (`mcp-servers/memory_server.py`, `memory/`) — ak-memory MCP server for persistent cross-session context; sessions/, decisions/, outcomes/ subdirs; queryable index.json
+  - **Feedback Loop** (`validators/feedback.py`, `feedback/`) — structured feedback capture per session in qa/, risk/, velocity/, codex/ subdirs with summary.json
+  - **Signal Engine** (`validators/signal_engine.py`, `signals/`) — active signal tracking (LESSON_RECURRENCE, BUILD_STABILITY, etc.) in active.json with history/
+- **`remediate-project.sh --v4-upgrade`** — 7-step upgrade (signals/, feedback/, memory/ v4 dirs, validators/ copy, ak-memory .mcp.json merge, settings.json permissions merge, MCP importability check); safe_copy semantics throughout; applied to all 6 downstream projects
+- **`bootstrap-project.sh`** v4 scaffold — all new projects include signals/, feedback/, validators/ v4 files, ak-memory in .mcp.json, and memory v4 subdirs
+- **`validate-framework.sh` v4 checks** — advisory WARN-only extension: v4 required-file checklist (4 files), validator health runs in validate mode, bootstrap completeness grep; v4 check count reported in final summary
+- **`validators/base.py`** — shared utilities consumed by all v4 validators
+- **`mcp-servers/memory_server.py`** — ak-memory MCP server implementation
+- **`.claude/commands/medical-researcher.md`** — medical researcher skill definition committed to version control
+- **`docs/architecture/v4-architecture.md`** — v4 Cognitive Layer design document
+
+### Changed
+- **Repository restructure**: `guides/` → `docs/guides/`, `examples/` → `docs/examples/`, `harnesses/` → `docs/harnesses/`, reference docs (`glossary.md`, `FAQ.md`, `DECISION_MATRIX.md`, `FRAMEWORK_FLOW.md`, `FRAMEWORK_GAP_ANALYSIS.md`) → `docs/reference/`, `WORK_LOG.md` → `archive/`
+- **`scripts/remediate-project.sh`** Step 8b hardened — malformed settings.json no longer causes set -e crash
+- **`.ak-cogos-version`** bumped from `3.0.0` → `4.0.0`
+- **`README.md`** — updated to v4.0.0 with new repo structure tree, "What v4.0 Adds" section, corrected paths
+- **`.gitignore`** — added `*.bak`, `*.bak[0-9]*`, `*.textClipping` patterns
+
+---
+
 ## [3.1.0] — 2026-04-11
 
 ### Added

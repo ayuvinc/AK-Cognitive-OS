@@ -1,7 +1,57 @@
 # Release Notes -- AK Cognitive OS
 
 Most recent version at top. Each entry covers what changed, what was added, and what was fixed.
-For definitions of any term used here, see glossary.md.
+For definitions of any term used here, see docs/reference/glossary.md.
+
+---
+
+## v4.0.0 -- v4 Cognitive Layer + Repository Restructure
+
+**Date:** 2026-04-28
+**Type:** Major Enhancement
+
+Adds the v4 Cognitive Layer — a set of additive subsystems (Memory Layer, Feedback Loop, Signal Engine)
+deployed to every project by bootstrap and the new --v4-upgrade flag. Existing v3 projects are upgraded
+in one command without overwriting any existing files. The repository structure is consolidated under
+`docs/` for clarity.
+
+### Added
+
+- **Memory Layer** (`mcp-servers/memory_server.py`, `memory/`) — ak-memory MCP server provides
+  persistent cross-session context. Every project gets sessions/, decisions/, and outcomes/
+  subdirectories plus a queryable index.json. Summaries are loaded at session-open via MCP.
+
+- **Feedback Loop** (`validators/feedback.py`, `feedback/`) — structured feedback capture per session.
+  Sub-directories: qa/, risk/, velocity/, codex/. Aggregated in feedback/summary.json.
+  `feedback.py` validates schema and detects stale or missing entries.
+
+- **Signal Engine** (`validators/signal_engine.py`, `signals/`) — active signal tracking.
+  Signals include LESSON_RECURRENCE, BUILD_STABILITY, and SCOPE_DRIFT. Current state in
+  signals/active.json; full history in signals/history/. `signal_engine.py` evaluates
+  thresholds and emits WARN on triggered signals.
+
+- **`remediate-project.sh --v4-upgrade`** — adds the full v4 cognitive layer to any existing
+  v3 project. Seven idempotent steps: signals/ scaffold, feedback/ scaffold, memory/ v4 dirs,
+  validators/ copy, ak-memory .mcp.json merge, settings.json permissions merge, MCP importability
+  check (WARN only). Never overwrites existing files. Applied to all 6 downstream projects
+  (mission-control, policybrain, Transplant-workflow, forensic-ai, Pharma-Base, Project-Dig).
+
+- **`bootstrap-project.sh` v4 scaffold** — all newly bootstrapped projects include signals/,
+  feedback/, validators/ v4 files (memory.py, feedback.py, signal_engine.py, base.py),
+  and ak-memory in .mcp.json from day one.
+
+- **`validate-framework.sh` v4 checks** — advisory WARN-only extension. Step 15b checks four
+  required v4 files and runs each validator in validate mode; step 15c greps bootstrap-project.sh
+  for signals/ and feedback/ scaffold steps. Final summary includes v4 check count.
+
+### Changed
+
+- **Repository restructure**: `guides/` → `docs/guides/`, `examples/` → `docs/examples/`,
+  `harnesses/` → `docs/harnesses/`, `glossary.md` / `FAQ.md` / `DECISION_MATRIX.md` /
+  `FRAMEWORK_FLOW.md` / `FRAMEWORK_GAP_ANALYSIS.md` → `docs/reference/`, `WORK_LOG.md` → `archive/`
+- **`remediate-project.sh`** Step 8b hardened — malformed settings.json no longer crashes the script
+- **`.ak-cogos-version`** bumped from `3.0.0` to `4.0.0`
+- **`.gitignore`** — added `*.bak`, `*.bak[0-9]*`, `*.textClipping` patterns
 
 ---
 
@@ -17,7 +67,7 @@ adoption, and provides domain-specific architecture overlays for three project t
 
 ### Added
 
-- **`guides/15-microservices-assessment.md`** — Microservices architecture assessment guide:
+- **`docs/guides/15-microservices-assessment.md`** — Microservices architecture assessment guide:
   - Decision framework: service count emerges from domain complexity, not upfront choice
   - Seven validated core patterns (strangler-fig, adapter, partition key, schema isolation,
     CQRS read models, audit-by-consumption, correlation ID propagation)

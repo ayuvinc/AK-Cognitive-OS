@@ -81,7 +81,7 @@ except Exception:
   fi
 
   # Check persona
-  if [[ "$PERSONA" != "architect" ]]; then
+  if [[ "${PERSONA,,}" != "architect" ]]; then
     echo "BLOCKED: Only the Architect persona may push to main/master. Active persona: ${PERSONA}" >&2
     exit 2
   fi

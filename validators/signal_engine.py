@@ -98,6 +98,11 @@ def validate(project_root: Path) -> ValidatorResult:
         result.issues.append("signals/active.json is not valid JSON")
         return result
 
+    if not isinstance(data, dict):
+        result.status = "WARN"
+        result.issues.append("signals/active.json: top-level value must be a JSON object")
+        return result
+
     signals = data.get("signals", [])
     if not isinstance(signals, list):
         result.status = "WARN"
@@ -105,6 +110,10 @@ def validate(project_root: Path) -> ValidatorResult:
         return result
 
     for sig in signals:
+        if not isinstance(sig, dict):
+            result.status = "WARN"
+            result.issues.append("signals/active.json: signal entry is not a JSON object")
+            continue
         _validate_signal_entry(sig, result)
 
     return result
@@ -169,13 +178,14 @@ def generate(project_root: Path) -> None:
     signals_dir.mkdir(exist_ok=True)
     history_dir.mkdir(exist_ok=True)
 
-    # Load existing signals (start fresh on malformed file)
+    # Load existing signals (start fresh on malformed file or unexpected shape)
     existing: List[Dict[str, Any]] = []
     if signals_path.exists():
         try:
-            existing = json.loads(
-                signals_path.read_text(encoding="utf-8")
-            ).get("signals", [])
+            parsed = json.loads(signals_path.read_text(encoding="utf-8"))
+            if isinstance(parsed, dict):
+                raw = parsed.get("signals", [])
+                existing = [s for s in raw if isinstance(s, dict)] if isinstance(raw, list) else []
         except (json.JSONDecodeError, OSError):
             existing = []
 
@@ -573,7 +583,13 @@ def _load_memory_entries(project_root: Path) -> List[Dict[str, Any]]:
     if not index_path.exists():
         return []
     try:
-        return json.loads(index_path.read_text(encoding="utf-8")).get("entries", [])
+        parsed = json.loads(index_path.read_text(encoding="utf-8"))
+        if not isinstance(parsed, dict):
+            return []
+        raw = parsed.get("entries", [])
+        if not isinstance(raw, list):
+            return []
+        return [e for e in raw if isinstance(e, dict)]
     except (json.JSONDecodeError, OSError):
         return []
 
@@ -632,7 +648,11 @@ def main() -> None:
             print(f"[WARN] signal_engine: generate failed — {exc}")
     else:
         print(f"Validating signals at: {project_root}/signals/active.json")
-        result = validate(project_root)
+        try:
+            result = validate(project_root)
+        except Exception as exc:  # noqa: BLE001 — advisory; never crashes the hook
+            print(f"[WARN] signal_engine: validate failed — {exc}")
+            sys.exit(0)
         if result.status == "PASS":
             print("[PASS] signal_engine: all checks passed")
         else:

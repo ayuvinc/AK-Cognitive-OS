@@ -21,7 +21,10 @@
       "mcp__ak-state-machine__transition_session",
       "mcp__ak-state-machine__set_active_persona",
       "mcp__ak-audit-log__append_audit_entry",
-      "mcp__ak-audit-log__get_recent_entries"
+      "mcp__ak-audit-log__get_recent_entries",
+      "mcp__ak-memory__write",
+      "mcp__ak-memory__query",
+      "mcp__ak-memory__summary"
     ],
     "deny": [
       "Bash(rm -rf *)",
@@ -139,6 +142,15 @@
       "env": {
         "PROJECT_ROOT": ".",
         "AUDIT_LOG_PATH": "tasks/audit-log.md"
+      }
+    },
+    "ak-memory": {
+      "command": "python3",
+      "args": [
+        "mcp-servers/memory_server.py"
+      ],
+      "env": {
+        "PROJECT_ROOT": "."
       }
     }
   }

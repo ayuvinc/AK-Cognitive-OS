@@ -14,66 +14,11 @@ Last updated:   2026-04-28T06:35:19Z — state transition by MCP server
 
 ---
 
-### TASK-008 — qa-run Feedback Write
-Status:       READY_FOR_REVIEW
-Persona:      Junior Dev
-Branch:       feature/TASK-008-qa-run-write
-Depends:      TASK-007
-Files:        skills/qa-run/claude-command.md (modify)
-Description:  Add mcp__ak-memory__write call to qa-run contract, executed after each QA verdict
-              is determined (QA_APPROVED or QA_REJECTED), before HANDOFF output. Write must
-              never block the verdict — failure path emits WARN only. Add memory_written:
-              true|false to extra_fields in HANDOFF envelope.
-Constraints:
-  - type="outcome", outcome per TASK-007 schema (PASS|FAIL), tags=["qa","verdict"]
-  - persona="QA", session=<session_id>, task_id=<task under review>
-  - content: one-line verdict summary ≤500 chars (e.g. "TASK-042 QA_APPROVED — all 6 ACs pass")
-  - On write failure: add entry to warnings[], set memory_written=false, continue
-  - If mcp__ak-memory__write tool unavailable: same WARN path, do not block
-Security:     content field contains task IDs and verdict codes only — no PII. Write capped
-              at 500 chars by memory_server.py.
-Acceptance Criteria:
-  #### AC — TASK-008
-  - [ ] mcp__ak-memory__write step present in skills/qa-run/claude-command.md ON ACTIVATION
-        or TASK EXECUTION section, positioned after verdict determination, before HANDOFF output
-  - [ ] Write call specifies: type="outcome", tags=["qa","verdict"], persona="QA";
-        outcome="PASS" for QA_APPROVED verdict, outcome="FAIL" for QA_REJECTED verdict
-  - [ ] Write call includes session=<session_id> and task_id=<task under review>
-  - [ ] content described as one-line verdict summary ≤500 chars
-  - [ ] On write failure: warnings[] entry added, memory_written=false in extra_fields,
-        verdict and HANDOFF proceed normally (no status change to FAIL or BLOCKED)
-  - [ ] If mcp__ak-memory__write unavailable: same WARN path — no block on verdict
-  - [ ] memory_written: true|false present in extra_fields block of HANDOFF section
-  - [ ] Both QA_APPROVED and QA_REJECTED paths have write steps (not just one branch)
+<!-- TASK-008 QA_APPROVED — merged to main 2026-04-28 — archived to releases/session-26.md at close -->
 
 ---
 
-### TASK-009 — risk-manager Feedback Write
-Status:       READY_FOR_REVIEW
-Persona:      Junior Dev
-Branch:       feature/TASK-009-risk-manager-write
-Depends:      TASK-007
-Files:        personas/risk-manager/claude-command.md (modify)
-Description:  Add mcp__ak-memory__write call to risk-manager persona contract, executed after
-              step 7 (S0/S1 surfacing), before HANDOFF. Write must never block the assessment.
-Constraints:
-  - type="decision", outcome per TASK-007 schema (PASS|PARTIAL|FAIL), tags=["risk","assessment"]
-  - persona="risk-manager", session=<session_id>
-  - task_id: primary TASK-ID under assessment, or "cross-cutting" if multi-task run
-  - content: "N risks reviewed, N new, S0: N open, S1: N open" — ≤500 chars
-  - On write failure: add entry to warnings[], continue without blocking
-Security:     content contains only counts and IDs — no risk description text or PII.
-Acceptance Criteria:
-  #### AC — TASK-009
-  - [ ] mcp__ak-memory__write step present in personas/risk-manager/claude-command.md ON
-        ACTIVATION sequence, positioned after step 7 (S0/S1 surfacing), before HANDOFF
-  - [ ] Write call specifies: type="decision", tags=["risk","assessment"], persona="risk-manager"
-  - [ ] Outcome mapping documented: no S0/S1 open → PASS, S1 open → PARTIAL, S0 open → FAIL
-  - [ ] content pattern specified: "N risks reviewed, N new, S0: N open, S1: N open" (≤500 chars)
-  - [ ] task_id: primary TASK-ID for single-task run; "cross-cutting" for multi-task run
-  - [ ] On write failure: warnings[] entry added, assessment output proceeds normally (no block)
-  - [ ] If mcp__ak-memory__write unavailable: same WARN path — no block on assessment
-  - [ ] memory_written: true|false present in extra_fields block of HANDOFF section
+<!-- TASK-009 QA_APPROVED — merged to main 2026-04-28 — archived to releases/session-26.md at close -->
 
 ---
 

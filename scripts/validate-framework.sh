@@ -264,6 +264,11 @@ done
 
 echo "[OK] MCP server files present (state_machine_server.py, audit_log_server.py, requirements.txt)"
 
+# 15b) v4 memory structure check (advisory — WARN only in v4.0)
+if [[ -f "${ROOT}/validators/memory.py" ]]; then
+  python3 "${ROOT}/validators/memory.py" "${ROOT}" | sed 's/^\[WARN\]/[WARN] (v4-advisory)/'
+fi
+
 # 16) Context budgets: every persona card must have ## Context Budget + 3 subsections
 ROOT="$ROOT" python3 - <<'PY'
 from pathlib import Path

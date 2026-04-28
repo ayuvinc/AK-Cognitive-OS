@@ -21,7 +21,10 @@
       "mcp__ak-state-machine__transition_session",
       "mcp__ak-state-machine__set_active_persona",
       "mcp__ak-audit-log__append_audit_entry",
-      "mcp__ak-audit-log__get_recent_entries"
+      "mcp__ak-audit-log__get_recent_entries",
+      "mcp__ak-memory__write",
+      "mcp__ak-memory__query",
+      "mcp__ak-memory__summary"
     ],
     "deny": [
       "Bash(rm -rf *)",
@@ -43,6 +46,10 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/guard-persona-boundaries.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-memory-loaded.sh"
           }
         ]
       },
@@ -84,6 +91,15 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/validate-envelope.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-memory-reinject.sh"
           }
         ]
       }

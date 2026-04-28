@@ -49,6 +49,17 @@ Checks/Actions (run in order, BLOCKED on first failure):
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
 10. Update SESSION STATE in tasks/todo.md: Status=CLOSED, Active task=none, Active persona=none, Last updated=Session N close.
+10a. Call `mcp__ak-memory__write()` with the session snapshot (runs only after SESSION STATE is
+     CLOSED — prevents duplicate writes on retried closes):
+    - type: "task_history"
+    - content: "Session {N} — completed: [comma-separated QA_APPROVED task IDs and outcomes]"
+    - session: "session-{N}", persona: "session-close"
+    - tags: list of completed task IDs + ["session-close"]
+    - Snapshot content must be task IDs and outcomes only — no raw code, no user data, no PII.
+    - If MCP unavailable or write fails: emit WARN "memory write failed — session snapshot not
+      persisted", continue. Do NOT block session close. Set memory_snapshot_written = false.
+    - On success: memory/MEMORY.md is automatically trimmed to last 50 entries. Set
+      memory_snapshot_written = true.
 11. Validate SESSION STATE is now CLOSED before emitting PASS. If Status≠CLOSED after write → BLOCKED with SESSION_STATE_VIOLATION.
 
 Validation contracts:
@@ -79,4 +90,5 @@ manual_action: NONE
 override: "NOT_OVERRIDABLE — session must close cleanly; open sessions block next session start"
 extra_fields:
   closure_checklist: []
+  memory_snapshot_written: true|false
 ```

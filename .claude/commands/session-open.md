@@ -54,6 +54,15 @@ Checks/Actions:
 - Call `mcp__ak-state-machine__set_active_persona(persona=<expected_persona_from_next_action>)` (primary path only — skip if fallback was used). If `result.success` is false, emit BLOCKED with `SESSION_STATE_WRITE_FAILED`.
 - Call `mcp__ak-state-machine__get_session_state()` and verify `status == "OPEN"` (primary path only). BLOCKED with `SESSION_STATE_WRITE_FAILED` if not. On fallback path: read tasks/todo.md directly and verify Status field reads OPEN.
 - Read tasks/lessons.md — last 10 entries only.
+- Call `mcp__ak-memory__summary(limit=20)`:
+  - If successful: memory digest is loaded as session context. Write flag file
+    `tasks/.memory-loaded-session-{N}` where N is the session number from SESSION STATE
+    Last updated field (e.g. "session-25" → write `tasks/.memory-loaded-session-25`).
+    Set memory_loaded = true.
+  - If MCP unavailable or call fails: read `memory/MEMORY.md` directly as fallback.
+    Emit WARN "MCP unavailable — reading memory/MEMORY.md directly". Set memory_loaded = false.
+  - If `memory/MEMORY.md` does not exist on fallback path: emit WARN "no memory file found —
+    fresh project or memory not yet initialised", continue normally. Do NOT block.
 - Read tasks/next-action.md — NEXT_PERSONA, TASK, CONTEXT fields.
 - Read tasks/risk-register.md — any OPEN entries.
 - Generate exactly three standup lines for AK:
@@ -88,4 +97,5 @@ artifacts_written: []
 next_action: "<what to run next>"
 extra_fields:
   standup_lines: ["line1", "line2", "line3"]
+  memory_loaded: true|false
 ```

@@ -11,7 +11,7 @@ Last updated:   2026-04-28T04:20:55Z — state transition by MCP server
 <!-- v4 Phase 1 — Memory Foundation — AK approved 2026-04-28 -->
 
 ### TASK-002 — ak-memory MCP server + memory/ scaffold
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Priority:     High
 Description:  Build the ak-memory MCP server (Python, stdio transport, same pattern as
@@ -60,7 +60,7 @@ AC:
 Dependencies: none
 
 ### TASK-003 — session-open + session-close contract updates
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Priority:     High
 Description:  Update session-open claude-command.md:
@@ -98,7 +98,7 @@ AC:
 Dependencies: TASK-002
 
 ### TASK-004 — PostToolUse compaction re-injection hook
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Priority:     High
 Description:  Create scripts/hooks/auto-memory-reinject.sh.
@@ -124,7 +124,7 @@ AC:
 Dependencies: TASK-002
 
 ### TASK-005 — PreToolUse enforcement hook (memory-loaded gate)
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Priority:     Medium
 Description:  Create scripts/hooks/guard-memory-loaded.sh.
@@ -154,7 +154,7 @@ AC:
 Dependencies: TASK-003 (flag file written by session-open)
 
 ### TASK-006 — memory.py validator + runner.py update
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Priority:     Medium
 Description:  Create validators/memory.py. Checks:

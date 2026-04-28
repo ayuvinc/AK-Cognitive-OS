@@ -1,26 +1,24 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Architect
-TASK:         v4 Phase 2 — Feedback Loop decomposition
-CONTEXT:      Session 25 complete. v4 Phase 1 (Memory Foundation) merged to main.
-              All 6 tasks QA_APPROVED. releases/session-25.md written.
+NEXT_PERSONA: Architect (session-close)
+TASK:         /session-close — close Session 26, write first memory entry to index.json
+CONTEXT:      Session 26 complete. v4 Phase 2 (Feedback Loop) fully merged to main.
 
-              Phase 2 scope (BACKLOG-001):
-                - Feedback schemas: define feedback entry structure (task_id, type,
-                  signal, severity, source_persona, session, timestamp)
-                - qa-run write: after each QA verdict, write feedback entry via
-                  mcp__ak-memory__write(type="outcome", ...)
-                - risk-manager write: after risk assessment, write to memory
-                - feedback.py validator: validate feedback entries in index.json
-                  (auto-discovered by runner.py, same pattern as memory.py)
+              Completed this session:
+                TASK-007 — schemas/feedback-entry.md (new)
+                TASK-008 — skills/qa-run memory write wired
+                TASK-009 — personas/risk-manager memory write wired
+                TASK-010 — validators/feedback.py (new, auto-discovered)
+                AK directives: Codex gate removed framework-wide; blocking hooks removed
 
-              Before Phase 2 decomposition:
-                - Verify Phase 1 is working in production: open a session and confirm
-                  ak-memory MCP server starts, mcp__ak-memory__summary loads on session-open
-                - Check memory/index.json has first real entry after a session-close
-                - Confirm guard-memory-loaded.sh flag file is written on session-open
+              Session-close will write the first memory entry to memory/index.json
+              (validates Phase 1 production check #3 — proves the MCP write path end-to-end).
 
-COMMAND:      /session-open → /architect for Phase 2 decomposition
-SESSION_STATUS: CLOSED
-NEXT_FOCUS:   Validate Phase 1 in production, then decompose Phase 2
-BLOCKERS:     none — Phase 1 fully merged and validated
+              Next sprint: v4 Phase 3 — Signal Engine
+                (signal_engine.py, 6 detectors, auto-signal-check.sh hook)
+                Decompose at start of next session.
+
+COMMAND:      /session-close
+SESSION_STATUS: OPEN
+NEXT_FOCUS:   session-close → write memory entry → Phase 3 decomposition (next session)
+BLOCKERS:     none

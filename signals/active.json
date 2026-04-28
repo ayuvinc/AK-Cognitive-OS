@@ -1,0 +1,49 @@
+{
+  "signals": [
+    {
+      "signal_id": "SIG-001",
+      "signal_type": "LESSON_RECURRENCE",
+      "severity": "LOW",
+      "evidence": [
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-08",
+          "detail": "[HOOK] occurrence #1"
+        },
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-05",
+          "detail": "[HOOK] occurrence #2"
+        },
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-06",
+          "detail": "[HOOK] occurrence #3"
+        },
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-06",
+          "detail": "[HOOK] occurrence #4"
+        },
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-06",
+          "detail": "[HOOK] occurrence #5"
+        },
+        {
+          "source": "lessons",
+          "entry_id": "2026-04-08",
+          "detail": "[HOOK] occurrence #6"
+        }
+      ],
+      "affected_area": "HOOK",
+      "recommended_action": "[HOOK] lesson repeated 6x \u2014 consider structural fix to prevent recurrence",
+      "persona_to_notify": "architect",
+      "auto_escalate": false,
+      "status": "ACTIVE",
+      "generated_at": "2026-04-28T08:21:53Z"
+    }
+  ],
+  "generated_at": "2026-04-28T08:21:53Z",
+  "schema_version": "4.0"
+}

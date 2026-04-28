@@ -88,7 +88,7 @@ Acceptance Criteria:
 ---
 
 ### TASK-012 — auto-signal-check.sh hook + settings wiring
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Persona:      Junior Dev
 Branch:       feature/TASK-012-signal-check-hook
 Depends:      TASK-011

@@ -1,7 +1,40 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-28T08:35:00Z — QA (Session 27)
+2026-04-28T08:55:00Z — QA (Session 27)
+
+---
+
+## QA Verdict — TASK-012 — QA_APPROVED
+Date: 2026-04-28T08:55:00Z
+qa-run: 9 failure mode tests (all exit 0); live run surfaces SIG-001; validate-framework.sh hook check passes
+Safety: no set -e/set -u; no strict mode; every command || true; exit 0 is the only exit
+
+**Verdict: QA_APPROVED**
+
+AC verification (13/13 PASS):
+- [PASS] scripts/hooks/auto-signal-check.sh exists and exits 0 in all cases — 9 tests confirm
+- [PASS] signals/ missing → exit 0 silently — tested: "exit (no signals dir): 0"
+- [PASS] signals/active.json missing → exit 0 silently — [[ -f ]] || return 0 guard at line ~30
+- [PASS] validators/signal_engine.py missing → exit 0 silently — tested: "exit (no engine): 0"
+- [PASS] no HIGH signals → exit 0, no output — tested MEDIUM+LOW only: output was ''
+- [PASS] HIGH signal → stdout line with signal_type, affected_area, recommended_action — confirmed: "[SIGNAL] LESSON_RECURRENCE (HIGH) — HOOK: ..."
+- [PASS] MEDIUM suppressed — tested: output was '' with MEDIUM+LOW signals
+- [PASS] LOW suppressed — same test
+- [PASS] malformed JSON → exit 0 silently — tested: "exit (bad JSON): 0" and "exit (array JSON): 0"
+- [PASS] wired in .claude/settings.json after auto-persona-detect.sh — confirmed: position 1 of 3
+- [PASS] wired in project-template/.claude/settings.json after auto-persona-detect.sh — confirmed: position 1 of 3
+- [PASS] validate-framework.sh: "[OK] All hook scripts referenced in .claude/settings.json exist"
+- [PASS] output contains only signal_type, affected_area, recommended_action — str()[:N] truncation; no content/memory fields; injection attempt tested: "\$(rm -rf /)" not executed
+
+Security check:
+- No auth surface (reads signals/active.json locally only)
+- No eval, no subprocess, no dynamic exec — json.load() only
+- Field values cast to str and capped (50/100/200 chars) before print
+- stdin drained at top; no prompt content used anywhere
+- Exit 0 always — cannot block Claude's response
+
+---
 
 ---
 

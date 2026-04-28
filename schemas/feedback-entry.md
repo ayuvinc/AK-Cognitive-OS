@@ -1,6 +1,6 @@
 # Feedback Entry Schema
 # AK Cognitive OS — v4 Phase 2 Feedback Loop
-# validation: markdown-contract-only
+# validation: markdown-contract-only | machine-validated
 
 ---
 

@@ -1,7 +1,7 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: Junior Dev
-TASK:         TASK-011 — signal_engine.py + signals/ scaffold
+TASK:         TASK-012 — auto-signal-check.sh hook + settings wiring
 CONTEXT:      Session 27 — Architect has decomposed v4 Phase 3 (Signal Engine) into 2 tasks.
               Both tasks have full acceptance criteria. AK approval required before build starts.
 
@@ -20,7 +20,7 @@ CONTEXT:      Session 27 — Architect has decomposed v4 Phase 3 (Signal Engine)
 
               Build order: TASK-011 first (no deps), then TASK-012 (depends on TASK-011).
 
-COMMAND:      /junior-dev TASK-011
+COMMAND:      /junior-dev TASK-012
 SESSION_STATUS: OPEN
 NEXT_FOCUS:   Junior Dev builds TASK-011 → TASK-012 → session-close
 BLOCKERS:     none — AK approval required before Junior Dev starts

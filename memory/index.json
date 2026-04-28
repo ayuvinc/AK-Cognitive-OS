@@ -1,5 +1,26 @@
 {
-  "entries": [],
-  "last_updated": "",
-  "total": 0
+  "entries": [
+    {
+      "entry_id": "MEM-001",
+      "session": "session-26",
+      "timestamp_utc": "2026-04-28T07:54:08Z",
+      "type": "task_history",
+      "persona": "session-close",
+      "task_id": null,
+      "content": "Session 26 — completed: TASK-007 (outcome schema, PASS), TASK-008 (qa-run memory write, PASS), TASK-009 (risk-manager memory write, PASS), TASK-010 (feedback.py validator, PASS). v4 Phase 2 Feedback Loop complete. Codex gate removed framework-wide. Blocking hooks (auto-teach.sh) disabled across all projects.",
+      "tags": [
+        "session-close",
+        "TASK-007",
+        "TASK-008",
+        "TASK-009",
+        "TASK-010",
+        "v4-phase-2"
+      ],
+      "outcome": "PASS",
+      "severity": null,
+      "linked_entries": []
+    }
+  ],
+  "last_updated": "2026-04-28T07:54:08Z",
+  "total": 1
 }

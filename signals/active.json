@@ -41,9 +41,9 @@
       "persona_to_notify": "architect",
       "auto_escalate": false,
       "status": "ACTIVE",
-      "generated_at": "2026-04-28T08:25:25Z"
+      "generated_at": "2026-04-28T08:38:31Z"
     }
   ],
-  "generated_at": "2026-04-28T08:25:25Z",
+  "generated_at": "2026-04-28T08:38:31Z",
   "schema_version": "4.0"
 }

@@ -30,7 +30,22 @@ Hardening items: 2 — both applied in commit 64e4470
 
 ---
 
-## QA Verdict — TASK-001 — QA_REJECTED
+## QA Verdict — TASK-001 — QA_APPROVED (re-review after fix)
+Date: 2026-04-28T05:15:00Z
+qa-run: validate-framework.sh PASS (20/20), exit-code paths verified
+
+**Verdict: QA_APPROVED**
+
+Previously failing AC now passes:
+- [PASS] pip install mcp failure → MCP_BROKEN=true → script exits 1 with explicit message
+- [PASS] import mcp failure → MCP_BROKEN=true → script exits 1 with explicit message
+- [PASS] Happy path (mcp importable) → MCP_BROKEN=false → script exits 0 as before
+
+All TASK-001 ACs: PASS.
+
+---
+
+## QA Verdict — TASK-001 — QA_REJECTED (superseded)
 Date: 2026-04-28T05:00:00Z
 qa-run: validate-framework.sh PASS (20/20), validators/runner.py [PASS] memory
 

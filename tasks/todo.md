@@ -15,7 +15,7 @@ Last updated:   2026-04-28T06:35:19Z — state transition by MCP server
 ---
 
 ### TASK-008 — qa-run Feedback Write
-Status:       IN_PROGRESS
+Status:       READY_FOR_REVIEW
 Persona:      Junior Dev
 Branch:       feature/TASK-008-qa-run-write
 Depends:      TASK-007

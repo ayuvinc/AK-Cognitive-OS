@@ -39,6 +39,20 @@ Checks/Actions:
 - Run lint (configured in project CLAUDE.md; default: npm run lint)
 - Validate criterion pass/fail per item.
 - Validate 375px mobile behavior (if UI components changed).
+- Determine verdict: PASS if all criteria pass, FAIL if any criterion fails.
+- Write feedback memory entry via mcp__ak-memory__write (runs regardless of verdict):
+    type="outcome"
+    outcome="PASS" (verdict PASS / QA_APPROVED) | "FAIL" (verdict FAIL / QA_REJECTED)
+    task_id=<task_id from $ARGUMENTS or from active task in tasks/todo.md>
+    persona="QA"
+    session=<session_id>
+    tags=["qa", "verdict"]
+    content="<task_id> QA_APPROVED — <N> ACs pass" or "<task_id> QA_REJECTED — <criterion> failed"
+            (one line, ≤500 chars, task IDs and verdict codes only — no PII)
+  On write failure (tool error, MCP unavailable, server down):
+    - Add "memory write failed: <error>" to warnings[]
+    - Set memory_written=false in extra_fields
+    - Continue — do not change status or block HANDOFF
 
 Validation contracts:
 - Required status enum: `PASS|FAIL|BLOCKED`
@@ -51,6 +65,7 @@ Validation contracts:
 Required extra fields for this agent:
   criterion_results: []
   mobile_issues: []
+  memory_written: true|false
 
 ## HANDOFF
 Return this JSON/YAML-compatible object:
@@ -68,4 +83,5 @@ next_action: "<what to run next>"
 extra_fields:
   criterion_results: []
   mobile_issues: []
+  memory_written: true|false
 ```

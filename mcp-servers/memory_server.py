@@ -73,14 +73,23 @@ def _save_index(data: dict) -> None:
 
 
 def _next_entry_id(entries: list) -> str:
-    """Generate next MEM-NNN id based on existing entries."""
+    """Generate next MEM-NNN id using max(existing numeric IDs) + 1.
+
+    Using max rather than len avoids collision when entries are manually removed
+    or reordered — the next ID is always higher than any existing one.
+    """
     if not entries:
         return "MEM-001"
-    last_id = entries[-1].get("entry_id", "MEM-000")
-    try:
-        n = int(last_id.split("-")[1]) + 1
-    except (IndexError, ValueError):
-        n = len(entries) + 1
+    nums = []
+    for e in entries:
+        eid = e.get("entry_id", "")
+        parts = eid.split("-")
+        if len(parts) == 2:
+            try:
+                nums.append(int(parts[1]))
+            except ValueError:
+                pass
+    n = (max(nums) + 1) if nums else (len(entries) + 1)
     return f"MEM-{n:03d}"
 
 

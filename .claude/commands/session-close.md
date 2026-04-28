@@ -53,19 +53,8 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
-9a. Call `mcp__ak-memory__write()` with the session snapshot before closing:
-    - type: "task_history"
-    - content: "Session {N} — completed: [comma-separated QA_APPROVED task IDs and outcomes]"
-    - session: "session-{N}", persona: "session-close"
-    - tags: list of completed task IDs + ["session-close"]
-    - Snapshot content must be task IDs and outcomes only — no raw code, no user data, no PII.
-    - If MCP unavailable or write fails: emit WARN "memory write failed — session snapshot not
-      persisted", continue. Do NOT block session close on memory failure. Set
-      memory_snapshot_written = false.
-    - On success: memory/MEMORY.md is automatically trimmed to last 50 entries by ak-memory
-      server. Set memory_snapshot_written = true.
 10. Call `mcp__ak-state-machine__transition_session(to_state="CLOSED")`. Handle result:
-    - If `result.success` is true: continue to verification step (primary path).
+    - If `result.success` is true: continue to step 10a (primary path).
     - If `result.error` contains `INVALID_TRANSITION`: emit BLOCKED with `SESSION_STATE_VIOLATION: session already closed` and stop. Do NOT fall back.
     - If MCP is unavailable OR result.success is false for any other reason:
       **FALLBACK PATH** — emit WARN: "MCP unavailable — falling back to direct file write":
@@ -78,6 +67,18 @@ Checks/Actions (run in order, BLOCKED on first failure):
       3. Use Bash: `rm -f tasks/.session-transition-lock`
       4. Add WARN entry to audit log: "MCP unavailable — fell back to direct file write"
       Note: wrap steps 1-3 in bash with trap: `trap 'rm -f tasks/.session-transition-lock' ERR EXIT`
+10a. Call `mcp__ak-memory__write()` with the session snapshot (runs only after CLOSED transition
+     succeeds — prevents duplicate writes on retried closes):
+    - type: "task_history"
+    - content: "Session {N} — completed: [comma-separated QA_APPROVED task IDs and outcomes]"
+    - session: "session-{N}", persona: "session-close"
+    - tags: list of completed task IDs + ["session-close"]
+    - Snapshot content must be task IDs and outcomes only — no raw code, no user data, no PII.
+    - If MCP unavailable or write fails: emit WARN "memory write failed — session snapshot not
+      persisted", continue. Do NOT block session close on memory failure. Set
+      memory_snapshot_written = false.
+    - On success: memory/MEMORY.md is automatically trimmed to last 50 entries by ak-memory
+      server. Set memory_snapshot_written = true.
 11. Call `mcp__ak-state-machine__get_session_state()` and verify `status == "CLOSED"` (primary path only). BLOCKED with `SESSION_STATE_VIOLATION` if not. On fallback path: read tasks/todo.md directly and verify Status field reads CLOSED.
 
 Validation contracts:

@@ -600,7 +600,14 @@ SETTINGS_JSON="${TARGET_DIR}/.claude/settings.json"
 if [[ ! -f "$SETTINGS_JSON" ]]; then
   echo "  [warn] .claude/settings.json not found — cannot set enableAllProjectMcpServers"
   WARNINGS+=(".claude/settings.json missing — run remediation again after settings.json is installed")
-elif python3 -c "import json; d=json.load(open('${SETTINGS_JSON}')); exit(0 if d.get('enableAllProjectMcpServers') else 1)" 2>/dev/null; then
+elif python3 -c "
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+    exit(0 if d.get('enableAllProjectMcpServers') else 1)
+except Exception:
+    exit(1)
+" "$SETTINGS_JSON" 2>/dev/null; then
   echo "  [ok] enableAllProjectMcpServers already set to true"
 else
   if [[ "$DRY_RUN" == true ]]; then
@@ -636,20 +643,20 @@ if [[ ! -f "$REQUIREMENTS" ]]; then
   echo "  [skip] mcp-servers/requirements.txt not found — skipping dependency check"
 else
   echo "  [*] Installing MCP server dependencies..."
-  if pip3 install -r "$REQUIREMENTS" --quiet 2>/dev/null; then
-    echo "  [ok] pip3 install succeeded"
+  if "$PYTHON3_BIN" -m pip install -r "$REQUIREMENTS" --quiet 2>/dev/null; then
+    echo "  [ok] pip install succeeded"
   else
     echo ""
     echo "  ============================================================"
-    echo "  WARN: pip3 install failed for mcp-servers/requirements.txt"
+    echo "  WARN: pip install failed for mcp-servers/requirements.txt"
     echo "  MCP servers will not work until the package is installed."
-    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  Remediation: ${PYTHON3_BIN} -m pip install mcp>=1.0.0"
     echo "  ============================================================"
     echo ""
-    WARNINGS+=("pip3 install mcp failed — MCP servers will not function until fixed. Run: pip3 install mcp>=1.0.0")
+    WARNINGS+=("pip install mcp failed — MCP servers will not function until fixed. Run: ${PYTHON3_BIN} -m pip install mcp>=1.0.0")
   fi
 
-  if python3 -c "import mcp" 2>/dev/null; then
+  if "$PYTHON3_BIN" -c "import mcp" 2>/dev/null; then
     echo "  [ok] mcp package verified importable"
   else
     echo ""
@@ -657,10 +664,10 @@ else
     echo "  ERROR: mcp package is not importable after install attempt."
     echo "  MCP servers (ak-state-machine, ak-audit-log) will fail to start."
     echo "  session-open and session-close will use the file-write fallback."
-    echo "  Remediation: pip3 install mcp>=1.0.0"
+    echo "  Remediation: ${PYTHON3_BIN} -m pip install mcp>=1.0.0"
     echo "  ============================================================"
     echo ""
-    WARNINGS+=("mcp not importable — MCP servers broken. Run: pip3 install mcp>=1.0.0")
+    WARNINGS+=("mcp not importable — MCP servers broken. Run: ${PYTHON3_BIN} -m pip install mcp>=1.0.0")
   fi
 fi
 

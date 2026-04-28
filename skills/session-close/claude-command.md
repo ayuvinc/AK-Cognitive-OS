@@ -48,7 +48,9 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
-9a. Call `mcp__ak-memory__write()` with the session snapshot before closing:
+10. Update SESSION STATE in tasks/todo.md: Status=CLOSED, Active task=none, Active persona=none, Last updated=Session N close.
+10a. Call `mcp__ak-memory__write()` with the session snapshot (runs only after SESSION STATE is
+     CLOSED — prevents duplicate writes on retried closes):
     - type: "task_history"
     - content: "Session {N} — completed: [comma-separated QA_APPROVED task IDs and outcomes]"
     - session: "session-{N}", persona: "session-close"
@@ -58,7 +60,6 @@ Checks/Actions (run in order, BLOCKED on first failure):
       persisted", continue. Do NOT block session close. Set memory_snapshot_written = false.
     - On success: memory/MEMORY.md is automatically trimmed to last 50 entries. Set
       memory_snapshot_written = true.
-10. Update SESSION STATE in tasks/todo.md: Status=CLOSED, Active task=none, Active persona=none, Last updated=Session N close.
 11. Validate SESSION STATE is now CLOSED before emitting PASS. If Status≠CLOSED after write → BLOCKED with SESSION_STATE_VIOLATION.
 
 Validation contracts:

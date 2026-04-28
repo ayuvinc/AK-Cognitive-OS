@@ -20,6 +20,13 @@ if [[ -f "$TODO_FILE" ]]; then
   SESSION_NUM=$(grep -m1 'Last updated:' "$TODO_FILE" | grep -oE 'Session [0-9]+' | grep -oE '[0-9]+' | head -1 || true)
 fi
 
+# MCP primary path writes "state transition by MCP server" with no Session N — fall back to
+# the audit log where every session-open run_id is "session-open-{N}-...".
+AUDIT_LOG="${PROJECT_ROOT}/tasks/audit-log.md"
+if [[ -z "$SESSION_NUM" ]] && [[ -f "$AUDIT_LOG" ]]; then
+  SESSION_NUM=$(grep -oE 'session-open-[0-9]+' "$AUDIT_LOG" | tail -1 | grep -oE '[0-9]+' || true)
+fi
+
 if [[ -z "$SESSION_NUM" ]]; then
   # Cannot determine session number — warn but do not block
   printf '[MEMORY-GATE] WARN: could not determine session number from SESSION STATE — skipping memory check\n' >&2

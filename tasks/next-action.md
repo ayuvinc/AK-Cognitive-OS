@@ -1,26 +1,23 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Junior Dev
-TASK:         TASK-012 — auto-signal-check.sh hook + settings wiring
-CONTEXT:      Session 27 — Architect has decomposed v4 Phase 3 (Signal Engine) into 2 tasks.
-              Both tasks have full acceptance criteria. AK approval required before build starts.
+NEXT_PERSONA: Architect
+TASK:         v4 Phase 4 — Framework Integration
+CONTEXT:      Session 27 complete. v4 Phase 3 (Signal Engine) fully merged to main.
 
-              Tasks in scope:
-                TASK-011 — signal_engine.py (validators/signal_engine.py + signals/ scaffold)
-                TASK-012 — auto-signal-check.sh hook + settings wiring (depends on TASK-011)
+              Completed this session:
+                TASK-011 — signal_engine.py + signals/ scaffold (QA_APPROVED, merged)
+                TASK-012 — auto-signal-check.sh hook + settings wiring (QA_APPROVED, merged)
 
-              Key design decisions (do not re-open):
-                - Signal engine reads memory/index.json (not feedback/summary.json — Phase 2 used memory layer)
-                - 6 detectors: DEBT_ACCUMULATION, LESSON_RECURRENCE, FAILURE_PATTERN,
-                  RISK_HOTSPOT, VELOCITY_DROP, COVERAGE_GAP
-                - Sparse data = no signal emitted (not a WARN — normal for young memory store)
-                - All signals advisory (exit 0) in v4.0
-                - auto-signal-check.sh runs generate mode then surfaces HIGH signals only
-                - CRITICAL: TASK-012 must commit hook script and settings wiring in same commit
+              Phase 4 scope (backlog, not yet decomposed):
+                - Bootstrap v4 scaffold (bootstrap-project.sh generates signals/ + signal_engine.py)
+                - remediate-project.sh --v4-upgrade path
+                - validate-framework.sh v4 checks (signals/ scaffold, signal_engine.py present)
+                - .ak-cogos-version bump to 4.0.0
 
-              Build order: TASK-011 first (no deps), then TASK-012 (depends on TASK-011).
+              Live signal active: SIG-001 LESSON_RECURRENCE LOW (HOOK tag 6x in lessons.md)
+              High-priority lesson to address in Phase 4: UserPromptSubmit hook safety pattern
 
-COMMAND:      /junior-dev TASK-012
-SESSION_STATUS: OPEN
-NEXT_FOCUS:   Junior Dev builds TASK-011 → TASK-012 → session-close
-BLOCKERS:     none — AK approval required before Junior Dev starts
+COMMAND:      /architect (Phase 4 decomposition)
+SESSION_STATUS: OPEN — run /session-close before Phase 4 begins
+NEXT_FOCUS:   session-close Session 27 → Architect decomposes Phase 4
+BLOCKERS:     none

@@ -1172,7 +1172,7 @@ if [[ -f "$TODO_CHECK" ]]; then
     echo ""
     echo "This project has ${ACTIVE_TASKS} active task(s) but may be missing planning docs."
     echo "Recommended: Run mid-build recovery flow."
-    echo "See: guides/12-mid-build-recovery.md"
+    echo "See: docs/guides/12-mid-build-recovery.md"
     echo ""
   fi
 fi

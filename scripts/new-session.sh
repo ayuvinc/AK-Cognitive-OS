@@ -130,7 +130,7 @@ if [[ "$SESSION_MODE" == "greenfield" ]]; then
   # Check problem-definition.md
   if [[ ! -f "docs/problem-definition.md" ]]; then
     echo "WARNING: docs/problem-definition.md not found."
-    echo "         Run discovery conversation first. See guides/11-conversation-first-planning.md"
+    echo "         Run discovery conversation first. See docs/guides/11-conversation-first-planning.md"
   else
     pd_status="$(grep '^Status:' docs/problem-definition.md 2>/dev/null | head -1 | awk '{print $2}' || true)"
     if [[ "$pd_status" != "confirmed" ]]; then
@@ -141,7 +141,7 @@ if [[ "$SESSION_MODE" == "greenfield" ]]; then
   # Check scope-brief.md
   if [[ ! -f "docs/scope-brief.md" ]]; then
     echo "WARNING: docs/scope-brief.md not found."
-    echo "         Run discovery conversation first. See guides/11-conversation-first-planning.md"
+    echo "         Run discovery conversation first. See docs/guides/11-conversation-first-planning.md"
   else
     sb_status="$(grep '^Status:' docs/scope-brief.md 2>/dev/null | head -1 | awk '{print $2}' || true)"
     if [[ "$sb_status" != "confirmed" ]]; then
@@ -162,7 +162,7 @@ elif [[ "$SESSION_MODE" == "recovery" ]]; then
 
   if [[ ! -f "docs/current-state.md" ]]; then
     echo "WARNING: docs/current-state.md not found."
-    echo "         Run recovery conversation first. See guides/12-mid-build-recovery.md"
+    echo "         Run recovery conversation first. See docs/guides/12-mid-build-recovery.md"
     echo ""
     echo "Recovery conversation — 7 questions to ask:"
     echo "  1. What is this project supposed to achieve?"

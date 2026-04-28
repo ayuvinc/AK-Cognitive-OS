@@ -152,8 +152,8 @@ done
 echo "[OK] Metadata headers present in planning doc templates"
 
 # 8) Guides 11 and 12 must exist
-[[ -f "${ROOT}/guides/11-conversation-first-planning.md" ]] || fail "Missing guide: guides/11-conversation-first-planning.md"
-[[ -f "${ROOT}/guides/12-mid-build-recovery.md" ]] || fail "Missing guide: guides/12-mid-build-recovery.md"
+[[ -f "${ROOT}/docs/guides/11-conversation-first-planning.md" ]] || fail "Missing guide: docs/guides/11-conversation-first-planning.md"
+[[ -f "${ROOT}/docs/guides/12-mid-build-recovery.md" ]] || fail "Missing guide: docs/guides/12-mid-build-recovery.md"
 
 echo "[OK] Planning guides present (11, 12)"
 
@@ -403,12 +403,12 @@ echo "[OK] All 12 governance docs present in framework/governance/"
 
 GUIDE_MISSING=""
 for i in $(seq -w 0 14); do
-  ls "${ROOT}/guides/${i}-"*.md 2>/dev/null | grep -q . || GUIDE_MISSING="${GUIDE_MISSING} ${i}"
+  ls "${ROOT}/docs/guides/${i}-"*.md 2>/dev/null | grep -q . || GUIDE_MISSING="${GUIDE_MISSING} ${i}"
 done
 if [[ -n "$GUIDE_MISSING" ]]; then
-  fail "Guides missing from guides/ (numeric prefix):${GUIDE_MISSING}"
+  fail "Guides missing from docs/guides/ (numeric prefix):${GUIDE_MISSING}"
 fi
-echo "[OK] All 15 guides present in guides/ (00-14)"
+echo "[OK] All 15 guides present in docs/guides/ (00-14)"
 
 # 21) Semantic lint: placeholder tokens, role_class, format classes, extra_fields
 ROOT="$ROOT" bash "${ROOT}/scripts/validate-contracts.sh"

@@ -47,7 +47,7 @@ fi
 
 # Skip excluded paths: planning docs, config, framework artifacts, and tool files
 # These paths are legitimate targets regardless of planning doc state
-EXCLUDED_PATTERN="^(tasks/|docs/|framework/|\.claude/|scripts/|schemas/|validators/|project-template/|guides/|releases/|memory/|mcp-servers/|CLAUDE|README|QUICKSTART|\.ak-cogos|\.gitignore|\.claudeignore|channel\.md)"
+EXCLUDED_PATTERN="^(tasks/|docs/|framework/|\.claude/|scripts/|schemas/|validators/|project-template/|releases/|memory/|mcp-servers/|CLAUDE|README|QUICKSTART|\.ak-cogos|\.gitignore|\.claudeignore|channel\.md)"
 if echo "$FILE_PATH" | grep -qE "$EXCLUDED_PATTERN"; then
   exit 0
 fi

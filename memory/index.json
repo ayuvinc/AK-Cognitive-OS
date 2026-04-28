@@ -19,8 +19,27 @@
       "outcome": "PASS",
       "severity": null,
       "linked_entries": []
+    },
+    {
+      "entry_id": "MEM-002",
+      "session": "session-27",
+      "timestamp_utc": "2026-04-28T08:43:21Z",
+      "type": "task_history",
+      "persona": "session-close",
+      "task_id": null,
+      "content": "Session 27 — completed: TASK-011 (signal_engine.py + signals/ scaffold, QA_APPROVED), TASK-012 (auto-signal-check.sh hook + settings wiring, QA_APPROVED). v4 Phase 3 Signal Engine fully merged to main.",
+      "tags": [
+        "TASK-011",
+        "TASK-012",
+        "session-close",
+        "v4-phase-3",
+        "signal-engine"
+      ],
+      "outcome": "PASS",
+      "severity": null,
+      "linked_entries": []
     }
   ],
-  "last_updated": "2026-04-28T07:54:08Z",
-  "total": 1
+  "last_updated": "2026-04-28T08:43:21Z",
+  "total": 2
 }

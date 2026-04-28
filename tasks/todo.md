@@ -10,90 +10,12 @@ Last updated:   2026-04-28T15:35:12Z — state transition by MCP server
 
 ---
 
-### TASK-013 — bootstrap-project.sh v4 scaffold additions
-Status:       READY_FOR_REVIEW
-Owner:        Junior Dev
-Branch:       feature/TASK-013-bootstrap-v4-scaffold
-Session:      28
-Priority:     HIGH — Phase 4 gate; downstream projects cannot be upgraded until bootstrap is v4-complete
-
-Description:
-  Extend bootstrap-project.sh so every newly bootstrapped project gets the full v4 cognitive
-  layer scaffold out of the box. Currently bootstrap creates memory/MEMORY.md and copies hooks
-  (including auto-signal-check.sh) but does NOT create signals/, feedback/, or copy the Python
-  validators. ak-memory is also missing from the generated .mcp.json.
-
-  Changes required in scripts/bootstrap-project.sh:
-  1. Copy project-template/signals/ → target/signals/ (active.json + history/)
-  2. Create target/feedback/ scaffold: summary.json ({"feedback": [], "total_entries": 0}),
-     subdirs qa/ risk/ velocity/ codex/
-  3. Copy validators/memory.py, validators/feedback.py, validators/signal_engine.py, validators/base.py
-     → target/validators/ (create dir if absent)
-  4. Add ak-memory entry to the generated .mcp.json block (alongside ak-state-machine, ak-audit-log)
-  5. Add mcp__ak-memory__write/query/summary to the permissions block in settings.json template
-     (if not already present — check project-template/.claude/settings.json)
-  6. Add memory/index.json scaffold + sessions/ decisions/ outcomes/ dirs to project-template/memory/
-     and copy them to target
-  7. Bump VERSION variable from "3.1.0" → "4.0.0"
-
-  Also add to post-bootstrap validation checklist:
-  - signals/active.json present
-  - feedback/ dir with summary.json present
-  - validators/signal_engine.py present
-
-Security model:
-  Auth:         Local filesystem only — script accepts one path arg; validate it is non-empty
-                and not a root/system path before any mkdir/copy
-  Data bounds:  No user data read or written — scaffold files are static JSON/Markdown placeholders
-  PII/PHI:      None
-  Audit:        Committed to git with standard commit message; bootstrap output logged to stdout
-  Abuse surface: Target path arg — must be validated (non-empty, exists or can be created, not /)
-
-Acceptance Criteria:
-  Happy path — scaffold creation:
-  [ ] AC-1:  Running bootstrap on a fresh target dir creates target/signals/active.json with
-             content {"signals": [], "generated_at": null, "schema_version": "4.0"}
-  [ ] AC-2:  Running bootstrap creates target/signals/history/ directory
-  [ ] AC-3:  Running bootstrap creates target/feedback/summary.json with
-             content {"feedback": [], "total_entries": 0}
-  [ ] AC-4:  Running bootstrap creates target/feedback/ subdirs: qa/ risk/ velocity/ codex/
-  [ ] AC-5:  Running bootstrap copies all four validators to target/validators/:
-             memory.py, feedback.py, signal_engine.py, base.py
-  [ ] AC-6:  Generated target/.mcp.json includes ak-memory entry with:
-             - absolute path to memory_server.py (not relative)
-             - PROJECT_ROOT env var set to absolute target path
-  [ ] AC-7:  Generated target/.mcp.json still contains ak-state-machine and ak-audit-log entries
-             (no regression on existing .mcp.json generation)
-  [ ] AC-8:  scripts/bootstrap-project.sh VERSION variable reads "4.0.0"
-  [ ] AC-9:  Running bootstrap creates target/memory/index.json with
-             content {"entries": [], "session_count": 0, "last_updated": null}
-  [ ] AC-10: Running bootstrap creates target/memory/sessions/, target/memory/decisions/,
-             target/memory/outcomes/ directories
-
-  Post-bootstrap validation:
-  [ ] AC-11: Bootstrap post-validation block reports [PASS] or [WARN] (not silent) for
-             signals/active.json, feedback/summary.json, validators/signal_engine.py
-
-  Edge cases:
-  [ ] AC-12: Running with --non-interactive: all v4 scaffold steps still execute
-             (v4 creation must not be gated on INTERACTIVE == true)
-  [ ] AC-13: Running with --force on a target that already has signals/active.json:
-             file is overwritten (--force semantics honoured)
-  [ ] AC-14: Running without --force on a target with existing signals/active.json:
-             [skip] printed, file not overwritten
-
-  Security:
-  [ ] AC-15: Generated feedback/summary.json and signals/active.json contain no PII,
-             no project-specific data — static placeholder content only
-  [ ] AC-16: ak-memory .mcp.json entry uses absolute paths for command and args
-             (same pattern as ak-state-machine — no relative path)
-
-Dependencies: none — can start immediately
+<!-- TASK-013 QA_APPROVED — merged to main 2026-04-28 — archived to releases/session-28.md -->
 
 ---
 
 ### TASK-014 — remediate-project.sh --v4-upgrade flag
-Status:       PENDING
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Branch:       feature/TASK-014-remediate-v4-upgrade
 Session:      28

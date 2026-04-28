@@ -4,7 +4,7 @@ set -euo pipefail
 [[ -n "${BASH_VERSION:-}" ]] || { echo "ERROR: Run with bash: bash scripts/remediate-project.sh"; exit 1; }
 
 # remediate-project.sh
-# Usage: remediate-project.sh <target_project_path> [--dry-run] [--force] [--audit-only]
+# Usage: remediate-project.sh <target_project_path> [--dry-run] [--force] [--audit-only] [--v4-upgrade]
 #
 # Brings an existing AK-Cognitive-OS project up to v3.0 standard.
 # Safe to run multiple times — checks before acting, skips what already exists.
@@ -103,12 +103,14 @@ shift
 DRY_RUN=false
 FORCE=false
 AUDIT_ONLY=false
+V4_UPGRADE=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run) DRY_RUN=true ;;
     --force) FORCE=true ;;
     --audit-only) AUDIT_ONLY=true; DRY_RUN=true ;;
+    --v4-upgrade) V4_UPGRADE=true ;;
     *) echo "WARNING: Unknown argument: $1" ;;
   esac
   shift
@@ -214,6 +216,251 @@ create_placeholder() {
     printf '%s\n' "$content" > "$dst"
   fi
   CHANGES=$((CHANGES + 1))
+}
+
+# ---------------------------------------------------------------------------
+# v4_upgrade — installs v4 cognitive layer scaffolds into an existing project
+# Called at the end of remediation when --v4-upgrade is passed.
+# Safe to run multiple times: all writes skip if target already exists.
+# JSON merges use json.load() + dict merge — no eval, no shell substitution.
+# ---------------------------------------------------------------------------
+
+v4_upgrade() {
+  echo ""
+  echo "=========================================="
+  echo "  v4 Cognitive Layer Upgrade"
+  echo "=========================================="
+  echo ""
+
+  local V4_CHANGES=0
+
+  # Step v4-1: signals/ scaffold (signal engine output)
+  echo "--- v4 Step 1: signals/ scaffold ---"
+  mkdir -p "${TARGET_DIR}/signals/history"
+  local SIGNALS_ACTIVE="${TARGET_DIR}/signals/active.json"
+  if [[ ! -f "$SIGNALS_ACTIVE" ]]; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would create] signals/active.json"
+    else
+      printf '{"signals": [], "generated_at": null, "schema_version": "4.0"}\n' > "$SIGNALS_ACTIVE"
+      echo "  [create] signals/active.json"
+    fi
+    V4_CHANGES=$((V4_CHANGES + 1))
+  else
+    echo "  [skip] signals/active.json (exists)"
+  fi
+  echo "  [ok] signals/history/ dir"
+  echo ""
+
+  # Step v4-2: feedback/ scaffold (qa, risk, velocity, codex records)
+  echo "--- v4 Step 2: feedback/ scaffold ---"
+  mkdir -p "${TARGET_DIR}/feedback/qa" \
+           "${TARGET_DIR}/feedback/risk" \
+           "${TARGET_DIR}/feedback/velocity" \
+           "${TARGET_DIR}/feedback/codex"
+  local FEEDBACK_SUMMARY="${TARGET_DIR}/feedback/summary.json"
+  if [[ ! -f "$FEEDBACK_SUMMARY" ]]; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would create] feedback/summary.json"
+    else
+      printf '{"feedback": [], "total_entries": 0}\n' > "$FEEDBACK_SUMMARY"
+      echo "  [create] feedback/summary.json"
+    fi
+    V4_CHANGES=$((V4_CHANGES + 1))
+  else
+    echo "  [skip] feedback/summary.json (exists)"
+  fi
+  echo "  [ok] feedback/ subdirs (qa/ risk/ velocity/ codex/)"
+  echo ""
+
+  # Step v4-3: memory/ v4 additions (index.json + sessions/ decisions/ outcomes/)
+  echo "--- v4 Step 3: memory/ v4 additions ---"
+  mkdir -p "${TARGET_DIR}/memory/sessions" \
+           "${TARGET_DIR}/memory/decisions" \
+           "${TARGET_DIR}/memory/outcomes"
+  local MEMORY_INDEX="${TARGET_DIR}/memory/index.json"
+  if [[ ! -f "$MEMORY_INDEX" ]]; then
+    if [[ "$DRY_RUN" == true ]]; then
+      echo "  [would create] memory/index.json"
+    else
+      printf '{"entries": [], "session_count": 0, "last_updated": null}\n' > "$MEMORY_INDEX"
+      echo "  [create] memory/index.json"
+    fi
+    V4_CHANGES=$((V4_CHANGES + 1))
+  else
+    echo "  [skip] memory/index.json (exists)"
+  fi
+  echo "  [ok] memory/ subdirs (sessions/ decisions/ outcomes/)"
+  echo ""
+
+  # Step v4-4: validators/ Python files (memory, feedback, signal_engine, base)
+  echo "--- v4 Step 4: validators/ (cognitive layer Python) ---"
+  mkdir -p "${TARGET_DIR}/validators"
+  local VALIDATORS_SRC="${FRAMEWORK_DIR}/validators"
+  if [[ -d "$VALIDATORS_SRC" ]]; then
+    for v_file in memory.py feedback.py signal_engine.py base.py; do
+      local v_dst="${TARGET_DIR}/validators/${v_file}"
+      local v_src="${VALIDATORS_SRC}/${v_file}"
+      if [[ -f "$v_src" ]]; then
+        if [[ ! -f "$v_dst" ]]; then
+          if [[ "$DRY_RUN" == true ]]; then
+            echo "  [would create] validators/${v_file}"
+          else
+            cp "$v_src" "$v_dst"
+            echo "  [create] validators/${v_file}"
+          fi
+          V4_CHANGES=$((V4_CHANGES + 1))
+        else
+          echo "  [skip] validators/${v_file} (exists)"
+        fi
+      else
+        echo "  [warn] ${v_file} not found in framework validators/ — skipping"
+      fi
+    done
+  else
+    echo "  [warn] framework validators/ not found — skipping validators copy"
+  fi
+  echo ""
+
+  # Step v4-5: ak-memory entry in .mcp.json (JSON merge — never overwrites existing keys)
+  echo "--- v4 Step 5: ak-memory in .mcp.json ---"
+  local MCP_JSON_V4="${TARGET_DIR}/.mcp.json"
+  if [[ ! -f "$MCP_JSON_V4" ]]; then
+    echo "  [warn] .mcp.json not found — run base remediation first, then --v4-upgrade"
+  else
+    local has_memory
+    has_memory=$(python3 -c "
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+    print('yes' if 'ak-memory' in d.get('mcpServers', {}) else 'no')
+except Exception:
+    print('error')
+" "$MCP_JSON_V4" 2>/dev/null || echo "error")
+
+    if [[ "$has_memory" == "yes" ]]; then
+      echo "  [skip] ak-memory already in .mcp.json"
+    elif [[ "$has_memory" == "no" ]]; then
+      if [[ "$DRY_RUN" == true ]]; then
+        echo "  [would add] ak-memory entry to .mcp.json"
+      else
+        # Pass all values as positional args — no shell vars inside the Python literal
+        python3 - "$MCP_JSON_V4" "$PYTHON3_BIN" "$TARGET_DIR" <<'PYEOF'
+import json, sys
+path, py_bin, tgt_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+with open(path) as f:
+    d = json.load(f)
+d.setdefault("mcpServers", {})["ak-memory"] = {
+    "type": "stdio",
+    "command": py_bin,
+    "args": [tgt_dir + "/mcp-servers/memory_server.py"],
+    "env": {"PROJECT_ROOT": tgt_dir}
+}
+with open(path, "w") as f:
+    json.dump(d, f, indent=2)
+PYEOF
+        if [[ $? -eq 0 ]]; then
+          echo "  [create] ak-memory entry merged into .mcp.json"
+          V4_CHANGES=$((V4_CHANGES + 1))
+        else
+          echo "  [error] failed to merge ak-memory into .mcp.json — skipping"
+        fi
+      fi
+    else
+      echo "  [error] .mcp.json is malformed or unreadable — skipping ak-memory merge"
+    fi
+  fi
+  echo ""
+
+  # Step v4-6: ak-memory permissions in .claude/settings.json (JSON merge)
+  echo "--- v4 Step 6: ak-memory permissions in settings.json ---"
+  local SETTINGS_V4="${TARGET_DIR}/.claude/settings.json"
+  if [[ ! -f "$SETTINGS_V4" ]]; then
+    echo "  [warn] .claude/settings.json not found — skipping permissions merge"
+  else
+    # Collect which permissions are missing
+    local missing_perms=()
+    for perm in "mcp__ak-memory__write" "mcp__ak-memory__query" "mcp__ak-memory__summary"; do
+      local has_perm
+      has_perm=$(python3 -c "
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+    allow = d.get('permissions', {}).get('allow', [])
+    print('yes' if sys.argv[2] in allow else 'no')
+except Exception:
+    print('error')
+" "$SETTINGS_V4" "$perm" 2>/dev/null || echo "error")
+      if [[ "$has_perm" == "error" ]]; then
+        echo "  [error] .claude/settings.json is malformed — skipping permissions merge"
+        missing_perms=()
+        break
+      elif [[ "$has_perm" == "no" ]]; then
+        missing_perms+=("$perm")
+      fi
+    done
+
+    if [[ ${#missing_perms[@]} -eq 0 ]]; then
+      echo "  [skip] ak-memory permissions already present in settings.json"
+    else
+      if [[ "$DRY_RUN" == true ]]; then
+        echo "  [would add] permissions: ${missing_perms[*]}"
+      else
+        # Pass permissions as positional args — no shell vars inside the Python literal
+        python3 - "$SETTINGS_V4" "${missing_perms[@]}" <<'PYEOF'
+import json, sys
+path, perms = sys.argv[1], sys.argv[2:]
+with open(path) as f:
+    d = json.load(f)
+allow = d.setdefault("permissions", {}).setdefault("allow", [])
+for p in perms:
+    if p not in allow:
+        allow.append(p)
+with open(path, "w") as f:
+    json.dump(d, f, indent=2)
+PYEOF
+        if [[ $? -eq 0 ]]; then
+          echo "  [create] ak-memory permissions merged into settings.json"
+          V4_CHANGES=$((V4_CHANGES + 1))
+        else
+          echo "  [error] failed to merge permissions into settings.json — skipping"
+        fi
+      fi
+    fi
+  fi
+  echo ""
+
+  # Step v4-7: verify MCP package is importable
+  echo "--- v4 Step 7: MCP package verification ---"
+  if "${PYTHON3_BIN}" -c "import mcp" 2>/dev/null; then
+    echo "  [ok] mcp package importable — ak-memory MCP server will start correctly"
+  else
+    echo "  [warn] mcp package not importable — ak-memory MCP server will not start"
+    echo "  Remediation: pip3 install mcp>=1.0.0"
+  fi
+  echo ""
+
+  # v4 upgrade summary
+  echo "=========================================="
+  echo "  v4 Upgrade Summary"
+  echo "=========================================="
+  echo ""
+  echo "  Changes applied: ${V4_CHANGES}"
+  echo "  signals/:     $([ -f "${TARGET_DIR}/signals/active.json" ] && echo 'installed' || echo 'MISSING')"
+  echo "  feedback/:    $([ -f "${TARGET_DIR}/feedback/summary.json" ] && echo 'installed' || echo 'MISSING')"
+  echo "  memory v4:    $([ -f "${TARGET_DIR}/memory/index.json" ] && echo 'installed' || echo 'MISSING')"
+  echo "  validators/:  $([ -f "${TARGET_DIR}/validators/signal_engine.py" ] && echo 'installed' || echo 'MISSING')"
+  local mcp_status
+  mcp_status=$(python3 -c "
+import json, sys
+try:
+    d = json.load(open(sys.argv[1]))
+    print('in .mcp.json' if 'ak-memory' in d.get('mcpServers', {}) else 'MISSING from .mcp.json')
+except Exception:
+    print('unreadable')
+" "${TARGET_DIR}/.mcp.json" 2>/dev/null || echo "MISSING")
+  echo "  ak-memory:    ${mcp_status}"
+  echo ""
 }
 
 # ---------------------------------------------------------------------------
@@ -625,8 +872,9 @@ with open(path) as f:
 d['enableAllProjectMcpServers'] = True
 with open(path, 'w') as f:
     json.dump(d, f, indent=2)
-" "$SETTINGS_JSON"
-    echo "  [set] enableAllProjectMcpServers: true"
+" "$SETTINGS_JSON" 2>/dev/null \
+      && echo "  [set] enableAllProjectMcpServers: true" \
+      || echo "  [warn] could not set enableAllProjectMcpServers — settings.json may be malformed"
     CHANGES=$((CHANGES + 1))
   fi
 fi
@@ -876,6 +1124,12 @@ if [[ "$AUDIT_ONLY" == true ]]; then
 elif [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
   echo "Add --force to overwrite existing files."
+fi
+
+# Run v4 cognitive layer upgrade if --v4-upgrade flag was passed.
+# Called here (before MCP_BROKEN exit) so it always runs when requested.
+if [[ "$V4_UPGRADE" == true ]]; then
+  v4_upgrade
 fi
 
 # Exit non-zero if MCP package could not be installed or verified.

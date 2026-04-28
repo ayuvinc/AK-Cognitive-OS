@@ -1,23 +1,25 @@
 # Next Action Dispatch
 
-NEXT_PERSONA: Architect
-TASK:         v4 Phase 4 — Framework Integration
-CONTEXT:      Session 27 complete. v4 Phase 3 (Signal Engine) fully merged to main.
+NEXT_PERSONA: Junior Dev
+TASK:         TASK-014 — remediate-project.sh --v4-upgrade flag
+CONTEXT:      TASK-013 QA_APPROVED and merged to main (2026-04-28).
 
-              Completed this session:
-                TASK-011 — signal_engine.py + signals/ scaffold (QA_APPROVED, merged)
-                TASK-012 — auto-signal-check.sh hook + settings wiring (QA_APPROVED, merged)
+              TASK-014 is now IN_PROGRESS. Implement --v4-upgrade flag in
+              scripts/remediate-project.sh. AC is written in tasks/todo.md
+              (15 AC covering happy path, idempotency, error states, security).
 
-              Phase 4 scope (backlog, not yet decomposed):
-                - Bootstrap v4 scaffold (bootstrap-project.sh generates signals/ + signal_engine.py)
-                - remediate-project.sh --v4-upgrade path
-                - validate-framework.sh v4 checks (signals/ scaffold, signal_engine.py present)
-                - .ak-cogos-version bump to 4.0.0
+              Key constraints from Architect:
+                - safe_copy semantics throughout (never overwrite existing files)
+                - JSON merge for .mcp.json via json.load() + dict merge only
+                  (no string concat, no eval)
+                - Idempotent: running twice must produce identical state
+                - Malformed .mcp.json or settings.json → ERROR + skip that step,
+                  do not crash, continue remaining steps, exit 0
+                - mcp not importable → WARN + remediation command, exit 0
 
-              Live signal active: SIG-001 LESSON_RECURRENCE LOW (HOOK tag 6x in lessons.md)
-              High-priority lesson to address in Phase 4: UserPromptSubmit hook safety pattern
+              Branch to create: feature/TASK-014-remediate-v4-upgrade
+              Source files to copy validators from: validators/ (framework root)
+              Source scaffold to reference: project-template/signals/, project-template/memory/
 
-COMMAND:      /architect (Phase 4 decomposition)
-SESSION_STATUS: OPEN — run /session-close before Phase 4 begins
-NEXT_FOCUS:   session-close Session 27 → Architect decomposes Phase 4
+COMMAND:      /junior-dev
 BLOCKERS:     none

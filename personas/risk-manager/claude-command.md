@@ -38,7 +38,22 @@ Architect calls this after task decomposition. QA calls this before sign-off.
 5. For each new risk found: add to register with severity, owner, and mitigation path.
 6. For each existing OPEN risk: verify still relevant — flag STALE if not.
 7. Surface S0 risks in failures[], S1 risks in warnings[].
-8. Emit HANDOFF envelope.
+8. Write feedback memory entry via mcp__ak-memory__write (runs after step 7, before HANDOFF):
+    type="decision"
+    outcome="PASS"    (no S0 or S1 risks open)
+           "PARTIAL"  (S1 risks open, no S0)
+           "FAIL"     (any S0 risks open)
+    task_id=<primary TASK-ID under assessment> | "cross-cutting" (multi-task or sprint-wide run)
+    persona="risk-manager"
+    session=<session_id>
+    tags=["risk", "assessment"]
+    content="N risks reviewed, N new, S0: N open, S1: N open"
+            (exact pattern for Signal Engine parseability — ≤500 chars, counts only, no descriptions)
+  On write failure (tool error, MCP unavailable, server down):
+    - Add "memory write failed: <error>" to warnings[]
+    - Set memory_written=false in extra_fields
+    - Continue — do not change status or block HANDOFF
+9. Emit HANDOFF envelope.
 
 ## RISK REGISTER FORMAT
 
@@ -80,4 +95,6 @@ artifacts_written:
 next_action: "<next step based on risk severity>"
 manual_action: "Review S0 and S1 risks in tasks/risk-register.md — accept, mitigate, or escalate before proceeding"
 override: "NOT_OVERRIDABLE for S0 risks. S1/S2: /risk-manager accept RISK-[NNN] reason='<reason>' — logged to audit"
+extra_fields:
+  memory_written: true|false
 ```

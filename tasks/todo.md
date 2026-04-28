@@ -49,7 +49,7 @@ Acceptance Criteria:
 ---
 
 ### TASK-009 — risk-manager Feedback Write
-Status:       IN_PROGRESS
+Status:       READY_FOR_REVIEW
 Persona:      Junior Dev
 Branch:       feature/TASK-009-risk-manager-write
 Depends:      TASK-007

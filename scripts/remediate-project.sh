@@ -138,6 +138,7 @@ echo ""
 
 WARNINGS=()
 CHANGES=0
+MCP_BROKEN=false   # set true if pip install or import mcp fails — causes non-zero exit
 
 # ---------------------------------------------------------------------------
 # Helper: copy a framework file (commands, hooks, settings, MCP)
@@ -654,6 +655,7 @@ else
     echo "  ============================================================"
     echo ""
     WARNINGS+=("pip install mcp failed — MCP servers will not function until fixed. Run: ${PYTHON3_BIN} -m pip install mcp>=1.0.0")
+    MCP_BROKEN=true
   fi
 
   if "$PYTHON3_BIN" -c "import mcp" 2>/dev/null; then
@@ -668,6 +670,7 @@ else
     echo "  ============================================================"
     echo ""
     WARNINGS+=("mcp not importable — MCP servers broken. Run: ${PYTHON3_BIN} -m pip install mcp>=1.0.0")
+    MCP_BROKEN=true
   fi
 fi
 
@@ -870,6 +873,14 @@ if [[ "$AUDIT_ONLY" == true ]]; then
 elif [[ "$DRY_RUN" == true && $CHANGES -gt 0 ]]; then
   echo "Run without --dry-run to apply these changes."
   echo "Add --force to overwrite existing files."
+fi
+
+# Exit non-zero if MCP package could not be installed or verified.
+# Callers (CI, scripts) should not treat a partially-broken remediation as success.
+if $MCP_BROKEN; then
+  echo ""
+  echo "ERROR: MCP dependency broken — remediation incomplete. Fix with: ${PYTHON3_BIN} -m pip install mcp>=1.0.0"
+  exit 1
 fi
 
 echo ""

@@ -189,6 +189,7 @@ Dependencies: TASK-002
 
 ### TASK-001 — Fix remediate-project.sh: generate .mcp.json + set enableAllProjectMcpServers
 Status:       READY_FOR_REVIEW
+QA_NOTE:      Re-submitted after exit-code fix (MCP_BROKEN flag + exit 1 at end)
 Owner:        Junior Dev
 Priority:     High
 Description:  remediate-project.sh copies mcp-servers/ but does NOT generate .mcp.json or set

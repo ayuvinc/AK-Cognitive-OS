@@ -20,6 +20,16 @@
         "PROJECT_ROOT": "/Users/akaushal011/AK-Cognitive-OS",
         "AUDIT_LOG_PATH": "tasks/audit-log.md"
       }
+    },
+    "ak-memory": {
+      "type": "stdio",
+      "command": "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
+      "args": [
+        "/Users/akaushal011/AK-Cognitive-OS/mcp-servers/memory_server.py"
+      ],
+      "env": {
+        "PROJECT_ROOT": "/Users/akaushal011/AK-Cognitive-OS"
+      }
     }
   }
 }

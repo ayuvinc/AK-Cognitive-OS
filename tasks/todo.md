@@ -11,7 +11,7 @@ Last updated:   2026-04-28T03:06:21Z — state transition by MCP server
 <!-- v4 Phase 1 — Memory Foundation — AK approved 2026-04-28 -->
 
 ### TASK-002 — ak-memory MCP server + memory/ scaffold
-Status:       PENDING
+Status:       READY_FOR_REVIEW
 Owner:        Junior Dev
 Priority:     High
 Description:  Build the ak-memory MCP server (Python, stdio transport, same pattern as

@@ -553,13 +553,16 @@ echo ""
 
 echo "--- Step 8a: .mcp.json ---"
 
+# Resolve python3 once for all of Step 8 (8a, 8b, 8c all need it).
+# Must be outside the if-block so Step 8c can use it even when 8a is skipped.
+PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
+
 MCP_JSON="${TARGET_DIR}/.mcp.json"
 
 if [[ -f "$MCP_JSON" ]]; then
   echo "  [ok] .mcp.json already exists — skipping"
   WARNINGS+=(".mcp.json already exists — verify it has absolute python3 and server paths")
 else
-  PYTHON3_BIN="$(command -v python3 2>/dev/null || echo "python3")"
   if [[ "$DRY_RUN" == true ]]; then
     echo "  [would create] .mcp.json (python3: ${PYTHON3_BIN})"
   else

@@ -64,7 +64,53 @@ AC result: 15/15 PASS (first pass, no QA_REJECTED cycles)
 
 ---
 
-## In Progress (as of TASK-014 merge)
+## TASK-015 — validate-framework.sh v4 checks
+Status:    QA_APPROVED → merged to main
+Branch:    feature/TASK-015-validate-framework-v4-checks
+Commits:   b06d55e (impl), e14ee69 (qa-run), 5c05165 (QA verdict)
+Merge:     main (--no-ff)
 
-- TASK-015 — validate-framework.sh v4 checks — PENDING
-- TASK-016 — .ak-cogos-version bump to 4.0.0 — PENDING (blocked on 015)
+Summary:
+  Extended validate-framework.sh step 15b with advisory v4 cognitive layer
+  checks and added step 15c (bootstrap completeness grep). All new checks
+  are WARN-only; script always exits 0.
+
+  Changes:
+    - v4 required-file checklist (4 files): project-template/signals/active.json,
+      validators/feedback.py, signal_engine.py, base.py
+    - Step 15b extended: runs memory.py, feedback.py, signal_engine.py in validate
+      mode; output prefixed with [WARN] (v4-advisory); guarded by `|| true`
+    - Step 15c: greps bootstrap-project.sh for 'signals/' and 'feedback/' keywords
+    - Final summary: "v4 checks: 9" appended to PASS line
+
+Files changed:
+  - scripts/validate-framework.sh
+
+AC result: 10/10 PASS (first pass, no QA_REJECTED cycles)
+
+---
+
+## TASK-016 — .ak-cogos-version bump to 4.0.0
+Status:    QA_APPROVED → merged to main
+Branch:    feature/TASK-016-version-bump-4.0.0
+Commits:   2e22ef5 (impl + QA inline)
+Merge:     main (--no-ff)
+
+Summary:
+  Bumped .ak-cogos-version from 3.0.0 → 4.0.0.
+  validate-framework.sh exits 0 after bump.
+  bootstrap-project.sh VERSION="4.0.0" consistent.
+
+AC result: 3/3 PASS (inline QA, no separate QA_REJECTED cycle)
+
+---
+
+## Phase 4 Complete — v4.0.0
+
+All four tasks merged to main:
+  TASK-013: bootstrap-project.sh v4 scaffold
+  TASK-014: remediate-project.sh --v4-upgrade (applied to 6 downstream projects)
+  TASK-015: validate-framework.sh v4 checks
+  TASK-016: .ak-cogos-version → 4.0.0
+
+AK Cognitive OS is now at v4.0.0.

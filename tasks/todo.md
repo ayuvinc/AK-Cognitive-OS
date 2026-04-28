@@ -19,7 +19,7 @@ Last updated:   2026-04-28T15:35:12Z — state transition by MCP server
 ---
 
 ### TASK-015 — validate-framework.sh v4 checks
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Branch:       feature/TASK-015-validate-framework-v4-checks
 Session:      28

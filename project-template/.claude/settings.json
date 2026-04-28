@@ -47,6 +47,10 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/guard-planning-artifacts.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/guard-memory-loaded.sh"
           }
         ]
       },
@@ -88,6 +92,15 @@
           {
             "type": "command",
             "command": "bash scripts/hooks/validate-envelope.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash scripts/hooks/auto-memory-reinject.sh"
           }
         ]
       }

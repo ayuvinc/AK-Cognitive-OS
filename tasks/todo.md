@@ -60,7 +60,7 @@ AC:
 Dependencies: none
 
 ### TASK-003 — session-open + session-close contract updates
-Status:       PENDING
+Status:       READY_FOR_REVIEW
 Owner:        Junior Dev
 Priority:     High
 Description:  Update session-open claude-command.md:
@@ -98,7 +98,7 @@ AC:
 Dependencies: TASK-002
 
 ### TASK-004 — PostToolUse compaction re-injection hook
-Status:       PENDING
+Status:       READY_FOR_REVIEW
 Owner:        Junior Dev
 Priority:     High
 Description:  Create scripts/hooks/auto-memory-reinject.sh.
@@ -124,7 +124,7 @@ AC:
 Dependencies: TASK-002
 
 ### TASK-005 — PreToolUse enforcement hook (memory-loaded gate)
-Status:       PENDING
+Status:       READY_FOR_REVIEW
 Owner:        Junior Dev
 Priority:     Medium
 Description:  Create scripts/hooks/guard-memory-loaded.sh.

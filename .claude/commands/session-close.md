@@ -53,6 +53,17 @@ Checks/Actions (run in order, BLOCKED on first failure):
 7. git commit -m "chore: Session N close — [one-line summary of what was built]".
 8. git push origin main.
 9. Write tasks/next-action.md: NEXT_PERSONA / TASK / CONTEXT / COMMAND fields.
+9a. Call `mcp__ak-memory__write()` with the session snapshot before closing:
+    - type: "task_history"
+    - content: "Session {N} — completed: [comma-separated QA_APPROVED task IDs and outcomes]"
+    - session: "session-{N}", persona: "session-close"
+    - tags: list of completed task IDs + ["session-close"]
+    - Snapshot content must be task IDs and outcomes only — no raw code, no user data, no PII.
+    - If MCP unavailable or write fails: emit WARN "memory write failed — session snapshot not
+      persisted", continue. Do NOT block session close on memory failure. Set
+      memory_snapshot_written = false.
+    - On success: memory/MEMORY.md is automatically trimmed to last 50 entries by ak-memory
+      server. Set memory_snapshot_written = true.
 10. Call `mcp__ak-state-machine__transition_session(to_state="CLOSED")`. Handle result:
     - If `result.success` is true: continue to verification step (primary path).
     - If `result.error` contains `INVALID_TRANSITION`: emit BLOCKED with `SESSION_STATE_VIOLATION: session already closed` and stop. Do NOT fall back.
@@ -95,4 +106,5 @@ artifacts_written: []
 next_action: "<what to run next>"
 extra_fields:
   closure_checklist: []
+  memory_snapshot_written: true|false
 ```

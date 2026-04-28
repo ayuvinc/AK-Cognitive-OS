@@ -40,6 +40,14 @@ Checks/Actions:
 - Write SESSION STATE Status = OPEN in tasks/todo.md. Update Active persona, Active task, and Last updated fields.
 - Validate the write succeeded by re-reading SESSION STATE — BLOCKED with `SESSION_STATE_WRITE_FAILED` if Status ≠ OPEN after write.
 - Read tasks/lessons.md — last 10 entries only.
+- Call `mcp__ak-memory__summary(limit=20)`:
+  - If successful: memory digest loaded as session context. Write flag file
+    `tasks/.memory-loaded-session-{N}` where N is the session number from SESSION STATE.
+    Set memory_loaded = true.
+  - If MCP unavailable or call fails: read `memory/MEMORY.md` directly as fallback.
+    Emit WARN "MCP unavailable — reading memory/MEMORY.md directly". Set memory_loaded = false.
+  - If `memory/MEMORY.md` does not exist on fallback path: emit WARN "no memory file found —
+    fresh project or memory not yet initialised", continue normally. Do NOT block.
 - Read tasks/next-action.md — NEXT_PERSONA, TASK, CONTEXT fields.
 - Read tasks/risk-register.md — any OPEN entries.
 - Generate exactly three standup lines for AK:
@@ -76,4 +84,5 @@ manual_action: NONE
 override: "NOT_OVERRIDABLE — session must open cleanly before any task work"
 extra_fields:
   standup_lines: ["line1", "line2", "line3"]
+  memory_loaded: true|false
 ```

@@ -30,3 +30,6 @@ build/
 
 # Session lock files (created and deleted by session-open/session-close fallback path)
 tasks/.session-transition-lock
+
+# ak-memory session flag files (runtime state, not committed)
+tasks/.memory-loaded-session-*

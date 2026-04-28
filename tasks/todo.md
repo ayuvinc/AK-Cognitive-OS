@@ -10,38 +10,12 @@ Last updated:   2026-04-28T06:35:19Z — state transition by MCP server
 
 ---
 
-### TASK-007 — Feedback Schema Definition
-Status:       READY_FOR_REVIEW
-Persona:      Junior Dev
-Branch:       feature/TASK-007-feedback-schema
-Depends:      none
-Files:        schemas/feedback-entry.md (new)
-Description:  Create schemas/feedback-entry.md — authoritative reference defining required/optional
-              fields for memory entries written by Phase 2 feedback sources. Specifies:
-              - type="outcome" (qa-run): required task_id, persona, outcome, content (≤500 chars);
-                outcome mapping: QA_APPROVED → "PASS", QA_REJECTED → "FAIL"; tags=["qa","verdict"]
-              - type="decision" (risk-manager): required task_id, persona, outcome, content;
-                outcome mapping: no S0/S1 → "PASS", S1 open → "PARTIAL", S0 open → "FAIL";
-                tags=["risk","assessment"]; task_id="cross-cutting" if multi-task assessment
-              Schema doc is the reference contract for TASK-008, TASK-009, and TASK-010.
-Security:     Doc-only. No code execution paths. No PII in example values.
-Acceptance Criteria:
-  #### AC — TASK-007
-  - [ ] schemas/feedback-entry.md exists at the correct path
-  - [ ] File defines type="outcome" section with: required fields (task_id, persona, outcome,
-        content), outcome mapping (QA_APPROVED → PASS, QA_REJECTED → FAIL), recommended
-        tags=["qa","verdict"], content ≤500 chars constraint
-  - [ ] File defines type="decision" section with: required fields (task_id, persona, outcome,
-        content), outcome mapping (no S0/S1 open → PASS, S1 open → PARTIAL, S0 open → FAIL),
-        recommended tags=["risk","assessment"], task_id="cross-cutting" pattern for multi-task
-  - [ ] VALID_OUTCOMES values referenced are consistent with memory_server.py
-        (PASS, FAIL, PARTIAL, DEFERRED)
-  - [ ] No PII or real task data in any example values
+<!-- TASK-007 QA_APPROVED — merged to main 2026-04-28 — archived to releases/session-26.md at close -->
 
 ---
 
 ### TASK-008 — qa-run Feedback Write
-Status:       PENDING
+Status:       IN_PROGRESS
 Persona:      Junior Dev
 Branch:       feature/TASK-008-qa-run-write
 Depends:      TASK-007
@@ -75,7 +49,7 @@ Acceptance Criteria:
 ---
 
 ### TASK-009 — risk-manager Feedback Write
-Status:       PENDING
+Status:       IN_PROGRESS
 Persona:      Junior Dev
 Branch:       feature/TASK-009-risk-manager-write
 Depends:      TASK-007
@@ -104,7 +78,7 @@ Acceptance Criteria:
 ---
 
 ### TASK-010 — feedback.py Validator
-Status:       PENDING
+Status:       IN_PROGRESS
 Persona:      Junior Dev
 Branch:       feature/TASK-010-feedback-validator
 Depends:      TASK-007

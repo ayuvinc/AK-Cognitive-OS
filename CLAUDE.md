@@ -22,6 +22,8 @@ bash scripts/bootstrap-project.sh    # Bootstrap a new project from the template
 bash scripts/remediate-project.sh    # Fix common project structure issues
 ```
 
+> **Manual wrap warning:** If you transplant the OS into an existing project without running `bootstrap-project.sh`, MCP will not work. Bootstrap generates three artefacts that a manual copy misses: `.mcp.json` (server definitions), `mcp-servers/` (server scripts), and `enableAllProjectMcpServers: true` in `settings.local.json`. `remediate-project.sh` fixes `mcp-servers/` only — it does not generate `.mcp.json` or set the flag (TASK-001).
+
 ---
 
 ## The Team

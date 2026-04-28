@@ -1,30 +1,25 @@
 # Next Action Dispatch
 
 NEXT_PERSONA: QA
-TASK:         Fill AC for TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006
-CONTEXT:      Session 25 — Architect decomposed v4 Phase 1 (Memory Foundation):
-                - TASK-001: remediate-project.sh MCP fix (pre-existing, ships first)
-                - TASK-002: ak-memory MCP server + memory/ scaffold
-                - TASK-003: session-open/close contract updates (call ak-memory)
-                - TASK-004: PostToolUse compaction re-injection hook
-                - TASK-005: PreToolUse enforcement hook (memory-loaded gate)
-                - TASK-006: memory.py validator + runner.py update
+TASK:         QA sign-off for TASK-001 through TASK-006 (all READY_FOR_REVIEW)
+CONTEXT:      Session 25 closed — all 6 v4 Phase 1 tasks implemented, marked READY_FOR_REVIEW.
+              Feature branches:
+                - feature/TASK-001-remediate-mcp-fix      (2699e62)
+                - feature/TASK-002-ak-memory-mcp-server   (3d3b13d)
+                - feature/TASK-003-session-memory-contracts (a8155ef — also covers TASK-004, TASK-005)
+                - feature/TASK-006-memory-validator        (ea59c11)
 
-              Architecture decisions (AK approved 2026-04-28):
-                - Hand-rolled JSON/Markdown storage — no Dolt/beads
-                - Per-project memory scope
-                - Per session-close compaction (automatic)
-                - ak-memory MCP server: 3 tools (write/query/summary)
-                - All new hooks advisory (exit 0) in v4.0
+              Codex review: AK has the Codex prompt (provided end of Session 25).
+              Run Codex on all 4 branches before QA review.
+              Any CRITICAL Codex finding blocks QA_APPROVED.
 
-              After QA fills AC:
-                - TASK-001 → Junior Dev (ships first, independent of v4)
-                - TASK-002 → Junior Dev (v4 start, no dependencies)
-                - TASK-003–006 → Junior Dev (in dependency order)
+              NOTE: ak-memory MCP server (TASK-002) is newly wired in .mcp.json.
+              On next session-open, memory summary call will attempt for the first time.
+              If it fails: fallback path (read memory/MEMORY.md directly) is the expected
+              first-run behavior — not a bug.
 
-              BA must log BL-002 (v4 business logic) before Phase 2 decomposition.
-
-COMMAND:      /qa to fill acceptance criteria for all 6 tasks
-SESSION_STATUS: OPEN
-NEXT_FOCUS:   QA → Junior Dev → back to Architect for Phase 2 planning
-BLOCKERS:     none
+COMMAND:      /qa to review Codex findings against AC and issue QA_APPROVED or QA_REJECTED
+              Then /architect to merge all QA_APPROVED branches to main.
+SESSION_STATUS: CLOSED
+NEXT_FOCUS:   QA → Architect merge → Phase 2 planning (Feedback Loop)
+BLOCKERS:     Codex review must run first. AK holds the prompt.

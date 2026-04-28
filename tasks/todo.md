@@ -15,7 +15,7 @@ Last updated:   2026-04-28T15:35:12Z — state transition by MCP server
 ---
 
 ### TASK-014 — remediate-project.sh --v4-upgrade flag
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Owner:        Junior Dev
 Branch:       feature/TASK-014-remediate-v4-upgrade
 Session:      28

@@ -11,7 +11,7 @@ Last updated:   2026-04-28T08:02:36Z — state transition by MCP server
 ---
 
 ### TASK-011 — signal_engine.py + signals/ scaffold
-Status:       READY_FOR_REVIEW
+Status:       QA_APPROVED
 Persona:      Junior Dev
 Branch:       feature/TASK-011-signal-engine
 Depends:      TASK-007 (memory feedback entries exist)

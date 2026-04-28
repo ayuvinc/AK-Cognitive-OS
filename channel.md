@@ -1,7 +1,52 @@
 # Channel — Session Broadcast
 
 ## Last Updated
-2026-04-28T07:30:00Z — QA (Session 26)
+2026-04-28T08:35:00Z — QA (Session 27)
+
+---
+
+## QA Verdict — TASK-011 — QA_APPROVED
+Date: 2026-04-28T08:35:00Z
+qa-run: python3 validators/runner.py . → [PASS] signal_engine; generate mode → SIG-001 fired; malformed shape tests → all exit 0
+Codex: 2 WARNs (malformed JSON shape handling) — both fixed in commit 036226c before QA review
+
+**Verdict: QA_APPROVED**
+
+AC verification (24/24 PASS):
+- [PASS] validators/signal_engine.py exists, exposes validate(project_root: Path) → ValidatorResult — confirmed commit d765f60
+- [PASS] Auto-discovered by runner.py: "[PASS] signal_engine" — confirmed by live run
+- [PASS] validate mode: signals/active.json missing → PASS — line 91-92: early return if not exists
+- [PASS] validate mode: empty signals array → PASS — for loop has no iterations, no issues appended
+- [PASS] validate mode: missing required field → WARN with signal_id — lines 126-131
+- [PASS] validate mode: invalid signal_type → WARN with signal_id — lines 133-139
+- [PASS] validate mode: invalid severity → WARN with signal_id — lines 141-146
+- [PASS] validate mode: empty evidence on ACTIVE → WARN with signal_id — lines 156-161
+- [PASS] generate mode: exits 0 — confirmed live; main() catches all exceptions
+- [PASS] generate mode: creates signals/ and history/ — lines 169-170: mkdir(exist_ok=True)
+- [PASS] generate mode: writes valid signals/active.json with signals[], generated_at, schema_version — confirmed by cat output
+- [PASS] DEBT_ACCUMULATION: fires on S1+ OPEN > 14 days — code: status="OPEN", severity in (S0,S1), age_days > 14; RISK-006 age=0 (today) correctly does not fire
+- [PASS] LESSON_RECURRENCE: fires on tag 3+ times — SIG-001 fired for [HOOK] (6 occurrences)
+- [PASS] FAILURE_PATTERN: fires on same persona 3+ FAIL outcomes — threshold FAILURE_THRESHOLD=3, count >= 3 check correct
+- [PASS] RISK_HOTSPOT: fires on 3+ FAIL per session — threshold HOTSPOT_THRESHOLD=3, session grouping correct
+- [PASS] VELOCITY_DROP: fires on 2+ consecutive DEFERRED — threshold VELOCITY_DROP_THRESHOLD=2, trailing consecutive count correct
+- [PASS] COVERAGE_GAP: fires when ≥5 task_history and 0 outcome entries — COVERAGE_MIN_TASKS=5; with 1 task_history correctly does not fire
+- [PASS] Sparse data: only LESSON_RECURRENCE fires (only signal with sufficient evidence in current data); all other detectors return [] gracefully
+- [PASS] Upsert: (signal_type, affected_area) key used; _upsert_signals() updates existing, assigns new SIG-NNN only for new keys
+- [PASS] VALID_SIGNAL_TYPES and VALID_SEVERITIES as module-level constants — lines 49-57
+- [PASS] content field never read — confirmed by Codex: "no code that accesses or echoes entry['content']"; detectors use only type, outcome, persona, entry_id, session, timestamp_utc, tags
+- [PASS] signals/active.json scaffold committed: {"signals": [], "generated_at": null, "schema_version": "4.0"}
+- [PASS] project-template/signals/active.json scaffold committed with same content
+- [PASS] Direct execution: python3 validators/signal_engine.py . exits 0 — confirmed
+
+Security check:
+- No auth surface (local file reads only; no network)
+- content field never accessed in any detector
+- No subprocess, eval, or dynamic code execution
+- Output contains only signal schema fields (type, id, area, action, evidence entry_id/detail)
+- Exit 0 always — no blocking path
+- Codex: no CRITICAL findings
+
+---
 
 ---
 

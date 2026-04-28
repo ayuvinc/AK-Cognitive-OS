@@ -15,7 +15,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FRAMEWORK_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
-VERSION="3.1.0"
+VERSION="4.0.0"
 
 # ---------------------------------------------------------------------------
 # Argument validation
@@ -540,6 +540,12 @@ with open(path, 'w') as f:
       "command": "${PYTHON3_BIN}",
       "args": ["${TARGET_DIR}/mcp-servers/audit_log_server.py"],
       "env": {"PROJECT_ROOT": "${TARGET_DIR}", "AUDIT_LOG_PATH": "tasks/audit-log.md"}
+    },
+    "ak-memory": {
+      "type": "stdio",
+      "command": "${PYTHON3_BIN}",
+      "args": ["${TARGET_DIR}/mcp-servers/memory_server.py"],
+      "env": {"PROJECT_ROOT": "${TARGET_DIR}"}
     }
   }
 }
@@ -559,8 +565,10 @@ if [[ -f "$CLAUDEIGNORE_SRC" ]]; then
   copy_file "$CLAUDEIGNORE_SRC" "${TARGET_DIR}/.claudeignore"
 fi
 
-# memory/MEMORY.md
-mkdir -p "${TARGET_DIR}/memory"
+# memory/MEMORY.md + v4 additions (index.json, sessions/, decisions/, outcomes/)
+mkdir -p "${TARGET_DIR}/memory/sessions" \
+         "${TARGET_DIR}/memory/decisions" \
+         "${TARGET_DIR}/memory/outcomes"
 MEMORY_SRC="${TEMPLATE_DIR}/memory/MEMORY.md"
 if [[ -f "$MEMORY_SRC" ]]; then
   copy_file "$MEMORY_SRC" "${TARGET_DIR}/memory/MEMORY.md"
@@ -572,6 +580,11 @@ if [[ -f "$MEMORY_SRC" ]]; then
     rm -f "${TARGET_DIR}/memory/MEMORY.md.bak"
   fi
 fi
+MEMORY_INDEX_SRC="${TEMPLATE_DIR}/memory/index.json"
+if [[ -f "$MEMORY_INDEX_SRC" ]]; then
+  copy_file "$MEMORY_INDEX_SRC" "${TARGET_DIR}/memory/index.json"
+fi
+echo "  [ok] memory/ v4 scaffold (index.json + sessions/ decisions/ outcomes/)"
 
 # ANTI-SYCOPHANCY.md
 ANTI_SRC="${FRAMEWORK_DIR}/ANTI-SYCOPHANCY.md"
@@ -647,6 +660,54 @@ if [[ -f "${TARGET_DIR}/mcp-servers/requirements.txt" ]]; then
     echo "  ============================================================"
     echo ""
   fi
+fi
+
+echo ""
+
+# ---------------------------------------------------------------------------
+# Install v4 cognitive layer scaffolds (signals/, feedback/, validators/)
+# ---------------------------------------------------------------------------
+
+echo "Installing v4 cognitive layer scaffolds..."
+
+# signals/ — signal engine output (active signals + history)
+SIGNALS_SRC="${TEMPLATE_DIR}/signals"
+if [[ -d "$SIGNALS_SRC" ]]; then
+  mkdir -p "${TARGET_DIR}/signals/history"
+  copy_file "${SIGNALS_SRC}/active.json" "${TARGET_DIR}/signals/active.json"
+  echo "  [ok] signals/ scaffold (active.json + history/)"
+else
+  echo "  [warn] project-template/signals/ not found -- skipping signals scaffold"
+fi
+
+# feedback/ — feedback loop storage (qa, risk, velocity, codex records)
+mkdir -p "${TARGET_DIR}/feedback/qa" \
+         "${TARGET_DIR}/feedback/risk" \
+         "${TARGET_DIR}/feedback/velocity" \
+         "${TARGET_DIR}/feedback/codex"
+FEEDBACK_SUMMARY="${TARGET_DIR}/feedback/summary.json"
+if [[ ! -f "$FEEDBACK_SUMMARY" ]] || [[ "$FORCE" == true ]]; then
+  printf '{"feedback": [], "total_entries": 0}\n' > "$FEEDBACK_SUMMARY"
+  echo "  [create]    feedback/summary.json"
+else
+  echo "  [skip]      feedback/summary.json  (exists -- pass --force to overwrite)"
+fi
+echo "  [ok] feedback/ subdirs (qa/ risk/ velocity/ codex/)"
+
+# validators/ — Python cognitive layer validators (memory, feedback, signal_engine)
+VALIDATORS_SRC="${FRAMEWORK_DIR}/validators"
+mkdir -p "${TARGET_DIR}/validators"
+if [[ -d "$VALIDATORS_SRC" ]]; then
+  for v_file in memory.py feedback.py signal_engine.py base.py; do
+    if [[ -f "${VALIDATORS_SRC}/${v_file}" ]]; then
+      copy_file "${VALIDATORS_SRC}/${v_file}" "${TARGET_DIR}/validators/${v_file}"
+    else
+      echo "  [warn] ${v_file} not found in framework validators/ -- skipping"
+    fi
+  done
+  echo "  [ok] validators/ (memory.py feedback.py signal_engine.py base.py)"
+else
+  echo "  [warn] framework validators/ not found -- skipping validators copy"
 fi
 
 echo ""
@@ -732,7 +793,10 @@ for required in \
   "ANTI-SYCOPHANCY.md" \
   "scripts/hooks/guard-session-state.sh" \
   "scripts/hooks/guard-persona-boundaries.sh" \
-  "scripts/hooks/guard-git-push.sh"; do
+  "scripts/hooks/guard-git-push.sh" \
+  "signals/active.json" \
+  "feedback/summary.json" \
+  "validators/signal_engine.py"; do
   if [[ ! -f "${TARGET_DIR}/${required}" ]]; then
     echo "  [WARN] Missing: ${required}"
     VALIDATION_PASS=false
@@ -741,6 +805,8 @@ done
 
 # Count commands installed
 CMD_COUNT=$(find "${TARGET_DIR}/.claude/commands" -name '*.md' 2>/dev/null | wc -l)
+
+echo "  [ok] v4 cognitive layer verified: signals/active.json, feedback/summary.json, validators/signal_engine.py"
 
 if [[ "$VALIDATION_PASS" == true ]]; then
   echo "  [PASS] All critical files present"

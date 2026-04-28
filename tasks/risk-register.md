@@ -101,3 +101,18 @@ FORMAT:
               to forensic-ai/tasks/next-action.md when this session closes.
 - Resolution: Fixed 2026-04-06 — Session 20. forensic-ai SESSION STATE code fences removed
               via lock-file-guarded Bash+python3 fix. Plain-text format confirmed. RISK-005 CLOSED.
+
+### RISK-006 — qa-run/risk-manager feedback write silently skips on MCP unavailability
+- Status:     ACCEPTED
+- Severity:   S2
+- Task:       cross-cutting (TASK-008, TASK-009)
+- Identified: 2026-04-28
+- Owner:      Architect
+- Risk:       If mcp__ak-memory__write is unavailable at runtime (server down, import error),
+              qa-run and risk-manager skip the write silently except for a WARN in their output.
+- Impact:     Signal Engine (Phase 3) will have gaps in feedback data for those sessions.
+              No immediate functional impact on the verdict or assessment itself.
+- Mitigation: Both TASK-008 and TASK-009 contracts require memory_written: true|false in
+              HANDOFF extra_fields. Downstream detection is possible. WARN path is explicit.
+              Acceptable for v4.0 advisory feedback layer.
+- Resolution:

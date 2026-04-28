@@ -101,6 +101,10 @@
           },
           {
             "type": "command",
+            "command": "bash scripts/hooks/auto-signal-check.sh"
+          },
+          {
+            "type": "command",
             "command": "bash scripts/hooks/guard-boundary-flags.sh"
           }
         ]
